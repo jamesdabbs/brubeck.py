@@ -95,7 +95,7 @@ class Formula(object):
         else:
             # Display subformulae recursively
             return u'(%s)' % (u' %s ' % self.operator).join(
-                sf.__unicode__(lookup=lookup) for sf in self.sub)
+                sf.__unicode__(lookup=lookup, link=link) for sf in self.sub)
 
     def __len__(self):
         if hasattr(self, 'sub'):

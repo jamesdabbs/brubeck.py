@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views.generic import ListView, DetailView
 from django.views.generic.base import TemplateView, RedirectView
-from django.views.generic.edit import CreateView, FormView
+from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from brubeck import forms, utils
 from brubeck.models import Space, Property, Trait, Implication
@@ -41,6 +41,16 @@ class ModelViewMixin(object):
         self.template_name = 'brubeck/%s/%s.html' % (_get_name(self.__class__),
                                                      _get_name(model))
         super(ModelViewMixin, self).__init__(*args, **kwargs)
+
+
+class GetObjectMixin(object):
+    def get_object(self, queryset=None):
+        if self.model == Trait:
+            return get_object_or_404(Trait, space__slug=self.kwargs['space'],
+                property__slug=self.kwargs['property'])
+        elif self.model == Implication:
+            return get_object_or_404(Implication, id=self.kwargs['id'])
+        return super(Detail, self).get_object(queryset)
 
 
 class List(ModelViewMixin, ListView):
@@ -82,16 +92,8 @@ def table(request):
     return TemplateResponse(request, 'brubeck/list/table.html', locals())
 
 
-class Detail(ModelViewMixin, DetailView):
+class Detail(ModelViewMixin, GetObjectMixin, DetailView):
     """ Generates a view for detailing one of the core objects """
-    def get_object(self, queryset=None):
-        if self.model == Trait:
-            return get_object_or_404(Trait, space__slug=self.kwargs['space'],
-                property__slug=self.kwargs['property'])
-        elif self.model == Implication:
-            return get_object_or_404(Implication, id=self.kwargs['id'])
-        return super(Detail, self).get_object(queryset)
-
     def get_context_data(self, **kwargs):
         context = super(Detail, self).get_context_data(**kwargs)
 
@@ -109,7 +111,11 @@ class Detail(ModelViewMixin, DetailView):
 
         # Add reversal information for Implications
         if self.model == Implication:
-            context['reverse'] = self.object.converse().counterexamples()
+            cx = self.object.converse().counterexamples()
+            if self.request.GET.get('counterexamples', None) != 'all':
+                context['reverse_extra'] = max(cx.count() - 3, 0)
+                cx = cx[:3]
+            context['reverse'] = cx
         return context
 
 def detail(request, model, **kwargs):
@@ -126,6 +132,19 @@ class Create(ModelViewMixin, CreateView):
 # TODO: extra permissions handling
 def create(request, model):
     return login_required(Create.as_view(model=model))(request)
+
+
+class Edit(ModelViewMixin, GetObjectMixin, UpdateView):
+    def get_form_class(self):
+        form_class = forms.EditForm
+        form_class.user = self.request.user
+        return form_class
+
+    def get_success_url(self):
+        return redirect(self.object)
+
+def edit(request, model, **kwargs):
+    return login_required(Edit.as_view(model=model))(request, **kwargs)
 
 
 def search(request):
@@ -156,6 +175,3 @@ reversal_counterexamples = ListView.as_view(
     paginate_by = 30,
     queryset = utils.get_open_converses(),
     template_name = 'brubeck/contribute/counterexamples.html')
-
-def edit(request):
-    raise NotImplementedError()

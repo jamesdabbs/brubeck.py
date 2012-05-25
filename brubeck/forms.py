@@ -26,6 +26,29 @@ class SnippetForm(forms.ModelForm):
         return obj
 
 
+class EditForm(forms.Form):
+    """ A form for editing snippets attached to an object (by adding new
+        revisions).
+    """
+    description = forms.CharField(widget=forms.Textarea())
+
+    def _get_snippet(self, obj):
+        return obj.snippets.all()[0]
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.pop('instance')
+        kwargs['initial'].update({
+            'description': self._get_snippet(instance).revision.text
+        })
+        super(EditForm, self).__init__(*args, **kwargs)
+        self.instance = instance
+
+    def save(self, *args, **kwargs):
+        self._get_snippet(self.instance).add_revision(
+            text=self.cleaned_data['description'],
+            user=self.user
+        )
+
 class SpaceForm(SnippetForm):
     """ A simple form for creating and editing a Space """
     class Meta:

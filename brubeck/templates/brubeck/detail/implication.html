@@ -2,13 +2,16 @@
 
 {% block reverse %}
 <section id="reversal">
-    {% if object.converse.counterexamples.exists %}
-    <p>This implication does not reverse, as evidenced by:</p>
-    <ul>
-        {% for cx in object.converse.counterexamples %}
-        <li><a href="{{ cx.get_absolute_url }}">{{ cx.title }}</a></li>
+    {% if reverse.exists %}
+    <p>This implication does not reverse, as evidenced by
+        {% for cx in reverse %}
+        <a href="{{ cx.get_absolute_url }}">{{ cx.title }}</a>
+        {% if not forloop.last %}, {% endif %}
         {% endfor %}
-    </ul>
+        {% if reverse_extra %}
+        and <a href="?counterexamples=all">{{ reverse_extra }} other{{ reverse_extra|pluralize }}</a>.
+        {% endif %}
+    </p>
     {% else %}
     <p>No counterexamples found for the converse. This implication may reverse.</p>
     {% endif %}

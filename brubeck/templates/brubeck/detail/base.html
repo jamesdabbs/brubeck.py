@@ -3,7 +3,8 @@
 {% block title %}{{ object.name }}{% endblock %}
 
 {% block content %}
-<h1>{{ object.title }}</h1>
+<h1>{{ object.title }}
+    <a href="{{ object.get_edit_url }}" class="btn btn-mini btn-success">Edit</a></h1>
 {% for s in object.snippets.all %}
     {% if s.proof %}
     <p>{{ s.proof.render_html }}</p>

@@ -1,1 +1,6 @@
 {% extends "brubeck/create/base.html" %}
+{% load bootstrap %}
+
+{% block prover_warning %}
+{% alert 'Adding a new trait will trigger automatic proof generation, which may lead to a large number of proofs being added. Please be sure of the data you enter and be patient with the results.' %}
+{% endblock %}
