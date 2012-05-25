@@ -78,15 +78,20 @@ class _BasicMixin(models.Model):
         # TODO: add valueset default # Ugly hack TODO: set default value_set
         super(_BasicMixin, self).save(*args, **kwargs)
 
+    @models.permalink
+    def get_absolute_url(self):
+        return self.__class__.__name__.lower(), (), {'slug': self.slug}
+
+    @models.permalink
+    def get_edit_url(self):
+        return 'edit_%s' % self.__class__.__name__.lower(), (), {'slug': self.slug}
+
 
 class Space(_BasicMixin):
     """ Represents a topological space """
     class Meta:
         app_label = 'brubeck'
 
-    @models.permalink
-    def get_absolute_url(self):
-        return 'space', (), {'slug': self.slug}
 
 class Property(_BasicMixin):
     """ Represents a property like "compact" or "Hausdorff" """
@@ -95,7 +100,3 @@ class Property(_BasicMixin):
     class Meta:
         app_label = 'brubeck'
         verbose_name_plural = 'properties'
-
-    @models.permalink
-    def get_absolute_url(self):
-        return 'property', (), {'slug': self.slug}

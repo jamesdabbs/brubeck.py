@@ -1,17 +1,18 @@
 {% extends "brubeck/base.html" %}
+{% load url from future %}
 
 {% block title %}{{ plural_name|capfirst }}{% endblock %}
 
 {% block content %}
 <h1>All {{ plural_name|capfirst }}
-    <a href="create/" class="btn btn-mini">Add New</a></h1>
+    <a href="{% url create_name %}" class="btn btn-mini btn-success">Add New</a></h1>
 
 {% include "brubeck/includes/pagination.html" %}
 
 {% for obj in object_list %}
 <div>
     <h4><a href="{{ obj.get_absolute_url }}">{{ obj.name }}</a></h4>
-    <p>{{ obj.snippets.all.0 }}</p>
+    <p>{% block obj_desc %}{{ obj.snippets.all.0 }}{% endblock %}</p>
 </div>
 {% empty %}
 <div>No objects found.</div>

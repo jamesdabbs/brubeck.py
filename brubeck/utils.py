@@ -10,6 +10,9 @@ def add_snippet(obj, text, user, is_proof=False, proof_agent=None):
     """ Creates a Proof (if `is_proof`) or a general Snippet attached to this
         object, and creates a Revision by `user` with the given `text`
     """
+    # The object must be saved before creating a snippet pointing to it
+    if not obj.id:
+        obj.save()
     cls = Proof if is_proof else Snippet
     snippet = cls(object=obj)
     if proof_agent:

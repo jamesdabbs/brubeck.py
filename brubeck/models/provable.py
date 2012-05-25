@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 from django.contrib.contenttypes import generic
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.query_utils import Q
 from django.db.models.signals import post_save
@@ -46,6 +47,11 @@ class Trait(_ProvesTraitMixin):
         return 'trait', (), {'space': self.space.slug,
                              'property': self.property.slug}
 
+    @models.permalink
+    def get_edit_url(self):
+        return 'edit_trait', (), {'space': self.space.slug,
+                                  'property': self.property.slug}
+
 def trait_post_save(sender, instance, created, **kwargs):
     """ Checks all implications involving this property for new proofs.
     """
@@ -68,6 +74,11 @@ class Implication(_ProvesTraitMixin):
     class Meta:
         app_label = 'brubeck'
 
+    def save(self, *args, **kwargs):
+        if kwargs.get('commit', True) and self.counterexamples().exists():
+            raise ValidationError('Cannot save implication with known counterexamples: %s' % self.counterexamples())
+        super(Implication, self).save(*args, **kwargs)
+
     def __unicode__(self, **kwargs):
         ant = self.antecedent.__unicode__(**kwargs)
         cons = self.consequent.__unicode__(**kwargs)
@@ -82,6 +93,10 @@ class Implication(_ProvesTraitMixin):
     @models.permalink
     def get_absolute_url(self):
         return 'implication', (), {'id': self.id}
+
+    @models.permalink
+    def get_edit_url(self):
+        return 'edit_implication', (), {'id': self.id}
 
     def contrapositive(self):
         """ Constructs the logically equivalent contrapositive of this

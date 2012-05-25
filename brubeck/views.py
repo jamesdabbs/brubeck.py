@@ -50,6 +50,7 @@ class List(ModelViewMixin, ListView):
     def get_context_data(self,  **kwargs):
         context = super(List, self).get_context_data(**kwargs)
         context['plural_name'] = self.model._meta.verbose_name_plural
+        context['create_name'] = 'create_%s' % self.model.__name__.lower()
         return context
 
 def list(request, model):
@@ -155,3 +156,6 @@ reversal_counterexamples = ListView.as_view(
     paginate_by = 30,
     queryset = utils.get_open_converses(),
     template_name = 'brubeck/contribute/counterexamples.html')
+
+def edit(request):
+    raise NotImplementedError()

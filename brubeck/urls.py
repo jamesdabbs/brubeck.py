@@ -45,6 +45,16 @@ urlpatterns += patterns('brubeck.views',
     url(r'^implications/create/$', 'create',
         {'model': Implication}, name='create_implication'),
 
+    # Edit Views (un-ambiguous locations)
+    url(r'^spaces/(?P<slug>[-\w]+)/edit/$', 'edit',
+            {'model': Space}, name='edit_space'),
+    url(r'^properties/(?P<slug>[-\w]+)/edit/$', 'edit',
+            {'model': Property}, name='edit_property'),
+    url(r'^implications/(?P<id>\d+)/edit/$', 'edit',
+            {'model': Implication}, name='edit_implication'),
+    url(r'^(?P<space>[-\w]+)/(?P<property>[-\w]+)/edit/$', 'edit',
+            {'model': Trait}, name='edit_trait'),
+
     # Detail Views (un-ambiguous locations)
     url(r'^spaces/(?P<slug>[-\w]+)/$', 'detail',
         {'model': Space}, name='space'),

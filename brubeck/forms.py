@@ -1,10 +1,10 @@
-from brubeck.logic.formula.utils import human_to_formula
-from brubeck.logic.utils import spaces_matching_formula
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
+from brubeck.logic.formula.utils import human_to_formula
+from brubeck.logic.utils import spaces_matching_formula
 from brubeck.models import Space, Property, Trait, Implication
-from brubeck.utils import add_snippet
+from brubeck import utils
 from django.core.exceptions import ValidationError
 
 
@@ -18,9 +18,11 @@ class SnippetForm(forms.ModelForm):
     """
     description = forms.CharField(widget=forms.Textarea())
 
-    def save(self):
-        obj = super(SnippetForm, self).save()
-        add_snippet(obj, self.cleaned_data['description'], user=self.user)
+    def save(self, commit=True, add_snippet=True):
+        # TODO: check. Changed so implication's clean could work
+        obj = super(SnippetForm, self).save(commit=commit)
+        if add_snippet:
+            utils.add_snippet(obj, self.cleaned_data['description'], user=self.user)
         return obj
 
 
@@ -49,11 +51,19 @@ class TraitForm(SnippetForm):
     class Meta:
         model = Trait
 
-
 class ImplicationForm(SnippetForm):
     """ A form for creating and editing an Implication """
     class Meta:
         model = Implication
+
+    def clean(self):
+        cleaned_data = super(ImplicationForm, self).clean()
+        cx = Implication(antecedent=cleaned_data['antecedent'],
+            consequent=cleaned_data['consequent']).counterexamples()
+        if cx.exists():
+            raise ValidationError(
+                'Cannot save implication. Found counterexample: %s' % cx[0])
+        return cleaned_data
 
 
 class SearchForm(forms.Form):

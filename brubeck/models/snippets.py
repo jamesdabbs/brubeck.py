@@ -46,6 +46,7 @@ class Provable(models.Model):
     """ Subclassing Provable allows an object to hook into the automatic
         proof generation system.
     """
+    # TODO: store generated html instead of re-rendering every time
     proof_agent = models.CharField(max_length=255)
 
     class Meta:

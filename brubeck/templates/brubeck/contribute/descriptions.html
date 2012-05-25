@@ -5,6 +5,7 @@
 {% block content %}
 {% if object_list.exists %}
 {% include "brubeck/includes/pagination.html" %}
+<p>The following objects were manually entered into the database, but no description or proof was entered at that time. You can help by adding one.</p>
 <ul>
     {% for s in object_list %}
     {% ifchanged s.content_type %}
