@@ -1,0 +1,57 @@
+{% load url from future %}
+{% load bootstrap %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block fulltitle %}{% block title %}Base{% endblock %} | Brubeck{% endblock %}</title>
+
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet"/>
+    {% block extra_head %}{% endblock %}
+
+    {% include "brubeck/includes/google_tracking.html" %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="{% url 'home' %}"#">Brubeck</a>
+            <ul class="nav">
+                <li><a href="{% url 'spaces' %}">Spaces</a></li>
+                <li><a href="{% url 'properties' %}">Properties</a></li>
+                <li><a href="{% url 'traits' %}">Traits</a></li>
+                <li><a href="{% url 'implications' %}">Implications</a></li>
+                <li><a href="{% url 'search' %}">Search</a></li>
+                <li><a href="{% url 'contribute' %}">Contribute</a></li>
+                {% if request.user.is_superuser %}
+                <li><a href="{% url 'table' %}">Table</a></li>
+                {% endif %}
+            </ul>
+            <ul class="nav pull-right">
+                {% if request.user.is_authenticated %}
+                <li><a>{{ request.user.username }}</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}?next={{ request.path }}">Login</a></li>
+                <li><a href="{% url 'register' %}?next={{ request.path }}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div id="content" class="container">
+        {% block messages %}
+        {% if messages %}
+        {% for message in messages %}
+        {% alert message message.tags %}
+        {% endfor %}
+        {% endif %}
+        {% endblock %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
+    <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

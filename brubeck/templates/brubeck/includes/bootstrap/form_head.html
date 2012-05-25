@@ -1,0 +1,4 @@
+{% load bootstrap %}
+{% for e in form.non_field_errors %}
+{% alert e 'error' %}
+{% endfor %}

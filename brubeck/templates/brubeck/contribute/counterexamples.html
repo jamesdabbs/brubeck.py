@@ -1,0 +1,19 @@
+{% extends "brubeck/contribute/base.html" %}
+
+{% block title %}Open Converses{% endblock %}
+
+{% block content %}
+{% if object_list %}
+    <p>The following implications have no counterexamples for their converse. Please add an example for any which aren't reversible.</p>
+
+    {% include "brubeck/includes/pagination.html" %}
+
+    <ul>
+        {% for i in object_list %}
+        <li><a href="{{ i.get_absolute_url }}">{{ i.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>The converse of every proof in the database is either proven or has a counterexample. Go add a new one!</p>
+{% endif %}
+{% endblock %}

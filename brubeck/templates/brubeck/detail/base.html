@@ -1,0 +1,30 @@
+{% extends "brubeck/base.html" %}
+
+{% block title %}{{ object.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ object.title }}</h1>
+{% for s in object.snippets.all %}
+    {% if s.proof %}
+    <p>{{ s.proof.render_html }}</p>
+    {% else %}
+    {% if s.text %}
+    <p>{{ s.text }}</p>
+    {% else %}
+    <p><em>It looks like this object was manually added, but no description was given. <a class="btn">Add Description</a></em></p>
+    {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% block reverse %}{% endblock %}
+
+<h3>{{ object.traits_desc }}</h3>
+{% with traits as page_obj %}
+{% include "brubeck/includes/pagination.html" %}
+{% endwith %}
+<ul>
+    {% for t in traits %}
+    <li><a href="{{ t.get_absolute_url }}">{{ t }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

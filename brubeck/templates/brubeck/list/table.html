@@ -1,0 +1,40 @@
+{% extends "brubeck/list/base.html" %}
+{% load brubeck %}
+
+{% block title %}Table{% endblock %}
+
+{% block extra_head %}
+<style type="text/css">
+    td {text-align: center}
+    .error {background-color: #ff6454;}
+    .missing {background-color: #fffbab;}
+    .extra {background-color: #bfd3ff;}
+</style>
+{% endblock %}
+
+{% block content %}
+<table>
+    <tr>
+        <th></th>
+        {% for p in properties %}
+        <th><a href="{{ p.get_absolute_url }}" title="{{ p.name }}">{{ p.id }}</a></th>
+        {% endfor %}
+    </tr>
+    {% for s in spaces %}
+    <tr>
+        <td><a href="{{ s.get_absolute_url }}" title="{{ s.name }}">{{ s.id }}</a></td>
+        {% for p in properties %}
+        {% with traits|get:s.id|get:p.id as t %}
+        <td {% contradicts_tag cx s.id p.id t %}>
+            {% if t %}
+            <a href="{{ t.get_absolute_url }}" title="{{ t }}">{{ t.value.table_display }}</a>
+            {% else %}
+            <a title="{{ s }} / {{ p }}">&nbsp;</a>
+            {% endif %}
+        </td>
+        {% endwith %}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

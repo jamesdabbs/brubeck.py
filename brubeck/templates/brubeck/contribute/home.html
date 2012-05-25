@@ -1,0 +1,20 @@
+{% extends "brubeck/contribute/base.html" %}
+{% load url from future %}
+
+{% block title %}Contribute{% endblock %}
+
+{% block content %}
+<h3 xmlns="http://www.w3.org/1999/html">Contributing to Brubeck</h3>
+<p>Thanks for your interest in the Brubeck project. If you'd like to contribute, please try one of the following:</p>
+<ul>
+    <li>Add new <a href="{% url 'spaces' %}">Spaces</a>,
+        <a href="{% url 'properties' %}">Properties</a>,
+        <a href="{% url 'traits' %}">Traits</a> or
+        <a href="{% url 'implications' %}">Implications</a></li>
+    <li><a href="{% url 'needing_descriptions'%}">Add descriptions and proofs to items missing them.</a></li>
+    <li><a href="{% url 'needing_counterexamples' %}">Add proofs or counterexamples to the converses of known theorems.</a></li>
+    <li>Contribute code on <a href="{% url 'github' %}">GitHub</a></li>
+</ul>
+<p>If you have any other ideas, suggestions or bug reports, please don't hesitate to
+    <a href="mailto:james.dabbs@gmail.com">email me with them</a>.</p>
+{% endblock %}

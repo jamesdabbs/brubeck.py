@@ -1,0 +1,16 @@
+{% extends "brubeck/detail/base.html" %}
+
+{% block reverse %}
+<section id="reversal">
+    {% if object.converse.counterexamples.exists %}
+    <p>This implication does not reverse, as evidenced by:</p>
+    <ul>
+        {% for cx in object.converse.counterexamples %}
+        <li><a href="{{ cx.get_absolute_url }}">{{ cx.title }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No counterexamples found for the converse. This implication may reverse.</p>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "brubeck/base.html" %}
+{% load bootstrap %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<form action="" method="POST" class="form-horizontal">
+    {% csrf_token %}
+    <fieldset>
+        {{ form|bootstrap }}
+    </fieldset>
+    <div class="form-actions">
+        <button class="btn btn-primary">Register</button>
+    </div>
+</form>
+{% endblock %}

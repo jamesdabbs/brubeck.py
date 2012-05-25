@@ -1,0 +1,21 @@
+{% extends "brubeck/contribute/base.html" %}
+
+{% block title %}Add Descriptions{% endblock %}
+
+{% block content %}
+{% if object_list.exists %}
+{% include "brubeck/includes/pagination.html" %}
+<ul>
+    {% for s in object_list %}
+    {% ifchanged s.content_type %}
+    </ul>
+    <h3>{{ s.content_type|capfirst }}</h3>
+    <ul>
+    {% endifchanged %}
+    <li><a href="{{ s.object.get_absolute_url }}">{{ s.object.name }}</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>All objects in the database have a description. Go improve them or add something new!</p>
+{% endif %}
+{% endblock %}
