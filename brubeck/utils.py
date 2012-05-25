@@ -1,6 +1,7 @@
 import logging
 
 from brubeck.models.snippets import Proof, Snippet
+from brubeck.models.core import Space
 
 
 logger = logging.getLogger(__name__)
@@ -64,3 +65,8 @@ def get_open_converses():
     from brubeck.models.provable import Implication
     return filter(lambda i: not i.converse().counterexamples().exists(),
         Implication.objects.all())
+
+
+def get_unknown_spaces(property):
+    """ Finds spaces for which this Property's value is unknown """
+    return Space.objects.exclude(trait__property=property)

@@ -1,7 +1,7 @@
 {% extends "brubeck/base.html" %}
 {% load bootstrap %}
 
-{% block title %}New {{ cls_name }}{% endblock %}
+{% block title %}New {{ cls_name|capfirst }}{% endblock %}
 
 {% block content %}
 {% block prover_warning %}{% endblock %}

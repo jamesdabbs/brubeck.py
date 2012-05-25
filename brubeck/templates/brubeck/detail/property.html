@@ -1,1 +1,13 @@
 {% extends "brubeck/detail/base.html" %}
+
+{% block extra %}
+<p>The value of this property is unknown for
+    {% for s in unknown %}
+    <a href="{{ s.get_absolute_url }}">{{ s.name }}</a>
+    {% if not forloop.last %}, {% endif %}
+    {% endfor %}
+    {% if unknown_extra %}
+    and <a href="?unknown=all">{{ unknown_extra }} other{{ unknown_extra|pluralize }}</a>
+    {% endif %}
+</p>
+{% endblock %}

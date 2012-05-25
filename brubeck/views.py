@@ -50,7 +50,7 @@ class GetObjectMixin(object):
                 property__slug=self.kwargs['property'])
         elif self.model == Implication:
             return get_object_or_404(Implication, id=self.kwargs['id'])
-        return super(Detail, self).get_object(queryset)
+        return super(GetObjectMixin, self).get_object(queryset)
 
 
 class List(ModelViewMixin, ListView):
@@ -116,6 +116,14 @@ class Detail(ModelViewMixin, GetObjectMixin, DetailView):
                 context['reverse_extra'] = max(cx.count() - 3, 0)
                 cx = cx[:3]
             context['reverse'] = cx
+
+        # Add unknown space information for Properties
+        if self.model == Property:
+            spaces = utils.get_unknown_spaces(self.object)
+            if self.request.GET.get('unknown', None) != 'all':
+                context['unknown_extra'] = max(spaces.count() - 3, 0)
+                spaces = spaces[:3]
+            context['unknown'] = spaces
         return context
 
 def detail(request, model, **kwargs):
@@ -129,12 +137,18 @@ class Create(ModelViewMixin, CreateView):
         form_class.user = self.request.user
         return form_class
 
+    def get_context_data(self, **kwargs):
+        context = super(Create, self).get_context_data(**kwargs)
+        context['cls_name'] = _get_name(self.model)
+        return context
+
 # TODO: extra permissions handling
 def create(request, model):
     return login_required(Create.as_view(model=model))(request)
 
 
 class Edit(ModelViewMixin, GetObjectMixin, UpdateView):
+    """ Generates a view for editing a core object """
     def get_form_class(self):
         form_class = forms.EditForm
         form_class.user = self.request.user
