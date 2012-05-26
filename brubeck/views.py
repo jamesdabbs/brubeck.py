@@ -167,7 +167,7 @@ class Edit(ModelViewMixin, GetObjectMixin, UpdateView):
         return form_class
 
     def get_success_url(self):
-        return redirect(self.get_object())
+        return self.get_object().get_absolute_url()
 
 def edit(request, model, **kwargs):
     return login_required(Edit.as_view(model=model))(request, **kwargs)

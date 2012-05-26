@@ -1,1 +1,6 @@
 {% extends "brubeck/edit/base.html" %}
+{% load bootstrap %}
+
+{% block prover_warning %}
+{% alert 'Because of automatic proof generation, changing the value of this trait is not allowed. If you do find a mistake that needs to be changed, please <a href="mailto:james.dabbs@gmail.com">contact an administrator</a>.' %}
+{% endblock %}

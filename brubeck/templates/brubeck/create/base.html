@@ -4,12 +4,47 @@
 {% block title %}New {{ cls_name|capfirst }}{% endblock %}
 
 {% block content %}
+{% block object_title %}{% endblock %}
 {% block prover_warning %}{% endblock %}
-<form action="" method="POST" class="form-horizontal">
+<form action="" method="POST" class="form-horizontal" id="edit-form">
     {% csrf_token %}
     {{ form|bootstrap:"span8" }}
+    <div class="control-group">
+        <label class="control-label">Preview</label>
+        <div class="controls">
+            <p id="description-shadow"><noscript>Javascript must be enabled to preview LaTeX.</noscript></p>
+        </div>
+    </div>
     <div class="form-actions">
         <button class="btn btn-primary">Save</button>
     </div>
 </form>
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="text/javascript">
+$(function() {
+    var shadow = $('#description-shadow'),
+        input = $('#id_description'),
+        timer = null;
+
+    // This function copies and renders the LaTeX
+    function render() {
+        shadow.text(input.val());
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, "description-shadow"]);
+    }
+
+    // Render the starting text (if there is any)
+    render();
+
+    // Set up a delay so that we only re-render after a pause in typing
+    input.keyup(function() {
+        if (timer != null) clearTimeout(timer);
+        timer = setTimeout(function() {
+            timer = null;
+            render();
+        }, 750);
+    });
+})
+</script>
 {% endblock %}
