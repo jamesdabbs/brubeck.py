@@ -81,8 +81,12 @@ class ImplicationForm(SnippetForm):
 
     def clean(self):
         cleaned_data = super(ImplicationForm, self).clean()
-        cx = Implication(antecedent=cleaned_data['antecedent'],
-            consequent=cleaned_data['consequent']).counterexamples()
+        antecedent = cleaned_data.get('antecedent', '')
+        consequent = cleaned_data.get('consequent', '')
+        if not (antecedent and consequent):
+            return cleaned_data
+        cx = Implication(antecedent=cleaned_data.get('antecedent', ''),
+            consequent=cleaned_data.get('consequent', '')).counterexamples()
         if cx.exists():
             raise ValidationError(
                 'Cannot save implication. Found counterexample: %s' % cx[0])
@@ -109,3 +113,7 @@ class SearchForm(forms.Form):
             res.append(('By %s description' % cls.__name__.lower(),
                 cls.objects.filter(snippets__revision__text__icontains=q)))
         return res
+
+
+class DeleteForm(forms.Form):
+    pass

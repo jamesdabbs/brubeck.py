@@ -4,7 +4,11 @@
 
 {% block content %}
 <h1>{{ object.title }}
-    <a href="{{ object.get_edit_url }}" class="btn btn-mini btn-success">Edit</a></h1>
+    <a href="{{ object.get_edit_url }}" class="btn btn-mini btn-success">Edit</a>
+    {% if request.user.is_superuser and object.get_delete_url %}
+    <a href="{{ object.get_delete_url }}" class="btn btn-mini btn-danger">Delete</a>
+    {% endif %}
+</h1>
 {% for s in object.snippets.all %}
     {% if s.proof %}
     <p>{{ s.proof.render_html }}</p>

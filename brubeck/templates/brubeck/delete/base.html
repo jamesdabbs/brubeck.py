@@ -1,0 +1,20 @@
+{% extends "brubeck/base.html" %}
+{% load bootstrap %}
+
+{% block title %}Delete{% endblock %}
+
+{% block content %}
+<h3>Delete {{ object.title }}</h3>
+<form action="" method="POST">
+    {% alert 'The following traits will be deleted. This is a destructive action and is likely not recoverable.' 'error' %}
+    {% alert 'After deletion, Brubeck will run a complete check for proofs. Please be patient with the results.' %}
+    {% csrf_token %}
+    <ul>
+        <li><a href="{{ o.get_absolute_url }}">{{ object.title }}</a></li>
+        {% for o in orphans %}
+        <li><a href="{{ o.get_absolute_url }}">{{ o.title }}</a></li>
+        {% endfor %}
+    </ul>
+    <button name='confirm' class='btn btn-danger'>Confirm Deletion</button>
+</form>
+{% endblock %}

@@ -55,6 +55,16 @@ urlpatterns += patterns('brubeck.views',
     url(r'^(?P<space>[-\w]+)/(?P<property>[-\w]+)/edit/$', 'edit',
             {'model': Trait}, name='edit_trait'),
 
+    # Extra proof tools
+    url(r'^implications/(?P<id>\d+)/proof/$', 'proof',
+            {'model': Implication}, name='prove_implication'),
+    url(r'^(?P<space>[-\w]+)/(?P<property>[-\w]+)/proof/$', 'proof',
+            {'model': Trait}, name='prove_trait'),
+    url(r'^implications/(?P<id>\d+)/delete/$', 'delete',
+            {'model': Implication}, name='delete_implication'),
+    url(r'^(?P<space>[-\w]+)/(?P<property>[-\w]+)/delete/$', 'delete',
+            {'model': Trait}, name='delete_trait'),
+
     # Detail Views (un-ambiguous locations)
     url(r'^spaces/(?P<slug>[-\w]+)/$', 'detail',
         {'model': Space}, name='space'),

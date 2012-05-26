@@ -43,14 +43,13 @@ class Trait(_ProvesTraitMixin):
         ))
 
     @models.permalink
-    def get_absolute_url(self):
-        return 'trait', (), {'space': self.space.slug,
-                             'property': self.property.slug}
+    def get_absolute_url(self, type=''):
+        return '%strait' % type, (), {'space': self.space.slug,
+                                      'property': self.property.slug}
 
-    @models.permalink
-    def get_edit_url(self):
-        return 'edit_trait', (), {'space': self.space.slug,
-                                  'property': self.property.slug}
+    get_edit_url = lambda x: Trait.get_absolute_url(x, 'edit_')
+    get_proof_url = lambda x: Trait.get_absolute_url(x, 'prove_')
+    get_delete_url = lambda x: Trait.get_absolute_url(x, 'delete_')
 
 def trait_post_save(sender, instance, created, **kwargs):
     """ Checks all implications involving this property for new proofs.
@@ -91,12 +90,12 @@ class Implication(_ProvesTraitMixin):
         return mark_safe(self.__unicode__(lookup=True, link=True))
 
     @models.permalink
-    def get_absolute_url(self):
-        return 'implication', (), {'id': self.id}
+    def get_absolute_url(self, type=''):
+        return '%simplication' % type, (), {'id': self.id}
 
-    @models.permalink
-    def get_edit_url(self):
-        return 'edit_implication', (), {'id': self.id}
+    get_edit_url = lambda x: Implication.get_absolute_url(x, 'edit_')
+    get_proof_url = lambda x: Implication.get_absolute_url(x, 'prove_')
+    get_delete_url = lambda x: Implication.get_absolute_url(x, 'delete_')
 
     def contrapositive(self):
         """ Constructs the logically equivalent contrapositive of this
@@ -135,5 +134,7 @@ def implication_post_save(sender, instance, created, **kwargs):
     """
     if created:
         for s in instance.find_proofs():
+            utils.apply(instance, s)
+        for s in instance.contrapositive().find_proofs():
             utils.apply(instance, s)
 post_save.connect(implication_post_save, Implication)

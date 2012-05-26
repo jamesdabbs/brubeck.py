@@ -70,3 +70,14 @@ def get_open_converses():
 def get_unknown_spaces(property):
     """ Finds spaces for which this Property's value is unknown """
     return Space.objects.exclude(trait__property=property)
+
+
+def get_orphans(t):
+    """ Returns all traits that would have no proof if `t` were deleted
+    """
+    # TODO: only include if no manual proof has been given
+    # TODO: better handling of multiple snippets
+    from brubeck.logic.prover import Prover
+    direct = Prover.implied_traits(t)
+    subs = [get_orphans(s) for s in direct]
+    return list(direct) + sum(subs, [])

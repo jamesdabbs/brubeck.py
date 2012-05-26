@@ -229,14 +229,16 @@ def add_proof(space, property_id, value_id, proof_steps):
 def _add_proofs():
     """ Utility function to extrapolate existing Traits as far as possible.
     """
-    from datetime import datetime
+    # This proof cycle business isn't needed as long as post-save signals
+    # are in place.
+#    from datetime import datetime
 
-    from brubeck.models import Trait, Implication
+    from brubeck.models import Implication
 
-    start_traits = Trait.objects.all().count()
-    start_time = datetime.now()
-    logger.debug('Starting proof cycle at %s w/ %s traits' % \
-          (start_time, start_traits))
+#    start_traits = Trait.objects.all().count()
+#    start_time = datetime.now()
+#    logger.debug('Starting proof cycle at %s w/ %s traits' % \
+#          (start_time, start_traits))
     for i in Implication.objects.all():
         for s in find_proofs(i):
             try:
@@ -248,19 +250,19 @@ def _add_proofs():
                 prove_contrapositive(implication=i, space=s)
             except Exception as e:
                 logger.debug('(%s|%s) %s' % (i.id, s.id, e))
-    end_traits = Trait.objects.all().count()
-    end_time = datetime.now()
-    if end_traits != start_traits:
-        logger.debug('Ended proof cycle at %s w/ %s traits' % \
-            (end_time, end_traits))
-        trait_d = end_traits - start_traits
-        time_d = end_time - start_time
-        logger.debug('Added %s traits in %s seconds (%s/sec)' % \
-            (trait_d, time_d.seconds, trait_d / time_d.seconds))
-        _add_proofs()
-    else:
-        logger.debug('Finished adding proofs w/ %s traits' % \
-            Trait.objects.all().count())
+#    end_traits = Trait.objects.all().count()
+#    end_time = datetime.now()
+#    if end_traits != start_traits:
+#        logger.debug('Ended proof cycle at %s w/ %s traits' % \
+#            (end_time, end_traits))
+#        trait_d = end_traits - start_traits
+#        time_d = end_time - start_time
+#        logger.debug('Added %s traits in %s seconds (%s/sec)' % \
+#            (trait_d, time_d.seconds, trait_d / time_d.seconds))
+#        _add_proofs()
+#    else:
+#        logger.debug('Finished adding proofs w/ %s traits' % \
+#            Trait.objects.all().count())
 
 
 def apply(implication, space):
@@ -269,9 +271,7 @@ def apply(implication, space):
     """
     try:
         prove(implication, space)
-    except AssertionError:
-        pass
+    except AssertionError as e: pass
     try:
         prove_contrapositive(implication, space)
-    except AssertionError:
-        pass
+    except AssertionError as e: pass

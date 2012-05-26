@@ -34,15 +34,9 @@ class Document(models.Model):
         self.revision = r
         self.save()
 
-    def current_revision(self):
-        """ Returns the most recently added Revision for this Document. """
-        # TODO: do we need both this and the revision FK?
-        # Consider how to handle deletions, non-reviewed edits, etc.
-        return self.revisions.order_by('-timestamp')[0]
-
     def text(self):
         """ Gets the text of the current Revision. """
-        return self.current_revision().text
+        return getattr(self.revision, 'text', '')
 
 
 class Revision(models.Model):

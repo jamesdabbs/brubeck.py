@@ -7,7 +7,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views.generic import ListView, DetailView
-from django.views.generic.base import TemplateView, RedirectView
+from django.views.generic.base import TemplateView, RedirectView, View
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from brubeck import forms, utils
@@ -189,3 +189,47 @@ reversal_counterexamples = ListView.as_view(
     paginate_by = 30,
     queryset = utils.get_open_converses(),
     template_name = 'brubeck/contribute/counterexamples.html')
+
+
+class Proof(ModelViewMixin, GetObjectMixin, DetailView):
+    model = None
+
+def proof(request, model, **kwargs):
+    return Proof.as_view(model=model)(request, **kwargs)
+
+
+class Delete(ModelViewMixin, GetObjectMixin, DetailView):
+    # TODO: deal with potential race condition with deleting and re-adding
+    model = None
+    form_class = forms.DeleteForm
+
+    def get_context_data(self, **kwargs):
+        context = super(Delete, self).get_context_data(**kwargs)
+        context['orphans'] = utils.get_orphans(self.object)
+        return context
+
+    def post(self, *args, **kwargs):
+        object = self.get_object()
+
+        if 'confirm' in self.request.POST and self.request.user.is_superuser:
+            orphans = utils.get_orphans(object)
+            o_count = len(orphans)
+            for o in orphans:
+                o.delete()
+            object.delete()
+
+        from brubeck.logic.utils import _add_proofs
+        old = Trait.objects.count()
+        _add_proofs()
+        new = Trait.objects.count()
+        messages.warning(self.request,
+            '%s proof(s) deleted. %s automatically recovered.' % (o_count + 1, new - old))
+        return redirect('home')
+
+
+@login_required
+def delete(request, model, **kwargs):
+    # This view is limited to superusers only
+    if not request.user.is_superuser:
+        raise Http404
+    return Delete.as_view(model=model)(request, **kwargs)
