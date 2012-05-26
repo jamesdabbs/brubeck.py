@@ -1,4 +1,7 @@
 {% extends "brubeck/detail/base.html" %}
+{% load url from future %}
+
+{% block add_trait %}<a href="{% url 'create_trait' %}?property={{ object.id }}" class="btn btn-mini btn-success">Add</a>{% endblock %}
 
 {% block extra %}
 <p>The value of this property is unknown for

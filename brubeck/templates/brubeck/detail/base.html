@@ -23,7 +23,7 @@
 
 {% block extra %}{% endblock %}
 
-<h3>{{ object.traits_desc }}</h3>
+<h3>{{ object.traits_desc }} {% block add_trait %}{% endblock %}</h3>
 {% with traits as page_obj %}
 {% include "brubeck/includes/pagination.html" %}
 {% endwith %}

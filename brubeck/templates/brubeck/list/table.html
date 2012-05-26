@@ -1,5 +1,6 @@
 {% extends "brubeck/list/base.html" %}
 {% load brubeck %}
+{% load url from future %}
 
 {% block title %}Table{% endblock %}
 
@@ -7,7 +8,8 @@
 <style type="text/css">
     td {text-align: center}
     .error {background-color: #ff6454;}
-    .missing {background-color: #fffbab;}
+    .yes {background-color: #71ff80;}
+    .no {background-color: #fffbab;}
     .extra {background-color: #bfd3ff;}
 </style>
 {% endblock %}
@@ -29,7 +31,7 @@
             {% if t %}
             <a href="{{ t.get_absolute_url }}" title="{{ t }}">{{ t.value.table_display }}</a>
             {% else %}
-            <a title="{{ s }} / {{ p }}">&nbsp;</a>
+            <a href="{% url 'create_trait' %}?space={{ s.id }}&property={{ p.id }}" title="{{ s }} / {{ p }}">&nbsp;</a>
             {% endif %}
         </td>
         {% endwith %}

@@ -82,12 +82,14 @@ def table(request):
     cx = [row for row in reader]
 
     # And a list of all current traits
+    start = int(request.GET.get('start', '1'))
+    end = int(request.GET.get('end', '144'))
     traits = {}
-    spaces = Space.objects.all()
+    spaces = Space.objects.filter(id__in=range(start, end))
     for s in spaces:
         traits[s.id] = {}
     properties = Property.objects.all()
-    for t in Trait.objects.all():
+    for t in Trait.objects.filter(space__in=spaces):
         traits[t.space.id][t.property.id] = t
     return TemplateResponse(request, 'brubeck/list/table.html', locals())
 
@@ -137,6 +139,16 @@ class Create(ModelViewMixin, CreateView):
         form_class.user = self.request.user
         return form_class
 
+    def get_form_kwargs(self):
+        kwargs = super(Create, self).get_form_kwargs()
+        initial = kwargs.get('initial', {})
+        initial.update({
+            'space': self.request.GET.get('space', ''),
+            'property': self.request.GET.get('property', '')
+        })
+        kwargs['initial'] = initial
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super(Create, self).get_context_data(**kwargs)
         context['cls_name'] = _get_name(self.model)
@@ -155,7 +167,7 @@ class Edit(ModelViewMixin, GetObjectMixin, UpdateView):
         return form_class
 
     def get_success_url(self):
-        return redirect(self.object)
+        return redirect(self.get_object())
 
 def edit(request, model, **kwargs):
     return login_required(Edit.as_view(model=model))(request, **kwargs)

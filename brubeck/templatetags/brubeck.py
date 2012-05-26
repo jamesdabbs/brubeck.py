@@ -35,8 +35,10 @@ def contradicts_tag(cx, s, p, t):
     if t == '':
         if cxv in ['na', '']:
             return ''
+        elif cxv in [0, '0']:
+            return 'class="no"'
         else:
-            return 'class="missing"'
+            return 'class="yes"'
     # Otherwise t is a trait and we can look up:
     matches = (t.value.name == 'True' and cxv == '1') or \
               (t.value.name == 'False' and cxv == '0') or \

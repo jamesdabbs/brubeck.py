@@ -9,7 +9,7 @@
 <form action="" method="POST" class="form-horizontal">
     {% csrf_token %}
     <fieldset>
-        {{ form|bootstrap }}
+        {{ form|bootstrap:"span8 inline" }}
     </fieldset>
     <div class="form-actions">
         <button class="btn btn-primary">Save</button>

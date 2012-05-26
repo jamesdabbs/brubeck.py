@@ -1,1 +1,4 @@
 {% extends "brubeck/detail/base.html" %}
+{% load url from future %}
+
+{% block add_trait %}<a href="{% url 'create_trait' %}?space={{ object.id }}" class="btn btn-mini btn-success">Add</a>{% endblock %}

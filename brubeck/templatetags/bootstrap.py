@@ -26,10 +26,13 @@ def bootstrap(bound_field, args=''):
     args = args.split()
     classes = '' # a ' '-delimited list of classes
     kwargs = {} # a dict of extra arguments
+    label = True
     for arg in args:
         if '=' in arg:
             k,v = arg.split('=')
             kwargs[k] = v
+        elif arg == 'no-label':
+            label = False
         else:
             classes += ' %s' % arg
 
@@ -42,7 +45,8 @@ def bootstrap(bound_field, args=''):
 
     return render_to_string("brubeck/includes/bootstrap/field.html", {
         'field': bound_field,
-        'required': bound_field.field.required
+        'required': bound_field.field.required,
+        'label': label
     })
 
 

@@ -1,5 +1,5 @@
 <div class="control-group{% if field.errors %} error{% endif %}">
-    <label class="control-label{% if required %} required{% endif %}" for="id_{{ field.name }}">{{ field.label }}</label>
+    {% if label %}<label class="control-label{% if required %} required{% endif %}" for="id_{{ field.name }}">{{ field.label }}</label>{% endif %}
     <div class="controls">
         {{ field }}
         {% for error in field.errors %}
