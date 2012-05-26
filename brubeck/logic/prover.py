@@ -19,7 +19,7 @@ class Prover(object):
         raise NotImplementedError()
 
     @classmethod
-    def render_html(cls, proof):
+    def _render(cls, proof, html):
         """ Takes a proof of the form t<id>,t<id>,i<id>,t<id>,... and formats
             it suitably for template output.
         """
@@ -34,8 +34,19 @@ class Prover(object):
             else: # type == 'i'
                 obj = Implication.objects.get(id=id)
                 name = obj.__unicode__(lookup=True)
-            rv += u'<a href="%s">%s</a><br/>' % (obj.get_absolute_url(), name)
+            if html:
+                rv += u'<a href="%s">%s</a><br/>' % (obj.get_absolute_url(), name)
+            else:
+                rv += u'%s, ' % name
         return mark_safe(rv)
+
+    @classmethod
+    def render_html(cls, proof):
+        return cls._render(proof, html=True)
+
+    @classmethod
+    def render_text(cls, proof):
+        return cls._render(proof, html=False)
 
     @classmethod
     def implied_traits(cls, obj):

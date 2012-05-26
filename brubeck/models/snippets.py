@@ -46,8 +46,10 @@ class Provable(models.Model):
     """ Subclassing Provable allows an object to hook into the automatic
         proof generation system.
     """
-    # TODO: store generated html instead of re-rendering every time
     proof_agent = models.CharField(max_length=255)
+
+    # This (de-normalized) field stores a copy of the text describing the proof
+    proof_text = models.TextField()
 
     class Meta:
         app_label = 'brubeck'
@@ -70,6 +72,13 @@ class Provable(models.Model):
             prover = self.get_prover()
             return prover.render_html(self.text())
         return self.text()
+
+    def save(self, *args, **kwargs):
+        if self.proof_agent:
+            self.proof_text = self.get_prover().render_text(self.text())
+        else:
+            self.proof_text = self.text()
+        super(Provable, self).save(*args, **kwargs)
 
 
 class Proof(Snippet, Provable):

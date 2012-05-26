@@ -12,7 +12,17 @@
 {% for obj in object_list %}
 <div>
     <h4><a href="{{ obj.get_absolute_url }}">{{ obj.name }}</a></h4>
-    <p>{% block obj_desc %}{{ obj.snippets.all.0 }}{% endblock %}</p>
+    <p>
+        {% block obj_desc %}
+        {% with obj.snippets.all.0 as snippet %}
+        {% if snippet.proof.proof_text %}
+        {{ snippet.proof.proof_text }}
+        {% else %}
+        {{ snippet }}
+        {% endif %}
+        {% endwith %}
+        {% endblock %}
+    </p>
 </div>
 {% empty %}
 <div>No objects found.</div>
