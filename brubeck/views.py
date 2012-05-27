@@ -82,7 +82,7 @@ def table(request):
     # And a list of all current traits
     start = int(request.GET.get('start', '1'))
     end = int(request.GET.get('end', '144'))
-    end = max(end, 143)
+    end = min(end, 143)
     traits = {}
     spaces = Space.objects.filter(id__in=range(start, end+1))
     for s in spaces:
