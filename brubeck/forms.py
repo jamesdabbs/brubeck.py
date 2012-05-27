@@ -103,6 +103,10 @@ class SearchForm(forms.Form):
         # TODO: More robust text search, ignore \('s \frac{'s, &c.
         # TODO: e.g. `compact` should show implications involving compactness
         q = self.cleaned_data['q']
+        # Trim off a trailing ' + '
+        q = q.strip()
+        if q[-1] == '+':
+            q = q[:-1].strip()
         try:
             formula = human_to_formula(q)
             res = [(
