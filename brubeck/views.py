@@ -74,18 +74,16 @@ def table(request):
         raise Http404
 
     # Get the table from counterexamples to compare to
-    import csv
-    import os
-
-    path = os.path.dirname(os.path.realpath(__file__))
-    reader = csv.reader(open(os.path.join(path, 'counterexamples.csv'), 'r'))
-    cx = [row for row in reader]
+    import urllib2
+    f = urllib2.urlopen(
+        'https://s3.amazonaws.com/jdabbs.com/counterexamples.csv').read()
+    cx = [row.split(',') for row in f.split('\n')]
 
     # And a list of all current traits
     start = int(request.GET.get('start', '1'))
     end = int(request.GET.get('end', '144'))
     traits = {}
-    spaces = Space.objects.filter(id__in=range(start, end))
+    spaces = Space.objects.filter(id__in=range(start, end+1))
     for s in spaces:
         traits[s.id] = {}
     properties = Property.objects.all()

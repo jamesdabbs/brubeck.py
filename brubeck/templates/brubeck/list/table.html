@@ -15,6 +15,26 @@
 {% endblock %}
 
 {% block content %}
+<form action="" method="GET" class="form-horizontal">
+    <fieldset>
+        <div class="control-group">
+            <label class="control-label" for="start">Starting space</label>
+            <div class="controls">
+                <input type="text" name="start"/>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="end">Ending space</label>
+            <div class="controls">
+                <input type="text" name="end"/>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-actions">
+        <button class="btn">Update Selection</button>
+    </div>
+</form>
+
 <table>
     <tr>
         <th></th>
