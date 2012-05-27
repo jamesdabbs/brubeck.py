@@ -78,6 +78,7 @@ class ImplicationForm(SnippetForm):
     """ A form for creating and editing an Implication """
     class Meta:
         model = Implication
+        fields = ('antecedent', 'consequent')
 
     def clean(self):
         cleaned_data = super(ImplicationForm, self).clean()
@@ -100,6 +101,7 @@ class SearchForm(forms.Form):
     def search(self):
         # TODO: Refactor to search_formula and search_text
         # TODO: More robust text search, ignore \('s \frac{'s, &c.
+        # TODO: e.g. `compact` should show implications involving compactness
         q = self.cleaned_data['q']
         try:
             formula = human_to_formula(q)

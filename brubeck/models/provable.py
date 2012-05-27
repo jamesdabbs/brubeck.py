@@ -51,6 +51,10 @@ class Trait(_ProvesTraitMixin):
     get_proof_url = lambda x: Trait.get_absolute_url(x, 'prove_')
     get_delete_url = lambda x: Trait.get_absolute_url(x, 'delete_')
 
+    @models.permalink
+    def get_admin_url(self):
+        return 'admin:brubeck_trait_change', (self.id,), {}
+
 def trait_post_save(sender, instance, created, **kwargs):
     """ Checks all implications involving this property for new proofs.
     """
@@ -69,6 +73,9 @@ class Implication(_ProvesTraitMixin):
     antecedent = FormulaField()
     consequent = FormulaField()
     snippets = generic.GenericRelation('Snippet')
+
+    # Marks whether an implication is actually an equivalence
+    reverses = models.BooleanField(default=False)
 
     class Meta:
         app_label = 'brubeck'
@@ -96,6 +103,10 @@ class Implication(_ProvesTraitMixin):
     get_edit_url = lambda x: Implication.get_absolute_url(x, 'edit_')
     get_proof_url = lambda x: Implication.get_absolute_url(x, 'prove_')
     get_delete_url = lambda x: Implication.get_absolute_url(x, 'delete_')
+
+    @models.permalink
+    def get_admin_url(self):
+        return 'admin:brubeck_implication_change', (self.id,), {}
 
     def contrapositive(self):
         """ Constructs the logically equivalent contrapositive of this

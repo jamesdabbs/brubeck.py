@@ -16,7 +16,7 @@
     {% if s.text %}
     <p>{{ s.text }}</p>
     {% else %}
-    <p><em>It looks like this object was manually added, but no description was given. <a class="btn">Add Description</a></em></p>
+    <p><em>It looks like this object was manually added, but no description was given. You can help by <a href="{{ object.get_edit_url }}">adding one</a>.</em></p>
     {% endif %}
     {% endif %}
 {% endfor %}

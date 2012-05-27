@@ -86,6 +86,10 @@ class _BasicMixin(models.Model):
     def get_edit_url(self):
         return 'edit_%s' % self.__class__.__name__.lower(), (), {'slug': self.slug}
 
+    @models.permalink
+    def get_admin_url(self):
+        return 'admin:brubeck_%s_change' % self.__class__.__name__.lower(), (self.id,), {}
+
 
 class Space(_BasicMixin):
     """ Represents a topological space """

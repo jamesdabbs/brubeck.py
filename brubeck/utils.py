@@ -64,7 +64,7 @@ def get_open_converses():
     # TODO: exclude known reversible implications
     from brubeck.models.provable import Implication
     return filter(lambda i: not i.converse().counterexamples().exists(),
-        Implication.objects.all())
+        Implication.objects.exclude(reverses=True))
 
 
 def get_unknown_spaces(property):

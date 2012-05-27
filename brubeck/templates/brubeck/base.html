@@ -24,6 +24,9 @@
                 {% if request.user.is_superuser %}
                 <li><a href="{% url 'table' %}">Table</a></li>
                 {% endif %}
+                {% if request.user.is_staff %}
+                <li><a href="{% url 'admin:index' %}">Admin</a></li>
+                {% endif %}
             </ul>
             <ul class="nav pull-right">
                 {% if request.user.is_authenticated %}

@@ -192,6 +192,7 @@ contribute = TemplateView.as_view(
 redirect_to_github = RedirectView.as_view(
     url='https://github.com/jamesdabbs/brubeck/')
 
+# TODO: these querysets seem to get stale ...
 needing_descriptions = ListView.as_view(
     paginate_by = 30,
     queryset = utils.get_incomplete_snippets().order_by('content_type'),
