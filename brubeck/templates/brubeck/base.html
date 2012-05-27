@@ -22,7 +22,7 @@
                 <li><a href="{% url 'search' %}">Search</a></li>
                 <li><a href="{% url 'contribute' %}">Contribute</a></li>
                 {% if request.user.is_superuser %}
-                <li><a href="{% url 'table' %}">Table</a></li>
+                <li><a href="{% url 'table' %}?start=1&end=10">Table</a></li>
                 {% endif %}
                 {% if request.user.is_staff %}
                 <li><a href="{% url 'admin:index' %}">Admin</a></li>
