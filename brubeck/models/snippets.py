@@ -24,7 +24,7 @@ class BaseSnippet(Document):
 
     def current_text(self):
         """ Gets the most current & useful body of text for this snippet """
-        return self.revision.text
+        return getattr(self.revision, 'text', '')
 
 
 class Snippet(BaseSnippet):

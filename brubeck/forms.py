@@ -1,3 +1,4 @@
+from brubeck.models.core import Value
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
@@ -69,9 +70,22 @@ class PropertyForm(SnippetForm):
 
 class TraitForm(SnippetForm):
     """ A form for creating and editing a Trait """
-    # TODO: Initialize and validate value based on property.allowed_values
     class Meta:
         model = Trait
+
+    def clean(self):
+        """ Verifies that the value selected is valid for the property selected
+        """
+        cd = super(TraitForm, self).clean()
+        value, property = cd.get('value', ''), cd.get('property', '')
+        if not (value and property): return cd
+        try:
+            property.allowed_values().get(id=value.id)
+            return cd
+        except Value.DoesNotExist:
+            raise ValidationError('%s is not a valid value for property %s' %\
+                (value, property))
+
 
 class ImplicationForm(SnippetForm):
     """ A form for creating and editing an Implication """
@@ -80,17 +94,16 @@ class ImplicationForm(SnippetForm):
         fields = ('antecedent', 'consequent')
 
     def clean(self):
-        cleaned_data = super(ImplicationForm, self).clean()
-        antecedent = cleaned_data.get('antecedent', '')
-        consequent = cleaned_data.get('consequent', '')
-        if not (antecedent and consequent):
-            return cleaned_data
-        cx = Implication(antecedent=cleaned_data.get('antecedent', ''),
-            consequent=cleaned_data.get('consequent', '')).counterexamples()
+        """ Checks for existing counterexamples before adding a new implication
+        """
+        cd = super(ImplicationForm, self).clean()
+        ant, cons= cd.get('antecedent', ''), cd.get('consequent', '')
+        if not (ant and cons): return cd
+        cx = Implication(antecedent=ant, consequent=cons).counterexamples()
         if cx.exists():
             raise ValidationError(
                 'Cannot save implication. Found counterexample: %s' % cx[0])
-        return cleaned_data
+        return cd
 
 
 class SearchForm(forms.Form):

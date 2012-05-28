@@ -115,3 +115,6 @@ class Property(_BasicMixin):
     class Meta:
         app_label = 'brubeck'
         verbose_name_plural = 'properties'
+
+    def allowed_values(self):
+        return Value.objects.filter(value_set=self.values)
