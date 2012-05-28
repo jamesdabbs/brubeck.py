@@ -27,6 +27,7 @@ class Trait(_ProvesTraitMixin):
 
     class Meta:
         app_label = 'brubeck'
+        unique_together = (('space', 'property'),)
 
     def __unicode__(self):
         return u'%s: %s' % (self.space, atomize(self.property, self.value))

@@ -13,6 +13,11 @@ class BrubeckSearch(ElasticSearch):
     def index(self, doc, doc_type, id=None):
         return super(BrubeckSearch, self).index(doc, self._index, doc_type, id)
 
+    def search(self, query, body=None, doc_types=[], **query_params):
+        if not doc_types:
+            doc_types = ['space', 'property', 'implication', 'trait']
+        return super(BrubeckSearch, self).search(query, body=None, indexes=[self._index], doc_types=doc_types, **query_params)
+
 
 client = BrubeckSearch()
 logger = logging.getLogger(__name__)

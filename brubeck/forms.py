@@ -70,7 +70,6 @@ class PropertyForm(SnippetForm):
 class TraitForm(SnippetForm):
     """ A form for creating and editing a Trait """
     # TODO: Initialize and validate value based on property.allowed_values
-    # TODO: Validate against integrity errors?
     class Meta:
         model = Trait
 

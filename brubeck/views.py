@@ -84,7 +84,7 @@ def table(request):
     end = int(request.GET.get('end', '144'))
     end = min(end, 143)
     traits = {}
-    spaces = Space.objects.filter(id__in=range(start, end+1))
+    spaces = Space.defined_objects.filter(id__in=range(start, end+1))
     for s in spaces:
         traits[s.id] = {}
     properties = Property.objects.all()
