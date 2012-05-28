@@ -143,3 +143,6 @@ def implication_post_save(sender, instance, created, **kwargs):
         for s in instance.contrapositive().find_proofs():
             utils.apply(instance, s)
 post_save.connect(implication_post_save, Implication)
+
+
+# TODO: improve post-delete handling (delete revisions from index, related traits, etc.)
