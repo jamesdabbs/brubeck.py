@@ -60,7 +60,6 @@ def _get_property(pstr):
         property = Property.objects.get(id=int(pstr))
     except ValueError:
         try:
-            # TODO: ignore MathJAX \('s, \frac{'s, &c.
             property = Property.objects.get(name__iexact=pstr)
         except Property.DoesNotExist:
             raise ValidationError('Could not parse property "%s"' % pstr)
@@ -70,6 +69,7 @@ def human_to_formula(string):
     """ Takes a string (as would be received from a human-completed form field)
         and attempts to return the formula it represents.
     """
+    # TODO: Accents, LaTeX characters, mispellings, aliases (T_2 -> Hausdorff)
     # Trim off trailing whitespace and separators
     string = string.strip()
     if len(string) < 2: return Formula(None, None) # No formula can be parsed

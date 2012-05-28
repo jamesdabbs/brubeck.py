@@ -177,8 +177,6 @@ def edit(request, model, **kwargs):
 
 def search(request):
     """ Allows a user to search the database """
-    # TODO: implement more robust text search
-    # TODO: improve human elements (parsing, suggestions, autocomplete)
     if 'q' in request.GET:
         form = forms.SearchForm(request.GET)
         if form.is_valid():
@@ -194,7 +192,6 @@ contribute = TemplateView.as_view(
 redirect_to_github = RedirectView.as_view(
     url='https://github.com/jamesdabbs/brubeck/')
 
-# TODO: these querysets seem to get stale ...
 needing_descriptions = ListView.as_view(
     paginate_by = 40,
     queryset = utils.get_incomplete_snippets().order_by('content_type'),

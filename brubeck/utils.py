@@ -46,7 +46,6 @@ def get_incomplete_snippets():
 
 def get_open_converses():
     """ Finds implications with open converses. """
-    # TODO: exclude known reversible implications
     from brubeck.models.provable import Implication
     return filter(lambda i: not i.converse().counterexamples().exists(),
         Implication.objects.exclude(reverses=True))
@@ -58,10 +57,9 @@ def get_unknown_spaces(property):
 
 
 def get_orphans(t):
-    """ Returns all traits that would have no proof if `t` were deleted
-    """
-    # TODO: only include if no manual proof has been given
-    # TODO: better handling of multiple snippets
+    """ Returns all traits that would have no proof if `t` were deleted """
+    # TODO: only include if no other proof exists
+    # TODO: better handling of multiple snippets / proofs
     from brubeck.logic.prover import Prover
     direct = Prover.implied_traits(t)
     subs = [get_orphans(s) for s in direct]

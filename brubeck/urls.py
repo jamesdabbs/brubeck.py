@@ -4,7 +4,7 @@ from django.views.generic.base import TemplateView
 
 from brubeck.models import Space, Property, Trait, Implication
 
-# TODO: namespace all urls
+
 urlpatterns = patterns('',
     url(r'^$', TemplateView.as_view(template_name='brubeck/home.html'),
         name='home'),

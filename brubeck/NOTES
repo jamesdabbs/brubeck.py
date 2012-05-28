@@ -3,6 +3,7 @@ Possible errors in Counterexamples' table:
 - Uncountable excluded point topology has a \sigma-locally finite base
 - Either-or-topology has a \sigma-locally finite base
 - Simplified Arens square is semiregular
+- Z^Z is really Z+^Z+
 - Some extra assumptions needed:
   - Need to assume the Modified Arens space is uncountable for to be ~second countable
   - Need CH for finite complement topology on an uncountable space to be (locally) arc connected
