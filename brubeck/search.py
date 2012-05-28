@@ -18,6 +18,9 @@ class BrubeckSearch(ElasticSearch):
             doc_types = ['space', 'property', 'implication', 'trait']
         return super(BrubeckSearch, self).search(query, body=None, indexes=[self._index], doc_types=doc_types, **query_params)
 
+    def delete(self, doc_type, id):
+        return super(BrubeckSearch, self).delete(self._index, doc_type, id)
+
 
 client = BrubeckSearch()
 logger = logging.getLogger(__name__)
@@ -31,11 +34,27 @@ def index_revision(sender, instance, created, **kwargs):
         'text': s.current_text(),
     }
     log = client.index(doc, s.content_type.name, id=s.object_id)
-    logger.debug('Indexed revision: %s' % log)
+    logger.debug('Indexed revision %s: %s' % (instance.id, log))
 
 
-def _build_indicies():
+# TODO: bulk index manipulation seems to error out after several documents
+# It seems to happen fairly consistently after ~1406 API calls. Something
+# about connection pooling.
+def _build_indices(start=None, end=None):
     from brubeck.models import Revision
 
-    for r in Revision.objects.all():
-        index_revision(Revision, r, False)
+    revisions = Revision.objects.all().order_by('id')
+    if start:
+        revisions = revisions.filter(id__gte=start)
+    if end:
+        revisions = revisions.filter(id__lte=end)
+    for r in revisions:
+        r.save() # index_revision is a post_save method. This will also
+                 # update the proof_text if possible.
+
+def _clear_indices():
+    size = client.search('name:*')['hits']['total']
+    logger.debug('Clearing %s indexed documents' % size)
+    for r in client.search('name:*', size=size)['hits']['hits']:
+        log = client.delete(r['_type'], r['_id'])
+        logger.debug('Deleted indexed revision: %s' % log)

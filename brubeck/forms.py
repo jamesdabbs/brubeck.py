@@ -1,3 +1,4 @@
+from brubeck.logic.formula.fields import FormulaCharField
 from brubeck.models.core import Value
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
@@ -108,30 +109,38 @@ class ImplicationForm(SnippetForm):
 
 class SearchForm(forms.Form):
     """ A form for searching the database """
-    q = forms.CharField()
+    q = forms.CharField(required=False)
 
     def search(self):
-        # TODO: Refactor to search_formula and search_text
         # TODO: More robust text search, ignore \('s \frac{'s, &c.
         # TODO: e.g. `compact` should show implications involving compactness
-        q = self.cleaned_data['q']
-        # Trim off a trailing ' + '
-        q = q.strip()
-        if q[-1] == '+':
-            q = q[:-1].strip()
-        try:
-            formula = human_to_formula(q)
-            res = [(
-                'Matching "%s"' % formula.__unicode__(lookup=True),
-                Space.objects.filter(id__in=spaces_matching_formula(formula))
-            )]
-        except ValidationError as e:
-            res = [('By formula', e.messages)]
-        for cls in [Space, Property, Trait, Implication]:
-            res.append(('By %s description' % cls.__name__.lower(),
-                cls.objects.filter(snippets__revision__text__icontains=q)))
-        return res
+        q, res = self.cleaned_data.get('q', ''), {}
+        if not q: return res
 
+        # Try to parse as a formula
+        try:
+            f = human_to_formula(q)
+            if f.is_empty():
+                res['f'], res['f_spaces'] = '', []
+            else:
+                res['f'] = f.__unicode__(lookup=True, link=True)
+                res['f_spaces'] = Space.objects.filter(
+                    id__in=spaces_matching_formula(f))
+        except Exception as e:
+            res['f_errors'] = e.messages
+
+        # Slight optimization: if q contained a '+' or '|' and validated as a
+        # formula, it will almost certainly not match any text
+        if 'f' in res and ('+' in q or '|' in q):
+            return res
+
+        # Otherwise, we'll also search by text
+        from brubeck.search import client
+
+        r = client.search('name:%s OR text:%s' % (q, q))
+        res['t_hits'] = r['hits']['hits']
+        res['t_count'] = r['hits']['total']
+        return res
 
 class DeleteForm(forms.Form):
     pass

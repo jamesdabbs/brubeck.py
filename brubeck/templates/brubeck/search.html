@@ -1,41 +1,43 @@
 {% extends "brubeck/base.html" %}
 {% load bootstrap %}
+{% load brubeck %}
 
 {% block title %}Search{% endblock %}
 
 {% block content %}
 <section id="search">
-    <form action="" method="GET">
-        <div class="control-group">
-            <div class="controls">
-                {{ form.q|bootstrap:"span8 no-label" }}
-            </div>
-        </div>
-        <button class="btn btn-primary">Search</button>
+    <form action="" method="GET" class="well form-search">
+        {{ form.q|bootstrap:"span8 inline" }}
+        <button class="btn">Search</button>
     </form>
 </section>
 
 <section>
 {% if results %}
-    {% for desc, obj_list in results %}
-        <h3>{{ desc }}</h3>
-        {% if obj_list %}
+    {% if results.f %}
+        <h3>Spaces matching "{{ results.f|safe }}"</h3>
+        {% if results.f_spaces %}
         <ul>
-            {% for obj in obj_list %}
-            {# obj could be an object or an error string #}
-            {% if obj.name %}
-            <li><a href="{{ obj.get_absolute_url }}">{{ obj.name }}</a></li>
-            {% else %}
-            <li>{{ obj }}</li>
-            {% endif %}
+            {% for s in results.f_spaces %}
+            <li><a href="{{ s.get_absolute_url }}">{{ s.title }}</a></li>
             {% endfor %}
         </ul>
         {% else %}
-        <ul><li>None found</li></ul>
         {% endif %}
+    {% else %}
+        {% if results.f_errors %}
+        <h3>{{ results.f_errors.0 }}</h3>
+        {% endif %}
+    {% endif %}
+
+    {% if results.t_count %}
+    <h3>Full-text search</h3>
+    <p>Found {{ results.t_count }} items</p>
+    {% for doc in results.t_hits %}
+        {% lookup_document doc as obj%}
+        {% include "brubeck/includes/list_line.html" %}
     {% endfor %}
-{% else %}
-    <p>You can search by a formula (e.g. Compact + ~Second countable) or by text within descriptions (e.g. by Urysohn's lemma).</p>
+    {% endif %}
 {% endif %}
 </section>
 {% endblock %}

@@ -14,9 +14,8 @@ def parse_formula(string):
         string = string[1:-1]
 
         if '(' in string:
-            print 'ERROR 1'
             # TODO: Implement support for nested subformulae
-            raise NotImplementedError()
+            raise NotImplementedError('Cannot parse nested subformulae')
 
         f = Formula(None, None)
         f.operator = string[0]
@@ -71,6 +70,12 @@ def human_to_formula(string):
     """ Takes a string (as would be received from a human-completed form field)
         and attempts to return the formula it represents.
     """
+    # Trim off trailing whitespace and separators
+    string = string.strip()
+    if len(string) < 2: return Formula(None, None) # No formula can be parsed
+    if string[-1] in ['+', '|']:
+        string = string[:-1].strip()
+
     # TODO: add multiple operator and subformula support
     if '+' in string and '|' in string:
         raise ValidationError('Could not parse formula. Combined AND and OR is not implemented (yet).')

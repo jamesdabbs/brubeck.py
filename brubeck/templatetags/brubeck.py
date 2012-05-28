@@ -48,3 +48,11 @@ def contradicts_tag(cx, s, p, t):
             return 'class="extra"'
         return 'class="error %s"' % cxv
     return ''
+
+
+@register.assignment_tag
+def lookup_document(doc):
+    from django.db.models.loading import get_model
+
+    model = get_model('brubeck', doc['_type'])
+    return model.objects.get(id=doc['_id'])

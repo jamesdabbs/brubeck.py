@@ -129,3 +129,6 @@ class Formula(object):
         else:
             for sf in self.sub:
                 sf.lookup()
+
+    def is_empty(self):
+        return self.is_atom() and (self.property is None or self.value is None)

@@ -41,6 +41,7 @@ def spaces_matching_formula(formula, evaluates_to=True,
     # query on the atoms and build the result in python.
     if formula.is_atom():
         p, v = formula.property, formula.value
+        if not p or not v: return []
         spaces = spaces.order_by('id').values('id')
         if evaluates_to:
             spaces = spaces.filter(trait__property__id=p, trait__value__id=v)
