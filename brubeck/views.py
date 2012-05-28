@@ -56,6 +56,9 @@ class GetObjectMixin(object):
 class List(ModelViewMixin, ListView):
     """ Generates a view for listing one of the core object types """
     paginate_by = 30
+
+    def get_queryset(self):
+        return super(List, self).get_queryset().order_by('-id')
     
     def get_context_data(self,  **kwargs):
         context = super(List, self).get_context_data(**kwargs)
@@ -193,12 +196,12 @@ redirect_to_github = RedirectView.as_view(
 
 # TODO: these querysets seem to get stale ...
 needing_descriptions = ListView.as_view(
-    paginate_by = 30,
+    paginate_by = 40,
     queryset = utils.get_incomplete_snippets().order_by('content_type'),
     template_name = 'brubeck/contribute/descriptions.html')
 
 reversal_counterexamples = ListView.as_view(
-    paginate_by = 30,
+    paginate_by = 40,
     queryset = utils.get_open_converses(),
     template_name = 'brubeck/contribute/counterexamples.html')
 

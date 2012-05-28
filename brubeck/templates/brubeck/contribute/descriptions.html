@@ -1,21 +1,30 @@
 {% extends "brubeck/contribute/base.html" %}
+{% load brubeck_tags %}
 
 {% block title %}Add Descriptions{% endblock %}
 
 {% block content %}
 {% if object_list.exists %}
-{% include "brubeck/includes/pagination.html" %}
-<p>The following objects were manually entered into the database, but no description or proof was entered at that time. You can help by adding one.</p>
-<ul>
-    {% for s in object_list %}
-    {% ifchanged s.content_type %}
-    </ul>
-    <h3>{{ s.content_type|capfirst }}</h3>
-    <ul>
-    {% endifchanged %}
-    <li><a href="{{ s.object.get_edit_url }}">{{ s.object.name }}</a></li>
-    {% endfor %}
-</ul>
+    <p>The following objects were manually entered into the database, but no description or proof was entered at that time. You can help by adding one.</p>
+
+    {% include "brubeck/includes/pagination.html" %}
+
+    <div class="row">
+        {% for column in object_list|columns:"2" %}
+        <div class="span6">
+            <ul>
+                {% for s in column %}
+                {% ifchanged s.content_type %}
+                </ul>
+                <h3>{{ s.content_type|capfirst }}</h3>
+                <ul>
+                {% endifchanged %}
+                <li><a href="{{ s.object.get_edit_url }}">{{ s.object.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
 {% else %}
 <p>All objects in the database have a description. Go improve them or add something new!</p>
 {% endif %}
