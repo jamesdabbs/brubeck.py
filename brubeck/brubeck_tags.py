@@ -4,17 +4,17 @@ from django.views.generic.base import TemplateView
 
 from brubeck.models import Space, Property, Trait, Implication
 
-
+# TODO: namespace all urls
 urlpatterns = patterns('',
     url(r'^$', TemplateView.as_view(template_name='brubeck/home.html'),
-        name='home'),
+        name='brubeck_home'),
 )
 
 urlpatterns += patterns('django.contrib.auth.views',
     url('^login/$', 'login',
         {'template_name': 'brubeck/registration/login.html'}, name='login'),
     url('^logout/$', 'logout',
-        {'next_page': reverse_lazy('home')}, name='logout'),
+        {'next_page': reverse_lazy('brubeck_home')}, name='logout'),
 )
 
 urlpatterns += patterns('brubeck.views',

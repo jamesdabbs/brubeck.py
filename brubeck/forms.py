@@ -1,13 +1,11 @@
-from brubeck.logic.formula.fields import FormulaCharField
-from brubeck.models.core import Value
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
 
+from brubeck import utils
 from brubeck.logic.formula.utils import human_to_formula
 from brubeck.logic.utils import spaces_matching_formula
-from brubeck.models import Space, Property, Trait, Implication
-from brubeck import utils
-from django.core.exceptions import ValidationError
+from brubeck.models import Space, Property, Trait, Implication, Value
 
 
 class RegistrationForm(UserCreationForm):
@@ -119,7 +117,7 @@ class SearchForm(forms.Form):
     def search(self):
         # TODO: More robust text search, ignore \('s \frac{'s, &c.
         # TODO: e.g. `compact` should show implications involving compactness
-        q, res = self.cleaned_data.get('q', ''), {}
+        q, res = self.cleaned_data.get('q', '').strip(), {}
         if not q: return res
 
         # Try to parse as a formula
@@ -134,6 +132,8 @@ class SearchForm(forms.Form):
         except Exception as e:
             res['f_errors'] = e.messages
 
+        # Trim trailing separators
+        if q and q[-1] in ['+', '|']: q = q[:-1].rstrip()
         # Slight optimization: if q contained a '+' or '|' and validated as a
         # formula, it will almost certainly not match any text
         if 'f' in res and ('+' in q or '|' in q):

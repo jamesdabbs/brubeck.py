@@ -53,15 +53,22 @@ def contradicts_tag(cx, s, p, t):
 
 @register.assignment_tag
 def lookup_document(doc):
+    """ Looks up an object from its corresponding elasticsearch document """
     model = get_model('brubeck', doc['_type'])
-    return model.objects.get(id=doc['_id'])
+    try:
+        return model.objects.get(id=doc['_id'])
+    except model.DoesNotExist:
+        # This may occur if a trait has been deleted but not purged from the
+        # index
+        from brubeck.search import client
+        client.delete(doc['_type'], doc['_id'])
 
 
 @register.assignment_tag
 def get_properties():
-    # TODO: I seem to have shot myself in the foot here by naming this brubeck
-    # because from brubeck.models import Property fails.
-    return get_model('brubeck', 'property').objects.all()
+    """ Adds the complete list of Properties to the template context. """
+    from brubeck.models import Property
+    return Property.objects.all()
 
 
 @register.filter

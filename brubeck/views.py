@@ -28,7 +28,7 @@ class RegistrationView(FormView):
         user = form.save()
         messages.success(self.request, 'Your account has been created')
         _force_login(self.request, user)
-        return redirect(self.request.GET.get('next', reverse('home')))
+        return redirect(self.request.GET.get('next', reverse('brubeck_home')))
 
 register = RegistrationView.as_view()
 
@@ -236,7 +236,7 @@ class Delete(ModelViewMixin, GetObjectMixin, DetailView):
         new = Trait.objects.count()
         messages.warning(self.request,
             '%s proof(s) deleted. %s automatically recovered.' % (o_count + 1, new - old))
-        return redirect('home')
+        return redirect('brubeck_home')
 
 
 @login_required
