@@ -11,8 +11,6 @@ from brubeck.logic.formula import FormulaField, atomize
 from brubeck.models import Space, Property
 
 
-# TODO: add title methods which produce (safe) html output w/ links
-
 class _ProvesTraitMixin(models.Model):
     traits = lambda o: prover.Prover.implied_traits(o)
     traits_desc = 'Related Traits'
@@ -35,8 +33,7 @@ class Trait(_ProvesTraitMixin):
     name = __unicode__
 
     def title(self):
-        """ Adds HTML links to this object's title
-        """
+        """ Renders this Trait's name with links added """
         return mark_safe('<a href="%s">%s</a>: <a href="%s">%s</a>' % (
             self.space.get_absolute_url(), self.space,
             self.property.get_absolute_url(), atomize(self.property, self.value)
@@ -56,8 +53,7 @@ class Trait(_ProvesTraitMixin):
         return 'admin:brubeck_trait_change', (self.id,), {}
 
 def trait_post_save(sender, instance, created, **kwargs):
-    """ Checks all implications involving this property for new proofs.
-    """
+    """ Checks all implications involving this property for new proofs. """
     if created:
         # TODO: improve formula field lookups. This is overly broad. `contains='1='` matches '31=True' as well.
         # TODO: factor in to Prover class
@@ -68,6 +64,7 @@ def trait_post_save(sender, instance, created, **kwargs):
             utils.apply(i, instance.space)
 post_save.connect(trait_post_save, Trait)
 
+
 class Implication(_ProvesTraitMixin):
     """ An Implication allows us to deduce new properties from old ones. """
     antecedent = FormulaField()
@@ -75,6 +72,8 @@ class Implication(_ProvesTraitMixin):
     snippets = generic.GenericRelation('Snippet')
 
     # Marks whether an implication is actually an equivalence
+    # TODO: should this have an FK to the converse? Is there a good general way
+    # to find converses? Don't forget that A + B != B + A for formulae
     reverses = models.BooleanField(default=False)
 
     class Meta:
@@ -112,18 +111,13 @@ class Implication(_ProvesTraitMixin):
         """ Constructs the logically equivalent contrapositive of this
             implication.
         """
-        return Implication(
-            antecedent=self.consequent.negate(),
-            consequent=self.antecedent.negate()
-        )
+        return Implication(antecedent=self.consequent.negate(),
+            consequent=self.antecedent.negate())
 
     def converse(self):
-        """ Constructs the logical converse of this implication.
-        """
-        return Implication(
-            antecedent=self.consequent,
-            consequent=self.antecedent
-        )
+        """ Constructs the logical converse of this implication. """
+        return Implication(antecedent=self.consequent,
+            consequent=self.antecedent)
 
     def find_proofs(self):
         """ Finds Spaces that this Implication can prove something new about.
@@ -141,8 +135,7 @@ class Implication(_ProvesTraitMixin):
         return utils.counterexamples(self)
 
 def implication_post_save(sender, instance, created, **kwargs):
-    """ Checks all implications involving this property for new proofs.
-    """
+    """ Checks all implications involving this property for new proofs. """
     if created:
         for s in instance.find_proofs():
             utils.apply(instance, s)

@@ -3,15 +3,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from brubeck.fields import SetField
-from brubeck.models.wiki import Document
+from brubeck.models.wiki import Document, Revision
+from brubeck.search import index_revision
 
 
 class BaseSnippet(Document):
     """ A snippet is a revision-controlled blob of text describing a particular
         object in the database
     """
-    NEEDS_DESCRIPTION = 1
-
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     object = generic.GenericForeignKey('content_type', 'object_id')
@@ -23,21 +22,13 @@ class BaseSnippet(Document):
         abstract = True
         app_label = 'brubeck'
 
-    def __unicode__(self):
-        return self.text()
-
-    def save(self, *args, **kwargs):
-        """ Updates the NEEDS_DESCRIPTION flag appropriately """
-        if self.revision and self.revision.text:
-            self.flags.discard(self.NEEDS_DESCRIPTION)
-        else:
-            self.flags.add(self.NEEDS_DESCRIPTION)
-        super(BaseSnippet, self).save(*args, **kwargs)
+    def current_text(self):
+        """ Gets the most current & useful body of text for this snippet """
+        return self.revision.text
 
 
 class Snippet(BaseSnippet):
-    """ A plain (but non-abstract) snippet
-    """
+    """ A plain (but non-abstract) snippet """
     class Meta:
         app_label = 'brubeck'
 
@@ -48,14 +39,17 @@ class Provable(models.Model):
     """
     proof_agent = models.CharField(max_length=255)
 
-    # This (de-normalized) field stores a copy of the text describing the proof
+    # The snippet's revision-controlled text will store a dump of the proof
+    # used to add this snippet, in a format understood and verifiable by the
+    # proof agent. Since rendering a human-readable version of the proof may be
+    # time-consuming, we'll also store a copy of that here:
     proof_text = models.TextField()
 
     class Meta:
         app_label = 'brubeck'
         abstract = True
 
-    def get_prover(self):
+    def _get_prover(self):
         """ Gets a Prover object that can reason about this proof and the way
             it was generated.
         """
@@ -66,19 +60,24 @@ class Provable(models.Model):
         return getattr(m, cls)
 
     def render_html(self):
-        """ Defers display to the Prover object
+        """ Uses the module that added this proof to build a human-readable
+            proof with links to the assumed facts.
         """
         if self.proof_agent:
             prover = self.get_prover()
             return prover.render_html(self.text())
         return self.text()
 
-    def save(self, *args, **kwargs):
-        if self.proof_agent:
-            self.proof_text = self.get_prover().render_text(self.text())
-        else:
-            self.proof_text = self.text()
-        super(Provable, self).save(*args, **kwargs)
+def update_proof(sender, instance, **kwargs):
+    """ After saving a new Revision for a proof, we'd like to update the stored
+        `proof_text`
+    """
+    try:
+        proof = instance.page.snippet.proof
+        if proof.proof_agent: # The proof was automatically generated
+            proof.proof_text = proof._get_prover().render_text(instance.text)
+    except Proof.DoesNotExist:
+        pass
 
 
 class Proof(Snippet, Provable):
@@ -87,3 +86,9 @@ class Proof(Snippet, Provable):
     """
     class Meta:
         app_label = 'brubeck'
+
+    def current_text(self):
+        return self.proof_text
+
+models.signals.post_save.connect(index_revision, Revision)
+models.signals.post_save.connect(update_proof, Revision)

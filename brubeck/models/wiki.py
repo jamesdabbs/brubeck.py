@@ -25,6 +25,9 @@ class Document(models.Model):
     class Meta:
         app_label = 'brubeck'
 
+    def __unicode__(self):
+        return getattr(self.revision, 'text', '')
+
     def add_revision(self, text, user):
         """ Utility method to allow `user` to submit a revision with the given
             `text`.
@@ -33,10 +36,6 @@ class Document(models.Model):
             page=self, text=text, user=user, parent=self.revision)
         self.revision = r
         self.save()
-
-    def text(self):
-        """ Gets the text of the current Revision. """
-        return getattr(self.revision, 'text', '')
 
 
 class Revision(models.Model):
