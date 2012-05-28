@@ -62,3 +62,19 @@ def get_properties():
     # TODO: I seem to have shot myself in the foot here by naming this brubeck
     # because from brubeck.models import Property fails.
     return get_model('brubeck', 'property').objects.all()
+
+
+@register.filter
+def columns(l, num):
+    """ Splits any sliceable object into `num` sub-objects with (almost)
+        equal length.
+    """
+    length, _columns, num, br = len(l), [], int(num), 0
+    q, r = divmod(length, num)
+    for i in range(num):
+        start = br
+        br += q
+        if i < r:
+            br += 1
+        _columns.append(l[start:br])
+    return _columns

@@ -99,7 +99,7 @@ class Detail(ModelViewMixin, GetObjectMixin, DetailView):
         context = super(Detail, self).get_context_data(**kwargs)
 
         # Add paginated list of related traits
-        paginator = Paginator(self.object.traits(), 25)
+        paginator = Paginator(self.object.traits(), 40)
         page = self.request.GET.get('page', 1)
         try:
             traits = paginator.page(page)

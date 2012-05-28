@@ -17,12 +17,17 @@
     {% if results.f %}
         <h3>Spaces matching "{{ results.f|safe }}"</h3>
         {% if results.f_spaces %}
-        <ul>
-            {% for s in results.f_spaces %}
-            <li><a href="{{ s.get_absolute_url }}">{{ s.title }}</a></li>
+        <div class="row">
+            {% for spaces in results.f_spaces|columns:"2" %}
+            <div class="span6">
+                <ul>
+                    {% for s in spaces %}
+                    <li><a href="{{ s.get_absolute_url }}">{{ s.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
             {% endfor %}
-        </ul>
-        {% else %}
+        </div>
         {% endif %}
     {% else %}
         {% if results.f_errors %}
