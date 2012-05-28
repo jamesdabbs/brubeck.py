@@ -32,12 +32,16 @@
 
     {% if results.t_count %}
     <h3>Full-text search</h3>
-    <p>Found {{ results.t_count }} items. Showing top 10:</p>
+    <p>Found {{ results.t_count }} items. {% if results.t_hits|length < results.t_count %}
+        Showing top {{ results.t_hits|length }}.{% endif %}</p>
     {% for doc in results.t_hits %}
         {% lookup_document doc as obj%}
         {% include "brubeck/includes/list_line.html" %}
     {% endfor %}
     {% endif %}
+{% else %}
+    <p>You can search for spaces matching a formula (e.g. compact + ~second countable)
+       or do a full-text search of all objects (e.g. by Urysohn's lemma).</p>
 {% endif %}
 </section>
 {% endblock %}
