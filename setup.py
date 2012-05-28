@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='brubeck',
-    version='0.0.1.07',
+    version='0.0.1.08',
     description='Django-powered database of topological information',
 
     author='James Dabbs',
