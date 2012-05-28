@@ -93,6 +93,10 @@ class ImplicationForm(SnippetForm):
     class Meta:
         model = Implication
         fields = ('antecedent', 'consequent')
+        widgets = {
+            'antecedent': forms.TextInput(attrs={'class': 'formula-autocomplete'}),
+            'consequent': forms.TextInput(attrs={'class': 'formula-autocomplete'}),
+        }
 
     def clean(self):
         """ Checks for existing counterexamples before adding a new implication
@@ -109,7 +113,8 @@ class ImplicationForm(SnippetForm):
 
 class SearchForm(forms.Form):
     """ A form for searching the database """
-    q = forms.CharField(required=False)
+    q = forms.CharField(required=False,
+        widget=forms.TextInput(attrs={'class': 'formula-autocomplete'}))
 
     def search(self):
         # TODO: More robust text search, ignore \('s \frac{'s, &c.

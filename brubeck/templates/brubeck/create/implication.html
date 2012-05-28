@@ -4,3 +4,11 @@
 {% block prover_warning %}
 {% alert 'Adding a new implication will trigger automatic proof generation, which may lead to a large number of proofs being added. Please be sure of the data you enter and be patient with the results.' %}
 {% endblock %}
+
+{% block extra_head %}
+{% include "brubeck/includes/formula_autocomplete/css.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+{% include "brubeck/includes/formula_autocomplete/js.html" %}
+{% endblock %}

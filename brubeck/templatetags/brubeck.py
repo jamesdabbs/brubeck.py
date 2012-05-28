@@ -1,4 +1,5 @@
 from django import template
+from django.db.models.loading import get_model
 
 register = template.Library()
 
@@ -52,7 +53,12 @@ def contradicts_tag(cx, s, p, t):
 
 @register.assignment_tag
 def lookup_document(doc):
-    from django.db.models.loading import get_model
-
     model = get_model('brubeck', doc['_type'])
     return model.objects.get(id=doc['_id'])
+
+
+@register.assignment_tag
+def get_properties():
+    # TODO: I seem to have shot myself in the foot here by naming this brubeck
+    # because from brubeck.models import Property fails.
+    return get_model('brubeck', 'property').objects.all()

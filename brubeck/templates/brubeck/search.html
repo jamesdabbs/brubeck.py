@@ -32,7 +32,7 @@
 
     {% if results.t_count %}
     <h3>Full-text search</h3>
-    <p>Found {{ results.t_count }} items</p>
+    <p>Found {{ results.t_count }} items. Showing top 10:</p>
     {% for doc in results.t_hits %}
         {% lookup_document doc as obj%}
         {% include "brubeck/includes/list_line.html" %}
@@ -43,52 +43,9 @@
 {% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="http://addyosmani.github.com/jquery-ui-bootstrap/css/custom-theme/jquery-ui-1.8.16.custom.css" type="text/css" media="all" />
-<!--<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />-->
+{% include "brubeck/includes/formula_autocomplete/css.html" %}
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-<script>
-$(function() {
-    var availableTags = [{% for p in properties %}"{{ p.name|escapejs }}", "~{{ p.name|escapejs }}",{% endfor %}];
-    function split( val ) {
-        return val.split( /\s*\+\s*/ );
-    }
-    function extractLast( term ) {
-        return split( term ).pop();
-    }
-
-    $( "#id_q" ).bind( "keydown", function( event ) {
-        // don't navigate away from the field on tab when selecting an item
-        if ( event.keyCode === $.ui.keyCode.TAB &&
-                $( this ).data( "autocomplete" ).menu.active ) {
-            event.preventDefault();
-        }
-    })
-    .autocomplete({
-        minLength: 2,
-        source: function( request, response ) {
-            // delegate back to autocomplete, but extract the last term
-            response( $.ui.autocomplete.filter(
-                    availableTags, extractLast( request.term ) ) );
-        },
-        focus: function() {
-            // prevent value inserted on focus
-            return false;
-        },
-        select: function( event, ui ) {
-            var terms = split( this.value );
-            // remove the current input
-            terms.pop();
-            // add the selected item
-            terms.push( ui.item.value );
-            // add placeholder to get the comma-and-space at the end
-            terms.push( "" );
-            this.value = terms.join( " + " );
-            return false;
-        }
-    });
-});
-</script>
+{% include "brubeck/includes/formula_autocomplete/js.html" %}
 {% endblock %}

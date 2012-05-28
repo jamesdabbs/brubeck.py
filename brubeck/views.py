@@ -176,7 +176,6 @@ def search(request):
     """ Allows a user to search the database """
     # TODO: implement more robust text search
     # TODO: improve human elements (parsing, suggestions, autocomplete)
-    properties = Property.objects.all()
     if 'q' in request.GET:
         form = forms.SearchForm(request.GET)
         if form.is_valid():
