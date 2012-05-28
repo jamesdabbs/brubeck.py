@@ -54,7 +54,7 @@ def get_open_converses():
 
 def get_unknown_spaces(property):
     """ Finds spaces for which this Property's value is unknown """
-    return Space.objects.exclude(trait__property=property)
+    return Space.defined_objects.exclude(trait__property=property)
 
 
 def get_orphans(t):

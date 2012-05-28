@@ -91,8 +91,19 @@ class _BasicMixin(models.Model):
         return 'admin:brubeck_%s_change' % self.__class__.__name__.lower(), (self.id,), {}
 
 
+class DefinedManager(models.Manager):
+    """ Limits results to Spaces that are fully defined """
+    def get_query_set(self):
+        return super(DefinedManager, self).get_query_set().filter(fully_defined=True)
+
 class Space(_BasicMixin):
     """ Represents a topological space """
+    fully_defined = models.BooleanField(default=True)
+
+    # Model managers
+    objects = models.Manager()
+    defined_objects = DefinedManager()
+
     class Meta:
         app_label = 'brubeck'
 
