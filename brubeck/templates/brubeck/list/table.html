@@ -51,7 +51,7 @@
             {% if t %}
             <a href="{{ t.get_absolute_url }}" title="{{ t }}">{{ t.value.table_display }}</a>
             {% else %}
-            <a href="{% url 'create_trait' %}?space={{ s.id }}&property={{ p.id }}" title="{{ s }} / {{ p }}">&nbsp;</a>
+            <a href="{% url 'brubeck:create_trait' %}?space={{ s.id }}&property={{ p.id }}" title="{{ s }} / {{ p }}">&nbsp;</a>
             {% endif %}
         </td>
         {% endwith %}

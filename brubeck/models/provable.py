@@ -42,7 +42,7 @@ class Trait(_ProvesTraitMixin):
 
     @models.permalink
     def get_absolute_url(self, type=''):
-        return '%strait' % type, (), {'space': self.space.slug,
+        return 'brubeck:%strait' % type, (), {'space': self.space.slug,
                                       'property': self.property.slug}
 
     get_edit_url = lambda x: Trait.get_absolute_url(x, 'edit_')
@@ -98,7 +98,7 @@ class Implication(_ProvesTraitMixin):
 
     @models.permalink
     def get_absolute_url(self, type=''):
-        return '%simplication' % type, (), {'id': self.id}
+        return 'brubeck:%simplication' % type, (), {'id': self.id}
 
     get_edit_url = lambda x: Implication.get_absolute_url(x, 'edit_')
     get_proof_url = lambda x: Implication.get_absolute_url(x, 'prove_')

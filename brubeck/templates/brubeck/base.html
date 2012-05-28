@@ -14,16 +14,16 @@
 <body>
     <nav class="navbar">
         <div class="navbar-inner">
-            <a class="brand" href="{% url 'brubeck_home' %}"#">Brubeck</a>
+            <a class="brand" href="{% url 'brubeck:home' %}"#">Brubeck</a>
             <ul class="nav">
-                <li><a href="{% url 'spaces' %}">Spaces</a></li>
-                <li><a href="{% url 'properties' %}">Properties</a></li>
-                <li><a href="{% url 'traits' %}">Traits</a></li>
-                <li><a href="{% url 'implications' %}">Implications</a></li>
-                <li><a href="{% url 'search' %}">Search</a></li>
-                <li><a href="{% url 'contribute' %}">Contribute</a></li>
+                <li><a href="{% url 'brubeck:spaces' %}">Spaces</a></li>
+                <li><a href="{% url 'brubeck:properties' %}">Properties</a></li>
+                <li><a href="{% url 'brubeck:traits' %}">Traits</a></li>
+                <li><a href="{% url 'brubeck:implications' %}">Implications</a></li>
+                <li><a href="{% url 'brubeck:search' %}">Search</a></li>
+                <li><a href="{% url 'brubeck:contribute' %}">Contribute</a></li>
                 {% if request.user.is_superuser %}
-                <li><a href="{% url 'table' %}?start=1&end=5">Table</a></li>
+                <li><a href="{% url 'brubeck:table' %}?start=1&end=5">Table</a></li>
                 {% endif %}
                 {% if request.user.is_staff %}
                 <li><a href="{% url 'admin:index' %}">Admin</a></li>
@@ -32,10 +32,10 @@
             <ul class="nav pull-right">
                 {% if request.user.is_authenticated %}
                 <li><a>{{ request.user.username }}</a></li>
-                <li><a href="{% url 'logout' %}">Logout</a></li>
+                <li><a href="{% url 'brubeck:logout' %}">Logout</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}?next={{ request.path }}">Login</a></li>
-                <li><a href="{% url 'register' %}?next={{ request.path }}">Register</a></li>
+                <li><a href="{% url 'brubeck:login' %}?next={{ request.path }}">Login</a></li>
+                <li><a href="{% url 'brubeck:register' %}?next={{ request.path }}">Register</a></li>
                 {% endif %}
             </ul>
         </div>

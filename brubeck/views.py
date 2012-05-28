@@ -28,7 +28,7 @@ class RegistrationView(FormView):
         user = form.save()
         messages.success(self.request, 'Your account has been created')
         _force_login(self.request, user)
-        return redirect(self.request.GET.get('next', reverse('brubeck_home')))
+        return redirect(self.request.GET.get('next', reverse('brubeck:home')))
 
 register = RegistrationView.as_view()
 
@@ -63,7 +63,7 @@ class List(ModelViewMixin, ListView):
     def get_context_data(self,  **kwargs):
         context = super(List, self).get_context_data(**kwargs)
         context['plural_name'] = self.model._meta.verbose_name_plural
-        context['create_name'] = 'create_%s' % self.model.__name__.lower()
+        context['create_name'] = 'brubeck:create_%s' % self.model.__name__.lower()
         return context
 
 def list(request, model):
@@ -239,7 +239,7 @@ class Delete(ModelViewMixin, GetObjectMixin, DetailView):
         new = Trait.objects.count()
         messages.warning(self.request,
             '%s proof(s) deleted. %s automatically recovered.' % (o_count + 1, new - old))
-        return redirect('brubeck_home')
+        return redirect('brubeck:home')
 
 
 @login_required

@@ -84,7 +84,7 @@ class _BasicMixin(models.Model):
 
     @models.permalink
     def get_edit_url(self):
-        return 'edit_%s' % self.__class__.__name__.lower(), (), {'slug': self.slug}
+        return 'brubeck:edit_%s' % self.__class__.__name__.lower(), (), {'slug': self.slug}
 
     @models.permalink
     def get_admin_url(self):

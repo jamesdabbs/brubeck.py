@@ -19,7 +19,6 @@ class SnippetForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea())
 
     def save(self, commit=True, add_snippet=True):
-        # TODO: check. Changed so implication's clean could work
         obj = super(SnippetForm, self).save(commit=commit)
         if add_snippet:
             utils.add_snippet(obj, self.cleaned_data['description'], user=self.user)
@@ -115,8 +114,6 @@ class SearchForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'formula-autocomplete'}))
 
     def search(self):
-        # TODO: More robust text search, ignore \('s \frac{'s, &c.
-        # TODO: e.g. `compact` should show implications involving compactness
         q, res = self.cleaned_data.get('q', '').strip(), {}
         if not q: return res
 

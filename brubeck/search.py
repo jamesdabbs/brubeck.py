@@ -37,9 +37,10 @@ def index_revision(sender, instance, created, **kwargs):
     logger.debug('Indexed revision %s: %s' % (instance.id, log))
 
 
-# TODO: bulk index manipulation seems to error out after several documents
-# It seems to happen fairly consistently after ~1406 API calls. Something
-# about connection pooling.
+# Bulk index manipulation seems to error out after several documents.
+# It seems to happen fairly consistently after ~1406 API calls. This is
+# (hopefully) an issue with Bonsai limiting query rates that shouldn't be
+# a problem on the live site (at least, not any time soon)
 def _build_indices(start=None, end=None):
     from brubeck.models import Revision
 

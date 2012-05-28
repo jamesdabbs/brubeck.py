@@ -7,14 +7,14 @@ from brubeck.models import Space, Property, Trait, Implication
 # TODO: namespace all urls
 urlpatterns = patterns('',
     url(r'^$', TemplateView.as_view(template_name='brubeck/home.html'),
-        name='brubeck_home'),
+        name='home'),
 )
 
 urlpatterns += patterns('django.contrib.auth.views',
     url('^login/$', 'login',
         {'template_name': 'brubeck/registration/login.html'}, name='login'),
     url('^logout/$', 'logout',
-        {'next_page': reverse_lazy('brubeck_home')}, name='logout'),
+        {'next_page': reverse_lazy('brubeck:home')}, name='logout'),
 )
 
 urlpatterns += patterns('brubeck.views',
