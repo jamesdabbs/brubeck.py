@@ -3,12 +3,12 @@ from setuptools import setup, find_packages
 
 setup(
     name='brubeck',
-    version='0.0.1.011',
+    version='0.0.1.012',
     description='Django-powered database of topological information',
 
     author='James Dabbs',
     author_email='james.dabbs@gmail.com',
-    url='https://github.com/bradleyayers/django-tables2/',
+    url='https://github.com/jamesdabbs/brubeck',
 
     packages=find_packages(exclude=['tests.*', 'tests', 'example.*', 'example']),
     include_package_data=True,  # declarations in MANIFEST.in
