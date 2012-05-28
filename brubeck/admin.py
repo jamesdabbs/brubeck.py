@@ -32,7 +32,7 @@ admin.site.register(models.Implication, ImplicationAdmin)
 
 # Wiki documents
 class SnippetAdmin(admin.ModelAdmin):
-    list_display = ('object', 'text', 'is_proof')
+    list_display = ('object', 'current_text', 'is_proof')
 
     def is_proof(self, obj):
         return hasattr(obj, 'proof')

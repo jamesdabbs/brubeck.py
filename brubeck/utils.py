@@ -39,25 +39,10 @@ def check_consistency():
         logger.error('No errors found.')
 
 
-def mark_incomplete_snippets():
-    """ Marks snippets with no text in their revision as needing improvement.
-    """
-    INC = Snippet.NEEDS_DESCRIPTION
-    for s in Snippet.objects.all():
-        if s.revision.text:
-            if INC in s.flags:
-                s.flags.discard(INC)
-                s.save()
-        else:
-            s.flags.add(INC)
-            s.save()
-            logger.debug('Marked %s as needing description.' % s.object)
-
-
 def get_incomplete_snippets():
     """ Gets snippets which need improved descriptions. """
-    return Snippet.objects.filter(flags__contains='|%s|' % \
-                                                  Snippet.NEEDS_DESCRIPTION)
+    return Snippet.objects.filter(revision__text='')
+
 
 def get_open_converses():
     """ Finds implications with open converses. """

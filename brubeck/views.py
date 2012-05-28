@@ -7,7 +7,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views.generic import ListView, DetailView
-from django.views.generic.base import TemplateView, RedirectView, View
+from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from brubeck import forms, utils
