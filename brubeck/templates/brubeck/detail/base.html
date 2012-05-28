@@ -13,8 +13,8 @@
     {% if s.proof %}
     <p>{{ s.proof.render_html }}</p>
     {% else %}
-    {% if s.text %}
-    <p>{{ s.text }}</p>
+    {% if s.revision.text %}
+    <p>{{ s.revision.text }}</p>
     {% else %}
     <p><em>It looks like this object was manually added, but no description was given. You can help by <a href="{{ object.get_edit_url }}">adding one</a>.</em></p>
     {% endif %}
