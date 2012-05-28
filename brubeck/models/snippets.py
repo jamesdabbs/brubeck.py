@@ -64,9 +64,9 @@ class Provable(models.Model):
             proof with links to the assumed facts.
         """
         if self.proof_agent:
-            prover = self.get_prover()
-            return prover.render_html(self.text())
-        return self.text()
+            prover = self._get_prover()
+            return prover.render_html(getattr(self.revision, 'text', ''))
+        return self.current_text()
 
 def update_proof(sender, instance, **kwargs):
     """ After saving a new Revision for a proof, we'd like to update the stored
