@@ -1,11 +1,16 @@
 {% extends "brubeck/detail/base.html" %}
 {% load url from future %}
+{% load bootstrap %}
 
 {% block extra_head %}
 <style type="text/css">
     #infovis {
-        height: 400px;
-        padding: 20px;
+        height: 500px;
+        overflow: hidden;
+    }
+    #infovis .node {
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 5px;
     }
 </style>
 {% endblock %}
@@ -13,8 +18,15 @@
 {% block container %}
 <div class="container-fluid">
     <div class="row-fluid" id="proof-overview">
-        <div id="infovis" class="span8"></div>
-        <div id="inner-details" class="span4"></div>
+        <div class="span8">
+            <div id="infovis"></div>
+            {% alert 'Click a node label for more detail. You can pan by dragging or zoom using the scroll wheel' 'info' %}
+        </div>
+        <div class="span4">
+            <h2><a href="{{ object.space.get_absolute_url }}">{{ object.space }}</a>
+                <small>is ...</small></h2>
+            <div id="inner-details"></div>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -28,7 +40,6 @@ $(function() {
 
     function update_mathjax() {
         MathJax.Hub.Queue(["Typeset", MathJax.Hub, "inner-details"]);
-        // TODO: also update labels
     }
 
     function update_inner_details(node) {
@@ -48,7 +59,7 @@ $(function() {
         //concentric circles.
         background: {
             CanvasStyles: {
-                strokeStyle: '#555'
+                strokeStyle: '#eee'
             }
         },
         //Add navigation capabilities:
@@ -63,10 +74,12 @@ $(function() {
             color: '#2c2c2c'
         },
         Edge: {
-            color: '#2c2c2c',
-            lineWidth:1
+            type: 'arrow',
+            color: '#08c',
+            dim: 10,
+            lineWidth: 1
         },
-        levelDistance: 50,
+        levelDistance: 100,
         duration: 750,
         interpolation: 'linear',
 
@@ -90,14 +103,52 @@ $(function() {
             var style = domElement.style;
             style.display = '';
             style.cursor = 'pointer';
-            style.fontSize = "0.8em";
+            style.fontSize = "1em";
             style.color = "#494949";
 
-            var left = parseInt(style.left);
-            var w = domElement.offsetWidth;
+            var left = parseInt(style.left),
+                w = domElement.offsetWidth,
+                top = parseInt(style.top);
             style.left = (left - w / 2) + 'px';
+            style.top = (top + 8) + 'px';
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, node.id]);
         }
     });
+
+    // Replace the default arrow type
+    a_contains = rgraph.fx.edgeHelper['contains'];
+    rgraph.fx.edgeHelper['arrow'] = {
+        // This just flips the standard arrow direction
+        // TODO: move pointer to middle of node
+        'render': function(to, from, dim, inv, canvas) {
+            var Complex = $jit.Complex;
+            var ctx = canvas.getCtx();
+            var vect = new Complex(to.x - from.x, to.y - from.y);
+            vect.$scale(dim / vect.norm());
+            var intermediatePoint = new Complex(to.x - vect.x, to.y - vect.y),
+                    normal = new Complex(-vect.y / 2, vect.x / 2),
+                    v1 = intermediatePoint.add(normal),
+                    v2 = intermediatePoint.$add(normal.$scale(-1));
+
+            ctx.beginPath();
+            ctx.moveTo(from.x, from.y);
+            ctx.lineTo(to.x, to.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(v1.x, v1.y);
+            ctx.lineTo(v2.x, v2.y);
+            ctx.lineTo(to.x, to.y);
+            ctx.closePath();
+            ctx.fill();
+        },
+        'contains': a_contains
+    }
+
+    function dump(v) {
+        attrs = ',';
+        for (a in v) { attrs += a + ',' };
+        alert(attrs);
+    }
 
     // Fire off an AJAX query to get the nodes and add them
     $.getJSON("{% url 'brubeck:prove_trait_ajax' s=s p=p %}", function(data) {

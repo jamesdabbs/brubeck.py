@@ -239,7 +239,8 @@ def proof(request, s, p):
 def proof_ajax(request, s, p):
     # if not request.is_ajax(): raise Http404
     trait = get_object_or_404(Trait, space__slug=s, property__slug=p)
-    return HttpResponse(json.dumps(get_full_proof(trait)),
+    proof = get_full_proof(trait)
+    return HttpResponse(json.dumps(proof),
         content_type='application/json')
 
 

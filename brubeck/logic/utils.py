@@ -267,10 +267,11 @@ def get_full_proof(trait):
     # Every proof will include the node proved
     global node_count
     node_count += 1
-    data = {
+    data = [{
         "id": "t%s_%s" % (trait.id, node_count),
-        "name": trait.name(space=False),
-    }
+        "name": trait.name_without_space(),
+        'adjacencies': []
+    }]
 
     # If the proof was automatically added, we also add an implication and
     # the full proof of each trait it needed to assume.
@@ -286,13 +287,18 @@ def get_full_proof(trait):
                 traits.append(Trait.objects.get(id=int(a[1:])))
             else:
                 implication = Implication.objects.get(id=int(a[1:]))
-        data.update({
-            'children': [get_full_proof(t) for t in traits],
+        for t in traits:
+            pd = get_full_proof(t)
+            pd[0]['adjacencies'] = [{
+                'nodeTo': data[0]['id']
+            }]
+            data += pd
+
+        data[0].update({
             'data': {'text': proof[0].proof.render_html(space=False)}
         })
     else:
-        data.update({
-            'children': [],
+        data[0].update({
             'data': {'text': trait.snippets.all()[0].current_text()}
         })
 
