@@ -68,7 +68,7 @@ class Provable(models.Model):
             return prover.render_html(getattr(self.revision, 'text', ''), space=space)
         return self.current_text()
 
-def update_proof(sender, instance, **kwargs):
+def update_proof(sender, instance, created, **kwargs):
     """ After saving a new Revision for a proof, we'd like to update the stored
         `proof_text`
     """
@@ -78,6 +78,11 @@ def update_proof(sender, instance, **kwargs):
             proof.proof_text = proof._get_prover().render_text(instance.text)
     except Proof.DoesNotExist:
         pass
+
+    # Also update the parent's revision to this, if it's new
+    if created and instance.page.revision != instance:
+        instance.page.revision = instance
+        instance.page.save()
 
 
 class Proof(Snippet, Provable):
