@@ -19,13 +19,18 @@
 <div class="container-fluid">
     <div class="row-fluid" id="proof-overview">
         <div class="span8">
+            <noscript>{% alert 'The proof explorer requires javascript to run. Please enable javascript and try again' %}</noscript>
             <div id="infovis"></div>
             {% alert 'Click a node label for more detail. You can pan by dragging or zoom using the scroll wheel' 'info' %}
         </div>
         <div class="span4">
             <h2><a href="{{ object.space.get_absolute_url }}">{{ object.space }}</a>
                 <small>is ...</small></h2>
-            <div id="inner-details"></div>
+            <div id="inner-details">
+                <div id="loading" style="display:none">
+                    <img src="https://s3.amazonaws.com/jdabbs.com/spinner.gif"/> Loading
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -35,6 +40,9 @@
 <script src="http://thejit.org/static/v20/Jit/jit.js"></script>
 <script type="text/javascript">
 $(function() {
+    // Spin up the loading animation
+    $('#loading').show();
+
     var inner_details = $('#inner-details'),
         nodes = $('.node');
 
@@ -47,7 +55,7 @@ $(function() {
         if (!text) {
             text = '(No text provided)'
         }
-        inner_details.html('<h3>∴ ' + node.name + '"</h3>').prepend(text);
+        inner_details.html('<h3>∴ ' + node.name + '</h3>').prepend(text);
         update_mathjax();
     };
 

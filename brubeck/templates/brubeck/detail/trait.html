@@ -4,3 +4,5 @@
 {% block extra %}
 <a href="{% url 'brubeck:prove_trait' s=object.space.slug p=object.property.slug %}" class="btn">Explore Proof &raquo;</a>
 {% endblock %}
+
+{% block related_trait_name %}{{ t.name_without_space }}{% endblock %}
