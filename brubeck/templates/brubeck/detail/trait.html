@@ -1,1 +1,6 @@
 {% extends "brubeck/detail/base.html" %}
+{% load url from future %}
+
+{% block extra %}
+<a href="{% url 'brubeck:prove_trait' s=object.space.slug p=object.property.slug %}" class="btn">Explore Proof &raquo;</a>
+{% endblock %}

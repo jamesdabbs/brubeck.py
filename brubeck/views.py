@@ -1,9 +1,12 @@
+from collections import defaultdict
+import json
+
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views.generic import ListView, DetailView
@@ -11,6 +14,7 @@ from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from brubeck import forms, utils
+from brubeck.logic.utils import get_full_proof
 from brubeck.models import Space, Property, Trait, Implication
 
 
@@ -202,12 +206,15 @@ reversal_counterexamples = ListView.as_view(
     queryset = utils.get_open_converses(),
     template_name = 'brubeck/contribute/counterexamples.html')
 
+def proof(request, s, p):
+    object = get_object_or_404(Trait, space__slug=s, property__slug=p)
+    return TemplateResponse(request, 'brubeck/detail/proof.html', locals())
 
-class Proof(ModelViewMixin, GetObjectMixin, DetailView):
-    model = None
-
-def proof(request, model, **kwargs):
-    return Proof.as_view(model=model)(request, **kwargs)
+def proof_ajax(request, s, p):
+    # if not request.is_ajax(): raise Http404
+    trait = get_object_or_404(Trait, space__slug=s, property__slug=p)
+    return HttpResponse(json.dumps(get_full_proof(trait)),
+        content_type='application/json')
 
 
 class Delete(ModelViewMixin, GetObjectMixin, DetailView):

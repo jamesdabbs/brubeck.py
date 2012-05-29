@@ -59,13 +59,13 @@ class Provable(models.Model):
             m = getattr(m, acc)
         return getattr(m, cls)
 
-    def render_html(self):
+    def render_html(self, space=True):
         """ Uses the module that added this proof to build a human-readable
             proof with links to the assumed facts.
         """
         if self.proof_agent:
             prover = self._get_prover()
-            return prover.render_html(getattr(self.revision, 'text', ''))
+            return prover.render_html(getattr(self.revision, 'text', ''), space=space)
         return self.current_text()
 
 def update_proof(sender, instance, **kwargs):

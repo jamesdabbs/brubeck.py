@@ -29,14 +29,17 @@ class Trait(_ProvesTraitMixin):
         app_label = 'brubeck'
         unique_together = (('space', 'property'),)
 
-    def __unicode__(self):
-        return u'%s: %s' % (self.space, atomize(self.property, self.value))
+    def __unicode__(self, space=True):
+        pref = u'%s: ' % self.space if space else ''
+        return u'%s%s' % (pref, atomize(self.property, self.value))
     name = __unicode__
 
-    def title(self):
+    # TODO: escape the non-html bits
+    def title(self, space=True):
         """ Renders this Trait's name with links added """
-        return mark_safe('<a href="%s">%s</a>: <a href="%s">%s</a>' % (
-            self.space.get_absolute_url(), self.space,
+        pref = '<a href="%s">%s</a>: ' % (self.space.get_absolute_url(),
+            self.space) if space else ''
+        return mark_safe('%s<a href="%s">%s</a>' % (pref,
             self.property.get_absolute_url(), atomize(self.property, self.value)
         ))
 
@@ -144,5 +147,5 @@ def implication_post_save(sender, instance, created, **kwargs):
             utils.apply(instance, s)
 post_save.connect(implication_post_save, Implication)
 
-
+# TODO: allow post_save options to be asynchronous (w/ celery)
 # TODO: improve post-delete handling (delete revisions from index, related traits, etc.)

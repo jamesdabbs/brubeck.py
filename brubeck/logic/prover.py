@@ -19,7 +19,7 @@ class Prover(object):
         raise NotImplementedError()
 
     @classmethod
-    def _render(cls, proof, html):
+    def _render(cls, proof, html, space=True):
         """ Takes a proof of the form t<id>,t<id>,i<id>,t<id>,... and formats
             it suitably for template output.
         """
@@ -30,7 +30,7 @@ class Prover(object):
             type, id = s[0], s[1:]
             if type == 't':
                 obj = Trait.objects.get(id=id)
-                name = unicode(obj)
+                name = obj.__unicode__(space=space)
             else: # type == 'i'
                 obj = Implication.objects.get(id=id)
                 name = obj.__unicode__(lookup=True)
@@ -41,12 +41,12 @@ class Prover(object):
         return mark_safe(rv)
 
     @classmethod
-    def render_html(cls, proof):
-        return cls._render(proof, html=True)
+    def render_html(cls, proof, space=True):
+        return cls._render(proof, html=True, space=space)
 
     @classmethod
-    def render_text(cls, proof):
-        return cls._render(proof, html=False)
+    def render_text(cls, proof, space=True):
+        return cls._render(proof, html=False, space=space)
 
     @classmethod
     def implied_traits(cls, obj):

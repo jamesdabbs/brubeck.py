@@ -56,10 +56,9 @@ urlpatterns += patterns('brubeck.views',
             {'model': Trait}, name='edit_trait'),
 
     # Extra proof tools
-    url(r'^implications/(?P<id>\d+)/proof/$', 'proof',
-            {'model': Implication}, name='prove_implication'),
-    url(r'^(?P<space>[-\w]+)/(?P<property>[-\w]+)/proof/$', 'proof',
-            {'model': Trait}, name='prove_trait'),
+    url(r'^(?P<s>[-\w]+)/(?P<p>[-\w]+)/proof/ajax/$', 'proof_ajax',
+        name='prove_trait_ajax'),
+    url(r'^(?P<s>[-\w]+)/(?P<p>[-\w]+)/proof/$', 'proof', name='prove_trait'),
     url(r'^implications/(?P<id>\d+)/delete/$', 'delete',
             {'model': Implication}, name='delete_implication'),
     url(r'^(?P<space>[-\w]+)/(?P<property>[-\w]+)/delete/$', 'delete',

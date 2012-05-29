@@ -255,3 +255,42 @@ def apply(implication, space):
     try:
         prove_contrapositive(implication, space)
     except AssertionError as e: pass
+
+
+node_count = 0
+def get_full_proof(trait):
+    from brubeck.models import Trait, Implication
+
+    # Every proof will include the node proved
+    global node_count
+    node_count += 1
+    data = {
+        "id": "t%s_%s" % (trait.id, node_count),
+        "name": trait.name(space=False),
+    }
+
+    # If the proof was automatically added, we also add an implication and
+    # the full proof of each trait it needed to assume.
+    proof = trait.snippets.exclude(proof=None).exclude(proof__proof_agent='')
+    if proof.exists():
+        assumptions = proof[0].revision.text.split(',')
+        traits, implication = [], None
+        # There should be a trailing comma / empty last assumption
+        agent = proof[0].proof.proof_agent
+        assert not assumptions[-1]
+        for a in assumptions[:-1]:
+            if a[0] == 't':
+                traits.append(Trait.objects.get(id=int(a[1:])))
+            else:
+                implication = Implication.objects.get(id=int(a[1:]))
+        data.update({
+            'children': [get_full_proof(t) for t in traits],
+            'data': {'text': proof[0].proof.render_html(space=False)}
+        })
+    else:
+        data.update({
+            'children': [],
+            'data': {'text': trait.snippets.all()[0].current_text()}
+        })
+
+    return data
