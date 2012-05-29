@@ -55,7 +55,7 @@ $(function() {
         if (!text) {
             text = '(No text provided)'
         }
-        inner_details.html('<h3>∴ ' + node.name + '</h3>').prepend(text);
+        inner_details.html('<h3><a href="' + node.data['url'] + '">' + node.name + '</a> <small>because</small></h3>').append(text);
         update_mathjax();
     };
 

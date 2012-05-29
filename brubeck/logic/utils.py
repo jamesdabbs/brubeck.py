@@ -295,11 +295,13 @@ def get_full_proof(trait):
             data += pd
 
         data[0].update({
-            'data': {'text': proof[0].proof.render_html(space=False)}
+            'data': {'text': proof[0].proof.render_html(space=False),
+                     'url': trait.get_absolute_url()}
         })
     else:
         data[0].update({
-            'data': {'text': trait.snippets.all()[0].current_text()}
+            'data': {'text': trait.snippets.all()[0].current_text(),
+                     'url': trait.get_absolute_url()}
         })
 
     return data
