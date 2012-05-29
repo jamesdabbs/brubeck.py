@@ -261,6 +261,9 @@ node_count = 0
 def get_full_proof(trait):
     from brubeck.models import Trait, Implication
 
+    # TODO: restructure JSON to produce adjacencies, arrows
+    # TODO: using a global feels so dirty :(
+
     # Every proof will include the node proved
     global node_count
     node_count += 1

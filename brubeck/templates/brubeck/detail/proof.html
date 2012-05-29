@@ -10,16 +10,11 @@
 </style>
 {% endblock %}
 
-{% block content %}
-<div class="container">
-    <div class="row" id="proof-overview">
-        <div id="center-container" class="span8">
-            <div id="infovis"></div>
-        </div>
-
-        <div id="right-container" class="span4">
-            <div id="inner-details"></div>
-        </div>
+{% block container %}
+<div class="container-fluid">
+    <div class="row-fluid" id="proof-overview">
+        <div id="infovis" class="span8"></div>
+        <div id="inner-details" class="span4"></div>
     </div>
 </div>
 {% endblock %}
@@ -28,6 +23,23 @@
 <script src="http://thejit.org/static/v20/Jit/jit.js"></script>
 <script type="text/javascript">
 $(function() {
+    var inner_details = $('#inner-details'),
+        nodes = $('.node');
+
+    function update_mathjax() {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, "inner-details"]);
+        // TODO: also update labels
+    }
+
+    function update_inner_details(node) {
+        var text = node.data.text;
+        if (!text) {
+            text = '(No text provided)'
+        }
+        inner_details.html('<h3>∴ ' + node.name + '"</h3>').prepend(text);
+        update_mathjax();
+    };
+
     // Initialize the RGraph
     var rgraph = new $jit.RGraph({
         //Where to append the visualization
@@ -50,22 +62,15 @@ $(function() {
         Node: {
             color: '#2c2c2c'
         },
-
         Edge: {
             color: '#2c2c2c',
             lineWidth:1
         },
         levelDistance: 50,
+        duration: 750,
+        interpolation: 'linear',
 
-        onBeforeCompute: function(node){
-            //Add the relation list in the right column.
-            //This list is taken from the data property of each JSON node.
-            $('#inner-details').html('<h3>∴ ' + node.name + '"</h3>').prepend(
-                    node.data.text);
-
-            // Re-render MathJAX
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, "inner-details"]);
-        },
+        onBeforeCompute: update_inner_details,
 
         //Add the name of the node in the correponding label
         //and a click handler to move the graph.
@@ -78,9 +83,6 @@ $(function() {
                     }
                 });
             };
-
-            // Re-render MathJAX
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, node.id]);
         },
         //Change some label dom properties.
         //This method is called each time a label is plotted.
@@ -99,7 +101,6 @@ $(function() {
 
     // Fire off an AJAX query to get the nodes and add them
     $.getJSON("{% url 'brubeck:prove_trait_ajax' s=s p=p %}", function(data) {
-//        alert(JSON.stringify(data));
         rgraph.loadJSON(data);
         //trigger small animation
         rgraph.graph.eachNode(function(n) {
@@ -109,16 +110,11 @@ $(function() {
         rgraph.compute('end');
         rgraph.fx.animate({
             modes:['polar'],
-            duration: 2000
+            duration: 1250
         });
 
         //append information about the root relations in the right column
-        var node = rgraph.graph.getNode(rgraph.root);
-        $('#inner-details').html('<h3>∴ ' + node.name + '</h3>').prepend(
-            node.data.text);
-
-        // Re-render MathJAX
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub, "inner-details"]);
+        update_inner_details(rgraph.graph.getNode(rgraph.root));
     })
 });
 </script>

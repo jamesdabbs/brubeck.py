@@ -41,6 +41,7 @@
         </div>
     </nav>
 
+    {% block container %}
     <div id="content" class="container">
         {% block messages %}
         {% if messages %}
@@ -52,6 +53,7 @@
 
         {% block content %}{% endblock %}
     </div>
+    {% endblock %}
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     {% block extra_scripts %}{% endblock %}

@@ -1,13 +1,51 @@
 {% extends "brubeck/base.html" %}
+{% load url from future %}
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
 <h1 xmlns="http://www.w3.org/1999/html">Welcome to Brubeck</h1>
-<p>I'm assuming that if you're here, you are probably familiar with the project
-    and <a href="http://jdabbs.com/">me</a>, its creator. If not, though, feel
-    free to <a href="mailto:james.dabbs@gmail.com">contact me</a> for more
-    information.</p>
-<p>Math and science. Boom.</p>
-<p>-James</p>
+<p>Brubeck is a database of topological information, à la the classic
+    <a href="http://books.google.com/books/about/Counterexamples_in_Topology.html?id=DkEuGkOtSrUC">
+    Counterexamples in Topology</a>. It contains descriptions of several
+    important topological spaces and properties and the interrelationships
+    between each of them.</p>
+
+<h2>Features</h2>
+<div class="row">
+    <div class="span4">
+        <h3>Search by Traits</h3>
+        <p>Since Brubeck stores information in a relational database, you can build
+           complex queries to find spaces with a certain combination of traits.
+           Not sure why a <a href="{% url 'brubeck:property' 'first-countable' %}">first-countable</a>,
+           <a href="{% url 'brubeck:property' 'separable' %}">separable</a> space doesn't have to be
+           <a href="{% url 'brubeck:property' 'second-countable' %}">second countable</a>? Then
+           <a href="{% url 'brubeck:search' %}?q=First+Countable+%2B+Separable+%2B+~Second+Countable">
+           search for an example of one that isn't</a>.
+        </p>
+    </div>
+    <div class="span4">
+        <h3>Automated Proof Generation</h3>
+        <p>Brubeck uses the theorems it has stored to generate proofs when possible.
+           As soon as you tell it a space is <a href="{% url 'brubeck:property' 'metrizable' %}">metrizable</a>,
+           Brubeck <a href="{% url 'brubeck:implication' 81 %}">knows that it is first countable</a>,
+            <a href="{% url 'brubeck:implication' 96 %}">\(T_5\)</a>,
+            <a href="{% url 'brubeck:implication' 2 %}">\(T_4\)</a> and
+            <a href="{% url 'brubeck:implication' 9 %}">so on</a>.
+        </p>
+    </div>
+    <div class="span4">
+        <h3>Traceable Information</h3>
+        <p>Every bit of data in the database should be traceable back to first
+           principles. To facilitate this, Brubeck allows you to
+           <a href="{% url 'brubeck:prove_trait' s='michaels-closed-subspace' p='pseudocompact' %}">
+           explore a proof's full implication tree</a>.</p>
+    </div>
+</div>
+
+<h3>And more to come ...</h3>
+<p>Brubeck is in active development. Check out the <a href="{% url 'brubeck:contribute' %}">'contribute'</a>
+   page to see how you can help.</p>
+<p>"Math and science. Boom."</p>
+<p>- <a href="mailto:james.dabbs@gmail.com">James</a></p>
 {% endblock %}
