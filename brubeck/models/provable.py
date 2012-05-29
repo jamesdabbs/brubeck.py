@@ -43,6 +43,10 @@ class Trait(_ProvesTraitMixin):
             self.property.get_absolute_url(),
             atomize(escape(self.property), self.value)
         ))
+    name_without_space = lambda t: t.__unicode__(space=False)
+
+    def name_without_property(self):
+        return atomize(self.space, self.value)
 
     @models.permalink
     def get_absolute_url(self, type=''):

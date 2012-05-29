@@ -35,11 +35,11 @@
 {% include "brubeck/includes/pagination.html" %}
 {% endwith %}
 <div class="row">
-    {% for trait_col in traits|columns:"2" %}
-    <div class="span6">
+    {% for trait_col in traits|columns:"3" %}
+    <div class="span4">
         <ul>
             {% for t in trait_col %}
-            <li><a href="{{ t.get_absolute_url }}">{{ t }}</a></li>
+            <li><a href="{{ t.get_absolute_url }}">{% block related_trait_name %}{{ t }}{% endblock %}</a></li>
             {% endfor %}
         </ul>
     </div>
