@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -5,6 +7,9 @@ from django.db import models
 from brubeck.fields import SetField
 from brubeck.models.wiki import Document, Revision
 from brubeck.search import index_revision
+
+
+logger = logging.getLogger(__name__)
 
 
 class BaseSnippet(Document):
@@ -73,11 +78,12 @@ def update_proof(sender, instance, created, **kwargs):
         `proof_text`
     """
     try:
-        proof = instance.page.snippet.proof
-        if proof.proof_agent: # The proof was automatically generated
-            proof.proof_text = proof._get_prover().render_text(instance.text)
+        proof = instance.page.proof
+        if proof.proof_agent:
+            # The proof was automatically generated
+            # Forcing a re-save will update the cached proof_text
             proof.save()
-    except Proof.DoesNotExist:
+    except Proof.DoesNotExist: # Nothing to update for base Snippets
         pass
 
 
@@ -90,6 +96,14 @@ class Proof(Snippet, Provable):
 
     def current_text(self):
         return self.proof_text
+
+    def save(self, *args, **kwargs):
+        # TODO: saving a new Snippet with initial Revision seems to cause a
+        # (probably needlessly) large number of queries. Streamline it.
+        # Retreive and cache the current revision
+        text = getattr(self.revision, 'text', '')
+        self.proof_text = self._get_prover().render_text(text)
+        super(Proof, self).save(*args, **kwargs)
 
 models.signals.post_save.connect(index_revision, Revision)
 models.signals.post_save.connect(update_proof, Revision)

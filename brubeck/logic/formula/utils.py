@@ -72,7 +72,6 @@ def human_to_formula(string):
     # TODO: Accents, LaTeX characters, mispellings, aliases (T_2 -> Hausdorff)
     # Trim off trailing whitespace and separators
     string = string.strip()
-    if len(string) < 2: return Formula(None, None) # No formula can be parsed
     if string[-1] in ['+', '|']:
         string = string[:-1].strip()
 

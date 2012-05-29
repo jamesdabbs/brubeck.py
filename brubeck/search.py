@@ -27,14 +27,17 @@ logger = logging.getLogger(__name__)
 
 
 def index_revision(sender, instance, created, **kwargs):
-    s = instance.page.snippet
-    name = s.object.name
-    doc = {
-        'name': name() if callable(name) else name,
-        'text': s.current_text(),
-    }
-    log = client.index(doc, s.content_type.name, id=s.object_id)
-    logger.debug('Indexed revision %s: %s' % (instance.id, log))
+    if settings.DEBUG:
+        logger.debug('Skipping indexing %s because DEBUG is on' % instance)
+    else:
+        s = instance.page.snippet
+        name = s.object.name
+        doc = {
+            'name': name() if callable(name) else name,
+            'text': s.current_text(),
+        }
+        log = client.index(doc, s.content_type.name, id=s.object_id)
+        logger.debug('Indexed revision %s: %s' % (instance.id, log))
 
 
 # Bulk index manipulation seems to error out after several documents.

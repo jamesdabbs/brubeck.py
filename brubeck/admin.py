@@ -7,7 +7,7 @@ class TextAdmin(admin.ModelAdmin):
     """ Allows the convenient lookup of a snippet of text on each object """
     def text(self, obj):
         """ Gets the text of the (first) snippet for `obj` """
-        return obj.snippets.all()[0].text()
+        return obj.snippets.all()[0].current_text()
 
 # Core objects
 class SpaceAdmin(TextAdmin):
@@ -20,13 +20,13 @@ class PropertyAdmin(SpaceAdmin):
 admin.site.register(models.Property, PropertyAdmin)
 
 
-class TraitAdmin(admin.ModelAdmin):
-    pass
+class TraitAdmin(TextAdmin):
+    list_display = ('id', 'space', 'property', 'value', 'text')
 admin.site.register(models.Trait, TraitAdmin)
 
 
-class ImplicationAdmin(admin.ModelAdmin):
-    pass
+class ImplicationAdmin(TextAdmin):
+    list_display = ('id',)# 'name', 'text')
 admin.site.register(models.Implication, ImplicationAdmin)
 
 

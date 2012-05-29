@@ -38,8 +38,9 @@ class Prover(object):
                 rv += u'<a href="%s">%s</a><br/>' % (obj.get_absolute_url(), name)
             else:
                 rv += u'%s, ' % name
-        # Trim a trailing comma
-        if rv.endswith(u','): rv = rv[:-1]
+        # Trim a trailing comma / whitespace
+        rv = rv.strip()
+        if rv.endswith(u','): rv = rv[:-1].rstrip()
         return mark_safe(rv)
 
     @classmethod
