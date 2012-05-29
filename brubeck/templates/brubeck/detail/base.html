@@ -11,7 +11,7 @@
     {% endif %}
 </h1>
 {% for s in object.snippets.all %}
-    {% if s.proof %}
+    {% if s.proof.proof_agent %}
     <p>{{ s.proof.render_html }}</p>
     {% else %}
     {% if s.revision.text %}
