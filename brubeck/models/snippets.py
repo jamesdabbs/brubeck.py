@@ -76,13 +76,9 @@ def update_proof(sender, instance, created, **kwargs):
         proof = instance.page.snippet.proof
         if proof.proof_agent: # The proof was automatically generated
             proof.proof_text = proof._get_prover().render_text(instance.text)
+            proof.save()
     except Proof.DoesNotExist:
         pass
-
-    # Also update the parent's revision to this, if it's new
-    if created and instance.page.revision != instance:
-        instance.page.revision = instance
-        instance.page.save()
 
 
 class Proof(Snippet, Provable):
