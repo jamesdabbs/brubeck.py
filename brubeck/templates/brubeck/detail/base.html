@@ -4,7 +4,7 @@
 {% block title %}{{ object.name }}{% endblock %}
 
 {% block content %}
-<h1>{{ object.title }}
+<h1 xmlns="http://www.w3.org/1999/html">{{ object.title }}
     <a href="{{ object.get_edit_url }}" class="btn btn-mini btn-success">Edit</a>
     {% if request.user.is_superuser and object.get_delete_url %}
     <a href="{{ object.get_delete_url }}" class="btn btn-mini btn-danger">Delete</a>
@@ -31,18 +31,22 @@
 {% block extra %}{% endblock %}
 
 <h3>{{ object.traits_desc }} {% block add_trait %}{% endblock %}</h3>
-{% with traits as page_obj %}
-{% include "brubeck/includes/pagination.html" %}
-{% endwith %}
-<div class="row">
-    {% for trait_col in traits|columns:"3" %}
-    <div class="span4">
-        <ul>
-            {% for t in trait_col %}
-            <li><a href="{{ t.get_absolute_url }}">{% block related_trait_name %}{{ t }}{% endblock %}</a></li>
-            {% endfor %}
-        </ul>
+{% if traits %}
+    {% with traits as page_obj %}
+    {% include "brubeck/includes/pagination.html" %}
+    {% endwith %}
+    <div class="row">
+        {% for trait_col in traits|columns:"3" %}
+        <div class="span4">
+            <ul>
+                {% for t in trait_col %}
+                <li><a href="{{ t.get_absolute_url }}">{% block related_trait_name %}{{ t }}{% endblock %}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
+{% else %}
+    <p><em>(None found)</em></p>
+{% endif %}
 {% endblock %}
