@@ -68,6 +68,8 @@ class PropertyForm(SnippetForm):
 
 class TraitForm(SnippetForm):
     """ A form for creating and editing a Trait """
+    # TODO: if given space / property, bind and filter choices (and allow
+    #       option to clear binding)
     class Meta:
         model = Trait
 

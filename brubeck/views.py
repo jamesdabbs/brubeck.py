@@ -3,7 +3,7 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
@@ -15,7 +15,7 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from brubeck import forms, utils
 from brubeck.logic.utils import get_full_proof
-from brubeck.models import Space, Property, Trait, Implication
+from brubeck.models import Space, Property, Trait, Implication, Revision
 
 
 def _force_login(request, user):
@@ -136,6 +136,32 @@ class Detail(ModelViewMixin, GetObjectMixin, DetailView):
 
 def detail(request, model, **kwargs):
     return Detail.as_view(model=model)(request, **kwargs)
+
+
+class Revise(ModelViewMixin, GetObjectMixin, DetailView):
+    def get_context_data(self, **kwargs):
+        context = super(Revise, self).get_context_data(**kwargs)
+        context['snippets'] = self.object.snippets.all()
+
+        # Get revision to view, if in GET params
+        if 'view' in self.request.GET:
+            try:
+                r = Revision.objects.get(id=int(self.request.GET['view']))
+                assert r.page.snippet in context['snippets']
+                context['revision'] = r
+            except Exception:
+                raise
+        return context
+
+    def post(self, request, *args, **kwargs):
+        rev = get_object_or_404(Revision, id=int(request.POST.get('rev_id', 0)))
+        rev.page.revision = rev
+        rev.page.save()
+        return redirect(rev.page.snippet.object)
+
+@user_passes_test(lambda u: u.is_superuser)
+def revision_detail(request, model, **kwargs):
+    return Revise.as_view(model=model)(request, **kwargs)
 
 
 class Create(ModelViewMixin, CreateView):

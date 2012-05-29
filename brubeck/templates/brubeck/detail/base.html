@@ -22,6 +22,12 @@
     {% endif %}
 {% endfor %}
 
+{% block revisions %}
+{% if user.is_superuser %}
+<a href="{{ object.get_revision_url }}" class="btn">View Revisions &raquo;</a>
+{% endif %}
+{% endblock %}
+
 {% block extra %}{% endblock %}
 
 <h3>{{ object.traits_desc }} {% block add_trait %}{% endblock %}</h3>

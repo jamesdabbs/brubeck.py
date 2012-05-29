@@ -64,6 +64,16 @@ urlpatterns += patterns('brubeck.views',
     url(r'^(?P<space>[-\w]+)/(?P<property>[-\w]+)/delete/$', 'delete',
             {'model': Trait}, name='delete_trait'),
 
+    # Revision control views
+    url(r'^spaces/(?P<slug>[-\w]+)/rev/$', 'revision_detail',
+            {'model': Space}, name='revise_space'),
+    url(r'^properties/(?P<slug>[-\w]+)/rev/$', 'revision_detail',
+            {'model': Property}, name='revise_property'),
+    url(r'^implications/(?P<id>\d+)/rev/$', 'revision_detail',
+            {'model': Implication}, name='revise_implication'),
+    url(r'^(?P<space>[-\w]+)/(?P<property>[-\w]+)/rev/$', 'revision_detail',
+            {'model': Trait}, name='revise_trait'),
+
     # Detail Views (un-ambiguous locations)
     url(r'^spaces/(?P<slug>[-\w]+)/$', 'detail',
         {'model': Space}, name='space'),

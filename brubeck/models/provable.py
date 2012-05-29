@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.query_utils import Q
 from django.db.models.signals import post_save
+from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
 from brubeck.logic import prover, utils
@@ -34,13 +35,13 @@ class Trait(_ProvesTraitMixin):
         return u'%s%s' % (pref, atomize(self.property, self.value))
     name = __unicode__
 
-    # TODO: escape the non-html bits
     def title(self, space=True):
         """ Renders this Trait's name with links added """
         pref = '<a href="%s">%s</a>: ' % (self.space.get_absolute_url(),
-            self.space) if space else ''
+            escape(self.space)) if space else ''
         return mark_safe('%s<a href="%s">%s</a>' % (pref,
-            self.property.get_absolute_url(), atomize(self.property, self.value)
+            self.property.get_absolute_url(),
+            atomize(escape(self.property), self.value)
         ))
 
     @models.permalink
@@ -51,6 +52,7 @@ class Trait(_ProvesTraitMixin):
     get_edit_url = lambda x: Trait.get_absolute_url(x, 'edit_')
     get_proof_url = lambda x: Trait.get_absolute_url(x, 'prove_')
     get_delete_url = lambda x: Trait.get_absolute_url(x, 'delete_')
+    get_revision_url = lambda x: Trait.get_absolute_url(x, 'revise_')
 
     @models.permalink
     def get_admin_url(self):
@@ -106,6 +108,7 @@ class Implication(_ProvesTraitMixin):
     get_edit_url = lambda x: Implication.get_absolute_url(x, 'edit_')
     get_proof_url = lambda x: Implication.get_absolute_url(x, 'prove_')
     get_delete_url = lambda x: Implication.get_absolute_url(x, 'delete_')
+    get_revision_url = lambda x: Implication.get_absolute_url(x, 'revise_')
 
     @models.permalink
     def get_admin_url(self):

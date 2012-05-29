@@ -1,0 +1,50 @@
+{% extends "brubeck/base.html" %}
+
+{% block title %}{{ object.name }} Revisions{% endblock %}
+
+{% block extra_head %}
+<style type="text/css">
+    .trunc {
+        overflow: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% if revision %}
+<div class="well">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <p>{{ revision }}</p>
+        <input type="hidden" name="rev_id" value="{{ revision.id }}"/>
+        <button class="btn btn-primary">Update to this revision</button>
+    </form>
+</div>
+{% endif %}
+
+{% for s in snippets %}
+<div>
+    <p>{{ s }}</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Added by</th>
+                <th>At</th>
+                <th>Text</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in s.revisions.all %}
+            <tr>
+                <td>{{ r.user }}</td>
+                <td>{{ r.timestamp|date:"Y-n-j G:i" }}</td>
+                <td>{{ r|truncatewords:"20" }}</td>
+                <td><a href="?view={{ r.id }}" class="btn btn-mini">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endfor %}
+{% endblock %}

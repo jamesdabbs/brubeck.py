@@ -75,7 +75,6 @@ class _BasicMixin(models.Model):
         """ Automatically slugifies the name if no slug is given """
         if not self.slug:
             self.slug = slugify(self.name)
-        # TODO: add valueset default # Ugly hack TODO: set default value_set
         super(_BasicMixin, self).save(*args, **kwargs)
 
     @models.permalink
@@ -85,6 +84,10 @@ class _BasicMixin(models.Model):
     @models.permalink
     def get_edit_url(self):
         return 'brubeck:edit_%s' % self.__class__.__name__.lower(), (), {'slug': self.slug}
+
+    @models.permalink
+    def get_revision_url(self):
+        return 'brubeck:revise_%s' % self.__class__.__name__.lower(), (), {'slug': self.slug}
 
     @models.permalink
     def get_admin_url(self):

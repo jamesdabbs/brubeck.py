@@ -32,7 +32,7 @@
             <ul class="nav pull-right">
                 {% if request.user.is_authenticated %}
                 <li><a>{{ request.user.username }}</a></li>
-                <li><a href="{% url 'brubeck:logout' %}">Logout</a></li>
+                <li><a href="{% url 'brubeck:logout' %}?next={{ request.path }}">Logout</a></li>
                 {% else %}
                 <li><a href="{% url 'brubeck:login' %}?next={{ request.path }}">Login</a></li>
                 <li><a href="{% url 'brubeck:register' %}?next={{ request.path }}">Register</a></li>
