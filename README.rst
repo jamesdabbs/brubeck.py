@@ -1,25 +1,28 @@
 =======
-brubeck
+Brubeck
 =======
 
 Brubeck is a Django app for creating and exploring a database of topological
 information. It features:
-- Automated proof generation. Proof visualizations are rendered using the
-  JavaScript InfoVis ToolKit.
+
+- Automated proof generation. `Proof visualizations 
+  <http://www.jdabbs.com/brubeck/michaels-closed-subspace/pseudocompact/proof/>`_ 
+  are rendered using the `JavaScript InfoVis ToolKit <http://thejit.org/>`_.
 - Searching for a space by its traits, or a full-text search provided by
-  elasticsearch / Bonsai.
+  `elasticsearch <http://www.elasticsearch.org/>`_ / 
+  `Bonsai <http://bonsai.io/home>`_.
 - Full revision control of all entered text. Tools for reverting erroneous
   Traits and Implications.
-- LaTeX rendering, courtesy of MathJAX.
+- LaTeX rendering, courtesy of `MathJAX <http://www.mathjax.org/>`_.
 
-The best way to get a feel for the site is by clicking around the live instance
-running on Heroku.
+The best way to get a feel for the site is by clicking around the 
+`live instance <http://www.jdabbs.com/brubeck/>`_ running on Heroku.
 
 About
 =====
 Brubeck is named after Dave Brubeck, a jazz pianist known for his use of
 strange, mathematical time signatures.
 
-The code for Brubeck is currently a one-man project, so documentation is a
+The code for Brubeck is currently a one-man project, so documentation may be a
 little sparse in areas that I'm confident future me will understand. If you're
 interested in contributing to the project, though, feel free to contact me.
