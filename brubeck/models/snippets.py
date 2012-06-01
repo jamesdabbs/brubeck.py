@@ -74,19 +74,20 @@ class Snippet(Document):
         super(Snippet, self).save(*args, **kwargs)
 
 
-def update_proof(sender, instance, created, **kwargs):
+def update_proof(sender, instance, created, raw, **kwargs):
     """ After saving a new Revision for a proof, we'd like to update the stored
         `proof_text`
     """
-    try:
-        snippet = instance.page.snippet
-        if snippet.automatically_added():
-            # Forcing a re-save will update the cached proof_text
-            snippet.save()
-    except Snippet.DoesNotExist:  # Nothing to update for base Snippets
-        pass
-    except Exception as e:
-        logger.debug('Error updating proof for %s: %s' % (instance, e))
+    if created and not raw:
+        try:
+            snippet = instance.page.snippet
+            if snippet.automatically_added():
+                # Forcing a re-save will update the cached proof_text
+                snippet.save()
+        except Snippet.DoesNotExist:  # Nothing to update for base Snippets
+            pass
+        except Exception as e:
+            logger.debug('Error updating proof for %s: %s' % (instance, e))
 
 
 models.signals.post_save.connect(index_revision, Revision)

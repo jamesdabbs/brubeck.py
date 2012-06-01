@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from django.conf import settings
 
@@ -28,7 +29,10 @@ logger = logging.getLogger(__name__)
 
 
 def index_revision(sender, instance, created, **kwargs):
-    if settings.DEBUG:
+    if 'test' in sys.argv:
+        # No indexing, no message
+        pass
+    elif settings.DEBUG:
         logger.debug('Skipping indexing %s because DEBUG is on' % instance)
     else:
         s = instance.page.snippet

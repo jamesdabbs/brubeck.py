@@ -12,12 +12,10 @@ class Profile(models.Model):
 
 
 # Attach a Profile to every newly created User
-def add_profile(sender, instance, created, **kwargs):
-    if created:
-        try:
-            Profile.objects.create(user=instance)
-        # This can fail if brubeck is under revision control and we're adding
-        # an initial admin superuser.
-        except DatabaseError as e:
-            print 'Unable to save a profile for user %s: %s' % (instance, e)
+def add_profile(sender, instance, created, raw, **kwargs):
+    if created and not raw:
+        # This can fail if brubeck is under south migration control and we're
+        # adding an initial admin superuser.
+        # TODO: add support for that case ^ (on postgres w/ transactions)
+        Profile.objects.create(user=instance)
 post_save.connect(add_profile, sender=User)

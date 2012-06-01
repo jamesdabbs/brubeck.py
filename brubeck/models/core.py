@@ -58,7 +58,6 @@ class Value(models.Model):
 class _BasicMixin(models.Model):
     name = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(unique=True)
-    snippets = generic.GenericRelation('Snippet')
 
     class Meta:
         abstract = True
@@ -96,6 +95,16 @@ class _BasicMixin(models.Model):
     def get_admin_url(self):
         return 'admin:brubeck_%s_change' % self.__class__.__name__.lower(), \
             (self.id,), {}
+
+    @property
+    def snippets(self):
+        # workaround for this bug: http://code.djangoproject.com/ticket/12728
+        # replies = generic.GenericRelation(ThreadedComment)
+        from django.contrib.contenttypes.models import ContentType
+        from brubeck.models.snippets import Snippet
+        type = ContentType.objects.get_for_model(self)
+        return Snippet.objects.filter(content_type__pk=type.id,
+            object_id=self.id)
 
 
 class DefinedManager(models.Manager):

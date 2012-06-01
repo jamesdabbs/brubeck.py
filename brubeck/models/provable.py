@@ -19,13 +19,22 @@ class _ProvesTraitMixin(models.Model):
     class Meta:
         abstract = True
 
+    @property
+    def snippets(self):
+        # workaround for this bug: http://code.djangoproject.com/ticket/12728
+        # replies = generic.GenericRelation(ThreadedComment)
+        from django.contrib.contenttypes.models import ContentType
+        from brubeck.models.snippets import Snippet
+        type = ContentType.objects.get_for_model(self)
+        return Snippet.objects.filter(content_type__pk=type.id,
+            object_id=self.id)
+
 
 class Trait(_ProvesTraitMixin):
     """ A Trait records whether a Space has a particular Property """
     space = models.ForeignKey(Space)
     property = models.ForeignKey(Property)
     value = models.ForeignKey('Value')
-    snippets = generic.GenericRelation('Snippet')
 
     class Meta:
         app_label = 'brubeck'
@@ -82,7 +91,6 @@ class Implication(_ProvesTraitMixin):
     """ An Implication allows us to deduce new properties from old ones. """
     antecedent = FormulaField()
     consequent = FormulaField()
-    snippets = generic.GenericRelation('Snippet')
 
     # Marks whether an implication is actually an equivalence
     # TODO: should this have an FK to the converse? Is there a good general way

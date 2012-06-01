@@ -1,6 +1,8 @@
 # Defines the native Prover class, the API to automatic proof generation
 from django.utils.safestring import mark_safe
 
+from brubeck.models.snippets import Snippet
+
 
 class Prover(object):
     """ The Prover class is the public interface to automatic proof generation.
@@ -10,6 +12,8 @@ class Prover(object):
         - find_proofs(cls, spaces, implications, add)
         - render_html(cls, proof)
     """
+    AGENT = 'brubeck.logic.prover.Prover'
+
     @classmethod
     def check_proof(cls, proof):
         raise NotImplementedError()
@@ -55,7 +59,12 @@ class Prover(object):
 
     @classmethod
     def implied_traits(cls, obj):
+        # The natural way of doing this is broken because of a Django bug that
+        # forced me to remove the reverse generic relation
+        # TODO: fix http://code.djangoproject.com/ticket/12728
         from brubeck.models import Trait
 
         ident = '%s%s,' % (obj.__class__.__name__[0].lower(), obj.id)
-        return Trait.objects.filter(snippets__revision__text__contains=ident)
+        t_ids = [s.object_id for s in Snippet.objects.filter(
+            revision__text__contains=ident, proof_agent=cls.AGENT)]
+        return Trait.objects.filter(id__in=t_ids)

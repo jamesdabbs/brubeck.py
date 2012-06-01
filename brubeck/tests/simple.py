@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
@@ -56,6 +57,6 @@ class ValueTests(TestCase):
         """ Tests that 'boolean', 'True' and 'False' exist and have their
             intended ids.
         """
-        v = ValueSet.objects.get(id=ValueSet.BOOLEAN, name='Boolean')
+        v = ValueSet.objects.get(id=ValueSet.BOOLEAN, name='boolean')
         Value.objects.get(id=Value.TRUE, name='True', value_set=v)
         Value.objects.get(id=Value.FALSE, name='False', value_set=v)
