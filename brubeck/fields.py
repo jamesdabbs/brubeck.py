@@ -28,3 +28,8 @@ class SetField(models.CharField):
             return value
         else:
             raise TypeError('Lookup type not supported: %s' % lookup_type)
+
+    def value_to_string(self, obj):
+        """ Converts this object to a string to be serialized """
+        value = self._get_val_from_obj(obj)
+        return self.get_prep_value(value)

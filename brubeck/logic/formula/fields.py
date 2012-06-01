@@ -40,6 +40,11 @@ class FormulaField(models.CharField):
         v = v.id if hasattr(v, 'id') else v
         return '%s=%s' % (p, v)
 
+    def value_to_string(self, obj):
+        """ Converts this object to a string to be serialized """
+        value = self._get_val_from_obj(obj)
+        return self.get_prep_value(value)
+
     # TODO: Make sense of queries like "property=compact" (to get all traits
     # or implications involving compactness) or "property=compact, value=True"
     # (to get all traits saying a space is compact)

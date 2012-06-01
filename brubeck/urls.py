@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, RedirectView
 
 from brubeck.models import Space, Property, Trait, Implication
 
@@ -20,13 +20,15 @@ urlpatterns += patterns('django.contrib.auth.views',
 urlpatterns += patterns('brubeck.views',
     # Misc views
     url(r'^search/$', 'search', name='search'),
-    url(r'^contribute/$', 'contribute', name='contribute'),
+    url(r'^contribute/$', TemplateView.as_view(
+        template_name='brubeck/contribute/home.html'), name='contribute'),
     url(r'^contribute/descriptions/$', 'needing_descriptions',
         name='needing_descriptions'),
     url(r'^contribute/counterexamples/$', 'reversal_counterexamples',
         name='needing_counterexamples'),
     url(r'^register/$', 'register', name='register'),
-    url(r'^to/github/$', 'redirect_to_github', name='github'),
+    url(r'^to/github/$', RedirectView.as_view(
+        url='https://github.com/jamesdabbs/brubeck'), name='github'),
 
     # List Views
     url(r'^spaces/$', 'list', {'model': Space}, name='spaces'),

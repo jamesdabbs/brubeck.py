@@ -1,4 +1,3 @@
-from collections import defaultdict
 import json
 
 from django.contrib import messages
@@ -10,7 +9,6 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views.generic import ListView, DetailView
-from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from brubeck import forms, utils
@@ -24,6 +22,7 @@ def _force_login(request, user):
     login(request, user)
 
 
+# TODO: registration should never redirect you back to login
 class RegistrationView(FormView):
     form_class = forms.RegistrationForm
     template_name = 'brubeck/registration/register.html'
@@ -222,12 +221,6 @@ def search(request):
         form = forms.SearchForm()
     return TemplateResponse(request, 'brubeck/search.html', locals())
 
-
-contribute = TemplateView.as_view(
-    template_name='brubeck/contribute/home.html')
-
-redirect_to_github = RedirectView.as_view(
-    url='https://github.com/jamesdabbs/brubeck/')
 
 needing_descriptions = ListView.as_view(
     paginate_by=40,

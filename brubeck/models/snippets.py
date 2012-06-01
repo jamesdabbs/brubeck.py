@@ -12,10 +12,12 @@ from brubeck.search import index_revision
 logger = logging.getLogger(__name__)
 
 
-class BaseSnippet(Document):
+class Snippet(Document):
     """ A snippet is a revision-controlled blob of text describing a particular
         object in the database
     """
+    USER = 'user'
+
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     object = generic.GenericForeignKey('content_type', 'object_id')
@@ -23,36 +25,24 @@ class BaseSnippet(Document):
     # This field stores meta-data about the snippet
     flags = SetField(max_length=255)
 
-    class Meta:
-        abstract = True
-        app_label = 'brubeck'
-
-    def current_text(self):
-        """ Gets the most current & useful body of text for this snippet """
-        return getattr(self.revision, 'text', '')
-
-
-class Snippet(BaseSnippet):
-    """ A plain (but non-abstract) snippet """
-    class Meta:
-        app_label = 'brubeck'
-
-
-class Provable(models.Model):
-    """ Subclassing Provable allows an object to hook into the automatic
-        proof generation system.
-    """
+    # Proof-related information
     proof_agent = models.CharField(max_length=255)
-
-    # The snippet's revision-controlled text will store a dump of the proof
-    # used to add this snippet, in a format understood and verifiable by the
-    # proof agent. Since rendering a human-readable version of the proof may be
-    # time-consuming, we'll also store a copy of that here:
     proof_text = models.TextField()
 
     class Meta:
         app_label = 'brubeck'
-        abstract = True
+
+    def is_proof(self):
+        """ Determines whether this snippet represents a complete proof """
+        return self.proof_agent != ''
+
+    def automatically_added(self):
+        return self.proof_agent and self.proof_agent != self.USER
+
+    def current_text(self):
+        """ Gets the most current & useful body of text for this snippet """
+        return self.proof_text if self.is_proof() else \
+            getattr(self.revision, 'text', '')
 
     def _get_prover(self):
         """ Gets a Prover object that can reason about this proof and the way
@@ -68,11 +58,20 @@ class Provable(models.Model):
         """ Uses the module that added this proof to build a human-readable
             proof with links to the assumed facts.
         """
-        if self.proof_agent:
+        if self.automatically_added():
             prover = self._get_prover()
             return prover.render_html(getattr(self.revision, 'text', ''),
                 space=space)
         return self.current_text()
+
+    def save(self, *args, **kwargs):
+        # TODO: saving a new Snippet with initial Revision seems to cause a
+        # (probably needlessly) large number of queries. Streamline it.
+        # Retreive and cache the current revision
+        if self.automatically_added():
+            text = getattr(self.revision, 'text', '')
+            self.proof_text = self._get_prover().render_text(text)
+        super(Snippet, self).save(*args, **kwargs)
 
 
 def update_proof(sender, instance, created, **kwargs):
@@ -80,32 +79,15 @@ def update_proof(sender, instance, created, **kwargs):
         `proof_text`
     """
     try:
-        proof = instance.page.proof
-        if proof.proof_agent:
-            # The proof was automatically generated
+        snippet = instance.page.snippet
+        if snippet.automatically_added():
             # Forcing a re-save will update the cached proof_text
-            proof.save()
-    except Proof.DoesNotExist:  # Nothing to update for base Snippets
+            snippet.save()
+    except Snippet.DoesNotExist:  # Nothing to update for base Snippets
         pass
+    except Exception as e:
+        logger.debug('Error updating proof for %s: %s' % (instance, e))
 
-
-class Proof(Snippet, Provable):
-    """ Users / alternate proof agents may wish to provide alternative proofs
-        for Traits or Implications.
-    """
-    class Meta:
-        app_label = 'brubeck'
-
-    def current_text(self):
-        return self.proof_text
-
-    def save(self, *args, **kwargs):
-        # TODO: saving a new Snippet with initial Revision seems to cause a
-        # (probably needlessly) large number of queries. Streamline it.
-        # Retreive and cache the current revision
-        text = getattr(self.revision, 'text', '')
-        self.proof_text = self._get_prover().render_text(text)
-        super(Proof, self).save(*args, **kwargs)
 
 models.signals.post_save.connect(index_revision, Revision)
 models.signals.post_save.connect(update_proof, Revision)

@@ -1,6 +1,6 @@
 import logging
 
-from brubeck.models.snippets import Proof, Snippet
+from brubeck.models.snippets import Snippet #Proof
 from brubeck.models.core import Space
 
 

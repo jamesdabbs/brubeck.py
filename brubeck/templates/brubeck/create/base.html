@@ -4,7 +4,7 @@
 {% block title %}New {{ cls_name|capfirst }}{% endblock %}
 
 {% block content %}
-{% block object_title %}{% endblock %}
+{% block object_title %}<h2>New {{ cls_name|capfirst }}</h2>{% endblock %}
 {% block prover_warning %}{% endblock %}
 <form action="" method="POST" class="form-horizontal" id="edit-form">
     {% csrf_token %}

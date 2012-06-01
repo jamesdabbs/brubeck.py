@@ -2,11 +2,7 @@
 <p>
     {% block obj_desc %}
     {% with obj.snippets.all.0 as snippet %}
-    {% if snippet.proof.proof_text %}
-    {{ snippet.proof.proof_text }}
-    {% else %}
-    {{ snippet }}
-    {% endif %}
+    {{ snippet.current_text }}
     {% endwith %}
     {% endblock %}
 </p>

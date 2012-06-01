@@ -267,7 +267,7 @@ node_count = 0
 
 
 def get_full_proof(trait):
-    from brubeck.models import Trait
+    from brubeck.models import Trait, Snippet
 
     # TODO: restructure JSON to produce adjacencies, arrows
     # TODO: using a global feels so dirty :(
@@ -283,7 +283,8 @@ def get_full_proof(trait):
 
     # If the proof was automatically added, we also add an implication and
     # the full proof of each trait it needed to assume.
-    proof = trait.snippets.exclude(proof=None).exclude(proof__proof_agent='')
+    proof = trait.snippets.exclude(proof_agent='').exclude(
+        proof_agent=Snippet.USER)
     if proof.exists():
         assumptions = proof[0].revision.text.split(',')
         traits, implication = [], None
@@ -300,7 +301,7 @@ def get_full_proof(trait):
             data += pd
 
         data[0].update({
-            'data': {'text': proof[0].proof.render_html(space=False),
+            'data': {'text': proof[0].render_html(space=False),
                      'url': trait.get_absolute_url()}
         })
     else:
