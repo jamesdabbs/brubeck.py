@@ -27,6 +27,7 @@ def parse_formula(string):
 
 
 def _deatomize(a):
+    """ Utility function to parse, e.g., compact=False or ~compact """
     if '=' in a:
         pstr, vstr = a.split('=')
     elif a.startswith('~'):
@@ -37,7 +38,9 @@ def _deatomize(a):
         pstr, vstr = a, '+'
     return pstr, vstr
 
+
 def _get_value(vstr):
+    """ Utility function to parse a Value out of a string """
     TRUE = Value.objects.get(name='True')
     FALSE = Value.objects.get(name='False')
 
@@ -55,7 +58,9 @@ def _get_value(vstr):
                 raise ValidationError('Could not parse value "%s"' % vstr)
     return value
 
+
 def _get_property(pstr):
+    """ Utility function to parse a Property out of a string """
     try:
         property = Property.objects.get(id=int(pstr))
     except ValueError:
@@ -64,6 +69,7 @@ def _get_property(pstr):
         except Property.DoesNotExist:
             raise ValidationError('Could not parse property "%s"' % pstr)
     return property
+
 
 def human_to_formula(string):
     """ Takes a string (as would be received from a human-completed form field)
@@ -77,7 +83,8 @@ def human_to_formula(string):
 
     # TODO: add multiple operator and subformula support
     if '+' in string and '|' in string:
-        raise ValidationError('Could not parse formula. Combined AND and OR is not implemented (yet).')
+        raise ValidationError('Could not parse formula. Combined AND and OR '
+                              'is not implemented (yet).')
 
     if '+' in string:
         separator = '+'

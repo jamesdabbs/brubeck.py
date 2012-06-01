@@ -16,7 +16,8 @@ class BrubeckSearch(ElasticSearch):
     def search(self, query, body=None, doc_types=[], **query_params):
         if not doc_types:
             doc_types = ['space', 'property', 'implication', 'trait']
-        return super(BrubeckSearch, self).search(query, body=None, indexes=[self._index], doc_types=doc_types, **query_params)
+        return super(BrubeckSearch, self).search(query, body=None,
+            indexes=[self._index], doc_types=doc_types, **query_params)
 
     def delete(self, doc_type, id):
         return super(BrubeckSearch, self).delete(self._index, doc_type, id)
@@ -53,8 +54,9 @@ def _build_indices(start=None, end=None):
     if end:
         revisions = revisions.filter(id__lte=end)
     for r in revisions:
-        r.save() # index_revision is a post_save method. This will also
-                 # update the proof_text if possible.
+        r.save()  # index_revision is a post_save method. This will also
+                  # update the proof_text if possible.
+
 
 def _clear_indices():
     size = client.search('name:*')['hits']['total']

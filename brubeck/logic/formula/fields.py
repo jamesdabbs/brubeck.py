@@ -14,16 +14,16 @@ class FormulaField(models.CharField):
     """
     description = 'A first-order statement about the properties of a space'
 
-    __metaclass__ = models.SubfieldBase # Ensures that to_python will be called
+    # This metaclass ensures that to_python will be called
+    __metaclass__ = models.SubfieldBase
 
     def __init__(self, *args, **kwargs):
-        """ Sets the max_length to a roomy enough default
-        """
+        """ Sets the max_length to a roomy enough default """
         kwargs['max_length'] = 1024
         super(FormulaField, self).__init__(*args, **kwargs)
 
     def to_python(self, value):
-        if isinstance(value, Formula): # No conversion necessary
+        if isinstance(value, Formula):  # No conversion necessary
             return value
 
         if not value:
@@ -34,7 +34,7 @@ class FormulaField(models.CharField):
     def get_prep_value(self, value):
         if hasattr(value, 'sub'):
             return '(%s%s)' % (value.operator,
-                               ','.join(self.get_prep_value(sf) for sf in value.sub))
+                ','.join(self.get_prep_value(sf) for sf in value.sub))
         p, v = value.property, value.value
         p = p.id if hasattr(p, 'id') else p
         v = v.id if hasattr(v, 'id') else v

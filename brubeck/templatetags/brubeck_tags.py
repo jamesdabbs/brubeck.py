@@ -11,7 +11,8 @@ def get(d, k):
 
 @register.simple_tag
 def contradicts_tag(cx, s, p, t):
-    if s == 144: return 'class="missing"'
+    if s == 144:
+        return 'class="missing"'
 
     # Compensate for renumbering
     p = {

@@ -12,7 +12,8 @@ def bootstrap(bound_field, args=''):
         bootstrap div structure. Takes optional args, including
         - placeholder
     """
-    if not bound_field: return ''
+    if not bound_field:
+        return ''
 
     # The field may be an entire form. If so, bootstrap all the things.
     if hasattr(bound_field, 'visible_fields'):
@@ -24,12 +25,12 @@ def bootstrap(bound_field, args=''):
 
     # Parse out the extra arguments
     args = args.split()
-    classes = '' # a ' '-delimited list of classes
-    kwargs = {} # a dict of extra arguments
+    classes = ''  # a ' '-delimited list of classes
+    kwargs = {}  # a dict of extra arguments
     label, inline = True, False
     for arg in args:
         if '=' in arg:
-            k,v = arg.split('=')
+            k, v = arg.split('=')
             kwargs[k] = v
         elif arg == 'no-label':
             label = False

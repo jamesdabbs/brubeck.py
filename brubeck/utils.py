@@ -31,7 +31,7 @@ def check_consistency():
         cx = i.counterexamples()
         if cx.exists():
             errors += 1
-            logger.error('Found counterexamples to (%s) %s: %s' %\
+            logger.error('Found counterexamples to (%s) %s: %s' %
                 (i.id, i, cx))
     if errors:
         logger.error('Found %s implications with counterexamples.' % errors)

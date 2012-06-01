@@ -20,7 +20,7 @@ class Formula(object):
         - A conjunction (&) of other formulae
         - A disjunction of other formulae
     """
-    EQ = '=' # TODO: implement comparisons other than = (for i.e. cardinals)
+    EQ = '='  # TODO: implement comparisons other than = (for i.e. cardinals)
 
     AND = '&'
     OR = '|'
@@ -85,7 +85,7 @@ class Formula(object):
         """
         if self.is_atom():
             # Pretty print atomic values
-            if lookup: # Use actual Property and Value objects
+            if lookup:  # Use actual Property and Value objects
                 self.lookup()
                 text = atomize(self._property, self._value)
                 return '<a href="%s">%s</a>' % \
@@ -112,7 +112,8 @@ class Formula(object):
                 self.AND: self.OR,
                 self.OR: self.AND,
                 }.get(self.operator, None)
-            if operator is None: raise NotImplementedError('Unspecified negation for operator')
+            if operator is None:
+                raise NotImplementedError('Unspecified negation for operator')
             f = Formula(None, None)
             f.operator = operator
             f.sub = [sf.negate() for sf in self.sub]

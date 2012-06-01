@@ -19,6 +19,7 @@ class _ProvesTraitMixin(models.Model):
     class Meta:
         abstract = True
 
+
 class Trait(_ProvesTraitMixin):
     """ A Trait records whether a Space has a particular Property """
     space = models.ForeignKey(Space)
@@ -62,10 +63,12 @@ class Trait(_ProvesTraitMixin):
     def get_admin_url(self):
         return 'admin:brubeck_trait_change', (self.id,), {}
 
+
 def trait_post_save(sender, instance, created, **kwargs):
     """ Checks all implications involving this property for new proofs. """
     if created:
-        # TODO: improve formula field lookups. This is overly broad. `contains='1='` matches '31=True' as well.
+        # TODO: improve formula field lookups. This is overly broad, e.g.
+        #       `contains='1='` matches '31=True' as well.
         # TODO: factor in to Prover class
         pid = '%s=' % instance.property.id
         candidate_imps = Implication.objects.filter(
@@ -91,7 +94,8 @@ class Implication(_ProvesTraitMixin):
 
     def save(self, *args, **kwargs):
         if kwargs.get('commit', True) and self.counterexamples().exists():
-            raise ValidationError('Cannot save implication with known counterexamples: %s' % self.counterexamples())
+            raise ValidationError('Cannot save implication with known '
+                'counterexamples: %s' % self.counterexamples())
         super(Implication, self).save(*args, **kwargs)
 
     def __unicode__(self, **kwargs):
@@ -145,6 +149,7 @@ class Implication(_ProvesTraitMixin):
         """
         return utils.counterexamples(self)
 
+
 def implication_post_save(sender, instance, created, **kwargs):
     """ Checks all implications involving this property for new proofs. """
     if created:
@@ -155,4 +160,5 @@ def implication_post_save(sender, instance, created, **kwargs):
 post_save.connect(implication_post_save, Implication)
 
 # TODO: allow post_save options to be asynchronous (w/ celery)
-# TODO: improve post-delete handling (delete revisions from index, related traits, etc.)
+# TODO: improve post-delete handling (delete revisions from index, related
+#       traits, etc.)

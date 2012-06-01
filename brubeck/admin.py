@@ -9,10 +9,11 @@ class TextAdmin(admin.ModelAdmin):
         """ Gets the text of the (first) snippet for `obj` """
         return obj.snippets.all()[0].current_text()
 
+
 # Core objects
 class SpaceAdmin(TextAdmin):
     list_display = ('id', 'name', 'text')
-admin.site.register(models.Space, SpaceAdmin   )
+admin.site.register(models.Space, SpaceAdmin)
 
 
 class PropertyAdmin(SpaceAdmin):
@@ -26,7 +27,7 @@ admin.site.register(models.Trait, TraitAdmin)
 
 
 class ImplicationAdmin(TextAdmin):
-    list_display = ('id',)# 'name', 'text')
+    list_display = ('id', 'name', 'text')
 admin.site.register(models.Implication, ImplicationAdmin)
 
 

@@ -33,11 +33,11 @@ class RegistrationView(FormView):
         messages.success(self.request, 'Your account has been created')
         _force_login(self.request, user)
         return redirect(self.request.GET.get('next', reverse('brubeck:home')))
-
 register = RegistrationView.as_view()
 
 
 _get_name = lambda m: m.__name__.lower()
+
 
 class ModelViewMixin(object):
     def __init__(self, model, *args, **kwargs):
@@ -63,12 +63,14 @@ class List(ModelViewMixin, ListView):
 
     def get_queryset(self):
         return super(List, self).get_queryset().order_by('-id')
-    
-    def get_context_data(self,  **kwargs):
+
+    def get_context_data(self, **kwargs):
         context = super(List, self).get_context_data(**kwargs)
         context['plural_name'] = self.model._meta.verbose_name_plural
-        context['create_name'] = 'brubeck:create_%s' % self.model.__name__.lower()
+        context['create_name'] = 'brubeck:create_%s' % \
+                                 self.model.__name__.lower()
         return context
+
 
 def list(request, model):
     return List.as_view(model=model)(request)
@@ -91,7 +93,7 @@ def table(request):
     end = int(request.GET.get('end', '144'))
     end = min(end, 143)
     traits = {}
-    spaces = Space.defined_objects.filter(id__in=range(start, end+1))
+    spaces = Space.defined_objects.filter(id__in=range(start, end + 1))
     for s in spaces:
         traits[s.id] = {}
     properties = Property.objects.all()
@@ -134,6 +136,7 @@ class Detail(ModelViewMixin, GetObjectMixin, DetailView):
             context['unknown'] = spaces
         return context
 
+
 def detail(request, model, **kwargs):
     return Detail.as_view(model=model)(request, **kwargs)
 
@@ -154,10 +157,12 @@ class Revise(ModelViewMixin, GetObjectMixin, DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        rev = get_object_or_404(Revision, id=int(request.POST.get('rev_id', 0)))
+        rev = get_object_or_404(Revision,
+            id=int(request.POST.get('rev_id', 0)))
         rev.page.revision = rev
         rev.page.save()
         return redirect(rev.page.snippet.object)
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def revision_detail(request, model, **kwargs):
@@ -186,6 +191,7 @@ class Create(ModelViewMixin, CreateView):
         context['cls_name'] = _get_name(self.model)
         return context
 
+
 # TODO: extra permissions handling
 def create(request, model):
     return login_required(Create.as_view(model=model))(request)
@@ -200,6 +206,7 @@ class Edit(ModelViewMixin, GetObjectMixin, UpdateView):
 
     def get_success_url(self):
         return self.get_object().get_absolute_url()
+
 
 def edit(request, model, **kwargs):
     return login_required(Edit.as_view(model=model))(request, **kwargs)
@@ -223,18 +230,20 @@ redirect_to_github = RedirectView.as_view(
     url='https://github.com/jamesdabbs/brubeck/')
 
 needing_descriptions = ListView.as_view(
-    paginate_by = 40,
-    queryset = utils.get_incomplete_snippets().order_by('content_type'),
-    template_name = 'brubeck/contribute/descriptions.html')
+    paginate_by=40,
+    queryset=utils.get_incomplete_snippets().order_by('content_type'),
+    template_name='brubeck/contribute/descriptions.html')
 
 reversal_counterexamples = ListView.as_view(
-    paginate_by = 40,
-    queryset = utils.get_open_converses(),
-    template_name = 'brubeck/contribute/counterexamples.html')
+    paginate_by=40,
+    queryset=utils.get_open_converses(),
+    template_name='brubeck/contribute/counterexamples.html')
+
 
 def proof(request, s, p):
     object = get_object_or_404(Trait, space__slug=s, property__slug=p)
     return TemplateResponse(request, 'brubeck/detail/proof.html', locals())
+
 
 def proof_ajax(request, s, p):
     # if not request.is_ajax(): raise Http404
@@ -269,7 +278,8 @@ class Delete(ModelViewMixin, GetObjectMixin, DetailView):
         _add_proofs()
         new = Trait.objects.count()
         messages.warning(self.request,
-            '%s proof(s) deleted. %s automatically recovered.' % (o_count + 1, new - old))
+            '%s proof(s) deleted. %s automatically recovered.' %
+            (o_count + 1, new - old))
         return redirect('brubeck:home')
 
 

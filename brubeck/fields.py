@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class SetField(models.CharField):
     """ Stores a set of integers in the database as a |-separated string """
     # We store integers in the database surrounded by |'s, so that looking up
@@ -11,12 +12,15 @@ class SetField(models.CharField):
         super(SetField, self).__init__(*args, **kwargs)
 
     def to_python(self, value):
-        if not value: return
-        if isinstance(value, set): return value
+        if not value:
+            return
+        if isinstance(value, set):
+            return value
         return set(int(a) for a in value.split('|') if a)
 
     def get_prep_value(self, value):
-        if not value: return '||'
+        if not value:
+            return '||'
         return '|%s|' % '|'.join(str(a) for a in value)
 
     def get_prep_lookup(self, lookup_type, value):

@@ -10,7 +10,7 @@ setup(
     author_email='james.dabbs@gmail.com',
     url='https://github.com/jamesdabbs/brubeck',
 
-    packages=find_packages(exclude=['tests.*', 'tests', 'example.*', 'example']),
+    packages=find_packages(exclude=['tests.*', 'tests']),
     include_package_data=True,  # declarations in MANIFEST.in
 
     install_requires=['Django >=1.4'],

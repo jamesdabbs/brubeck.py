@@ -21,7 +21,8 @@ class SnippetForm(forms.ModelForm):
     def save(self, commit=True, add_snippet=True):
         obj = super(SnippetForm, self).save(commit=commit)
         if add_snippet:
-            utils.add_snippet(obj, self.cleaned_data['description'], user=self.user)
+            utils.add_snippet(obj, self.cleaned_data['description'],
+                user=self.user)
         return obj
 
 
@@ -47,6 +48,7 @@ class EditForm(forms.Form):
             text=self.cleaned_data['description'],
             user=self.user
         )
+
 
 class SpaceForm(SnippetForm):
     """ A simple form for creating and editing a Space """
@@ -78,12 +80,13 @@ class TraitForm(SnippetForm):
         """
         cd = super(TraitForm, self).clean()
         value, property = cd.get('value', ''), cd.get('property', '')
-        if not (value and property): return cd
+        if not (value and property):
+            return cd
         try:
             property.allowed_values().get(id=value.id)
             return cd
         except Value.DoesNotExist:
-            raise ValidationError('%s is not a valid value for property %s' %\
+            raise ValidationError('%s is not a valid value for property %s' %
                 (value, property))
 
 
@@ -93,16 +96,19 @@ class ImplicationForm(SnippetForm):
         model = Implication
         fields = ('antecedent', 'consequent')
         widgets = {
-            'antecedent': forms.TextInput(attrs={'class': 'formula-autocomplete'}),
-            'consequent': forms.TextInput(attrs={'class': 'formula-autocomplete'}),
+            'antecedent': forms.TextInput(
+                attrs={'class': 'formula-autocomplete'}),
+            'consequent': forms.TextInput(
+                attrs={'class': 'formula-autocomplete'}),
         }
 
     def clean(self):
         """ Checks for existing counterexamples before adding a new implication
         """
         cd = super(ImplicationForm, self).clean()
-        ant, cons= cd.get('antecedent', ''), cd.get('consequent', '')
-        if not (ant and cons): return cd
+        ant, cons = cd.get('antecedent', ''), cd.get('consequent', '')
+        if not (ant and cons):
+            return cd
         cx = Implication(antecedent=ant, consequent=cons).counterexamples()
         if cx.exists():
             raise ValidationError(
@@ -117,7 +123,8 @@ class SearchForm(forms.Form):
 
     def search(self):
         q, res = self.cleaned_data.get('q', '').strip(), {}
-        if not q: return res
+        if not q:
+            return res
 
         # Try to parse as a formula
         try:
@@ -132,7 +139,8 @@ class SearchForm(forms.Form):
             res['f_errors'] = e.messages
 
         # Trim trailing separators
-        if q and q[-1] in ['+', '|']: q = q[:-1].rstrip()
+        if q and q[-1] in ['+', '|']:
+            q = q[:-1].rstrip()
         # Slight optimization: if q contained a '+' or '|' and validated as a
         # formula, it will almost certainly not match any text
         if 'f' in res and ('+' in q or '|' in q):
@@ -145,6 +153,7 @@ class SearchForm(forms.Form):
         res['t_hits'] = r['hits']['hits']
         res['t_count'] = r['hits']['total']
         return res
+
 
 class DeleteForm(forms.Form):
     pass

@@ -19,7 +19,7 @@ class Document(models.Model):
     restrictions = models.CharField(max_length=255)
     last_touched = models.DateTimeField(auto_now=True)
     revision = models.ForeignKey('Revision',
-        null=True) # Latest will be null, but only while creating a new page
+        null=True)  # Latest will be null, but only while creating a new page
     namespace = models.IntegerField(choices=NS_CHOICES, default=MAIN)
 
     class Meta:

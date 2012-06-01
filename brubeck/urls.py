@@ -33,7 +33,8 @@ urlpatterns += patterns('brubeck.views',
     url(r'^properties/$', 'list', {'model': Property}, name='properties'),
     url(r'^traits/$', 'list', {'model': Trait}, name='traits'),
     url(r'^traits/table/$', 'table', name='table'),
-    url(r'^implications/$', 'list', {'model': Implication}, name='implications'),
+    url(r'^implications/$', 'list',
+            {'model': Implication}, name='implications'),
 
     # Create Views
     url(r'^spaces/create/$', 'create',

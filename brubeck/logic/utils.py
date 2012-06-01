@@ -15,17 +15,15 @@ proof_agent = 'brubeck.logic.prover.Prover'
 
 
 def _intersection(ls):
-    """ (Efficiently?) finds the intersection of a list of sorted lists ofTrait ints
-    """
+    """ (Efficiently?) finds the intersection of a list of lists """
     # The python implementation of set intersection uses hashes, so this should
-    # be relatively fast
-    return sorted(list(reduce(set.intersection,
-        (set(l) for l in ls) )))
+    # be relatively fast, but could probably made faster using the assumption
+    # that each list in ls is already sorted
+    return sorted(list(reduce(set.intersection, (set(l) for l in ls))))
 
 
 def _union(ls):
-    """ (Efficiently?) finds the union of a list of sorted lists of ints
-    """
+    """ (Efficiently?) finds the union of a list of lists """
     from heapq import merge
     return merge(*ls)
 
@@ -41,17 +39,19 @@ def spaces_matching_formula(formula, evaluates_to=True,
     # query on the atoms and build the result in python.
     if formula.is_atom():
         p, v = formula.property, formula.value
-        if not p or not v: return []
+        if not p or not v:
+            return []
         spaces = spaces.order_by('id').values('id')
         if evaluates_to:
             spaces = spaces.filter(trait__property__id=p, trait__value__id=v)
         elif evaluates_to is None:
             spaces = spaces.exclude(trait__property__id=p)
         else:
-            spaces = spaces.filter(trait__property__id=p, trait__value__id=Value.NOT[v])
+            spaces = spaces.filter(trait__property__id=p,
+                trait__value__id=Value.NOT[v])
         return [d['id'] for d in spaces]
     else:
-        subs = (spaces_matching_formula(sf, evaluates_to, spaces) \
+        subs = (spaces_matching_formula(sf, evaluates_to, spaces)
             for sf in formula.sub)
         if formula.operator == Formula.AND:
             if evaluates_to:
@@ -82,10 +82,11 @@ def _find_spaces(implication, ant_val, cons_val, spaces):
             evaluates_to=cons_val)
         )))
 
+
 def find_proofs(implication, spaces=Space.objects.all()):
-    """ Returns Spaces for which this Implication can prove new Traits
-    """
+    """ Returns Spaces for which this Implication can prove new Traits """
     return _find_spaces(implication, True, None, spaces)
+
 
 def find_contra_proofs(implication, spaces=Space.objects.all()):
     """ Returns Spaces for witch the contrapositive of this Implication can
@@ -93,10 +94,11 @@ def find_contra_proofs(implication, spaces=Space.objects.all()):
     """
     return _find_spaces(implication, None, False, spaces)
 
+
 def examples(implication, spaces=Space.objects.all()):
-    """ Returns examples where this Implication holds
-    """
+    """ Returns examples where this Implication holds """
     return _find_spaces(implication, True, True, spaces)
+
 
 def counterexamples(implication, spaces=Space.objects.all()):
     """ Returns examples where this Implication does not hold (should return
@@ -123,7 +125,7 @@ def verify_match(formula, space):
                 # Adjoin proofs that all subformulae match
                 for sf in formula.sub:
                     rv += verify_match(sf, space)
-            else: # formula.operator == Formula.OR
+            else:  # formula.operator == Formula.OR
                 found = False
                 for sf in formula.sub:
                     # We only need to find one subformula that matches, but
@@ -135,11 +137,11 @@ def verify_match(formula, space):
                     except AssertionError:
                         continue
                 if not found:
-                    raise AssertionError('%s did not match the formula (%s)' %\
+                    raise AssertionError('%s did not match the formula (%s)' %
                         (space, formula))
         return rv
     except ObjectDoesNotExist:
-        raise AssertionError('%s did not match the given formula (%s)' %\
+        raise AssertionError('%s did not match the given formula (%s)' %
             (space, formula))
 
 
@@ -163,7 +165,7 @@ def force_match(formula, space, proof_steps):
     elif formula.operator == Formula.AND:
         for sf in formula.sub:
             force_match(sf, space, proof_steps)
-    else: # formula.operator == Formula.OR
+    else:  # formula.operator == Formula.OR
         # Verify that the negation of all but one subformula matches
         unknown_sf = None
         extra_steps = []
@@ -172,11 +174,11 @@ def force_match(formula, space, proof_steps):
                 extra_steps += verify_match(sf.negate(), space)
             except AssertionError:
                 # This subformula has an unknown value
-                if unknown_sf: # We have multiple unknown subformulae
+                if unknown_sf:  # We have multiple unknown subformulae
                     raise AssertionError(u'Tried to force an OR statement '
                         u'multiple unknowns (%s)' % formula)
                 unknown_sf = sf
-        if unknown_sf: # The single (formerly) unknown must be true
+        if unknown_sf:  # The single (formerly) unknown must be true
             force_match(unknown_sf, space, proof_steps + extra_steps)
         else:
             raise AssertionError(u'Tried to force OR statement with '
@@ -217,7 +219,7 @@ def add_proof(space, property_id, value_id, proof_steps):
     for s in proof_steps:
         if isinstance(s, Trait):
             proof_string += 't%s,' % s.id
-        else: # s is an Implication
+        else:  # s is an Implication
             proof_string += 'i%s,' % s.id
     t = Trait(space=space)
     t.property_id, t.value_id = property_id, value_id
@@ -251,15 +253,21 @@ def apply(implication, space):
     """
     try:
         prove(implication, space)
-    except AssertionError as e: pass
+    except AssertionError as e:
+        pass
     try:
         prove_contrapositive(implication, space)
-    except AssertionError as e: pass
+    except AssertionError as e:
+        pass
 
 
+# This counts the number of proof visualization nodes that have been rendered,
+# so that each gets a unique id
 node_count = 0
+
+
 def get_full_proof(trait):
-    from brubeck.models import Trait, Implication
+    from brubeck.models import Trait
 
     # TODO: restructure JSON to produce adjacencies, arrows
     # TODO: using a global feels so dirty :(
@@ -280,13 +288,10 @@ def get_full_proof(trait):
         assumptions = proof[0].revision.text.split(',')
         traits, implication = [], None
         # There should be a trailing comma / empty last assumption
-        agent = proof[0].proof.proof_agent
         assert not assumptions[-1]
         for a in assumptions[:-1]:
             if a[0] == 't':
                 traits.append(Trait.objects.get(id=int(a[1:])))
-            else:
-                implication = Implication.objects.get(id=int(a[1:]))
         for t in traits:
             pd = get_full_proof(t)
             pd[0]['adjacencies'] = [{

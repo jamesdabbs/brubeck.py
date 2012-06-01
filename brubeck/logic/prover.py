@@ -31,16 +31,18 @@ class Prover(object):
             if type == 't':
                 obj = Trait.objects.get(id=id)
                 name = obj.__unicode__(space=space)
-            else: # type == 'i'
+            else:  # type == 'i'
                 obj = Implication.objects.get(id=id)
                 name = obj.__unicode__(lookup=True)
             if html:
-                rv += u'<a href="%s">%s</a><br/>' % (obj.get_absolute_url(), name)
+                rv += u'<a href="%s">%s</a><br/>' % (obj.get_absolute_url(),
+                                                     name)
             else:
                 rv += u'%s, ' % name
         # Trim a trailing comma / whitespace
         rv = rv.strip()
-        if rv.endswith(u','): rv = rv[:-1].rstrip()
+        if rv.endswith(u','):
+            rv = rv[:-1].rstrip()
         return mark_safe(rv)
 
     @classmethod

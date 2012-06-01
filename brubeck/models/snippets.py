@@ -70,8 +70,10 @@ class Provable(models.Model):
         """
         if self.proof_agent:
             prover = self._get_prover()
-            return prover.render_html(getattr(self.revision, 'text', ''), space=space)
+            return prover.render_html(getattr(self.revision, 'text', ''),
+                space=space)
         return self.current_text()
+
 
 def update_proof(sender, instance, created, **kwargs):
     """ After saving a new Revision for a proof, we'd like to update the stored
@@ -83,7 +85,7 @@ def update_proof(sender, instance, created, **kwargs):
             # The proof was automatically generated
             # Forcing a re-save will update the cached proof_text
             proof.save()
-    except Proof.DoesNotExist: # Nothing to update for base Snippets
+    except Proof.DoesNotExist:  # Nothing to update for base Snippets
         pass
 
 

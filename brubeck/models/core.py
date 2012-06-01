@@ -79,25 +79,31 @@ class _BasicMixin(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return 'brubeck:%s' % self.__class__.__name__.lower(), (), {'slug': self.slug}
+        return 'brubeck:%s' % self.__class__.__name__.lower(), (), \
+            {'slug': self.slug}
 
     @models.permalink
     def get_edit_url(self):
-        return 'brubeck:edit_%s' % self.__class__.__name__.lower(), (), {'slug': self.slug}
+        return 'brubeck:edit_%s' % self.__class__.__name__.lower(), (), \
+            {'slug': self.slug}
 
     @models.permalink
     def get_revision_url(self):
-        return 'brubeck:revise_%s' % self.__class__.__name__.lower(), (), {'slug': self.slug}
+        return 'brubeck:revise_%s' % self.__class__.__name__.lower(), (), \
+            {'slug': self.slug}
 
     @models.permalink
     def get_admin_url(self):
-        return 'admin:brubeck_%s_change' % self.__class__.__name__.lower(), (self.id,), {}
+        return 'admin:brubeck_%s_change' % self.__class__.__name__.lower(), \
+            (self.id,), {}
 
 
 class DefinedManager(models.Manager):
     """ Limits results to Spaces that are fully defined """
     def get_query_set(self):
-        return super(DefinedManager, self).get_query_set().filter(fully_defined=True)
+        return super(DefinedManager, self).get_query_set().filter(
+            fully_defined=True)
+
 
 class Space(_BasicMixin):
     """ Represents a topological space """
