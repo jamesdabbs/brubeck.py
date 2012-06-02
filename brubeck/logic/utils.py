@@ -1,5 +1,6 @@
 # Provides several utilities for working with formulae
 import logging
+import sys
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -226,7 +227,8 @@ def add_proof(space, property_id, value_id, proof_steps):
     t.save()
     add_snippet(t, text=proof_string, user=brubeck_user, is_proof=True,
         proof_agent=proof_agent)
-    logger.debug('Added trait "%s" with proof "%s"' % (t, proof_string))
+    if 'test' not in sys.argv:
+        logger.debug('Added trait "%s" with proof "%s"' % (t, proof_string))
 
 
 def _add_proofs():

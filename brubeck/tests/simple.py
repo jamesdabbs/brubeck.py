@@ -35,7 +35,6 @@ class SmokeTests(TestCase):
         self.assertEqual(response.items()[-1][1],
             'https://github.com/jamesdabbs/brubeck')
 
-
     def test_absolute_urls(self):
         """ Tests that the get_absolute_url methods of each of the basic
             objects works correctly (and that their landing pages load)
@@ -47,16 +46,3 @@ class SmokeTests(TestCase):
             # Check that we got the right object
             name = obj.name() if callable(obj.name) else obj.name
             self.assertContains(response, name)
-
-
-class ValueTests(TestCase):
-    """ Tests that the expected value objects have been created (by a data
-        migration).
-    """
-    def test_values(self):
-        """ Tests that 'boolean', 'True' and 'False' exist and have their
-            intended ids.
-        """
-        v = ValueSet.objects.get(id=ValueSet.BOOLEAN, name='boolean')
-        Value.objects.get(id=Value.TRUE, name='True', value_set=v)
-        Value.objects.get(id=Value.FALSE, name='False', value_set=v)

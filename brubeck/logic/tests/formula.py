@@ -31,3 +31,9 @@ class FormulaTests(TestCase):
         assert disj.operator == Formula.OR
         assert disj.sub[0].property == 1
         assert disj.sub[0].value != 1
+
+    def test_empty(self):
+        """ Tests that formulae register as empty appropriately """
+        assert Formula().is_empty()
+        assert not self.a1.is_empty()
+        assert not self.conj.is_empty()

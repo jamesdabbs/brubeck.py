@@ -1,6 +1,6 @@
 import logging
 
-from brubeck.models.snippets import Snippet #Proof
+from brubeck.models.snippets import Snippet
 from brubeck.models.core import Space
 
 
@@ -14,8 +14,7 @@ def add_snippet(obj, text, user, is_proof=False, proof_agent=None):
     # The object must be saved before creating a snippet pointing to it
     if not obj.id:
         obj.save()
-    cls = Proof if is_proof else Snippet
-    snippet = cls(object=obj)
+    snippet = Snippet(object=obj)
     if proof_agent:
         snippet.proof_agent = proof_agent
     snippet.save()
