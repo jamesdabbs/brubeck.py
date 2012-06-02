@@ -11,17 +11,28 @@ class BrubeckSearch(ElasticSearch):
         super(BrubeckSearch, self).__init__(settings.BONSAI_URL)
         self._index = settings.BONSAI_INDEX
 
+    def get(self, doc_type, id):
+        """ Retrieves the specified document """
+        return super(BrubeckSearch, self).get(self._index, doc_type, id)
+
     def index(self, doc, doc_type, id=None):
+        """ Adds the given document to the index """
         return super(BrubeckSearch, self).index(doc, self._index, doc_type, id)
 
     def search(self, query, body=None, doc_types=[], **query_params):
+        """ Searches the index """
         if not doc_types:
             doc_types = ['space', 'property', 'implication', 'trait']
         return super(BrubeckSearch, self).search(query, body=None,
             indexes=[self._index], doc_types=doc_types, **query_params)
 
     def delete(self, doc_type, id):
+        """ Deletes a document from the index """
         return super(BrubeckSearch, self).delete(self._index, doc_type, id)
+
+    def refresh(self):
+        """ Refreshes the index """
+        return super(BrubeckSearch, self).refresh(indexes=[self._index])
 
 
 client = BrubeckSearch()
