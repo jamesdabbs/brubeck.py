@@ -25,17 +25,16 @@ def check_consistency():
     """ Checks the entire database for consistency. """
     from brubeck.models import Implication
 
-    errors = 0
+    errors = []
     for i in Implication.objects.all():
         cx = i.counterexamples()
         if cx.exists():
-            errors += 1
-            logger.error('Found counterexamples to (%s) %s: %s' %
-                (i.id, i, cx))
+            errors.append((i, cx))
     if errors:
-        logger.error('Found %s implications with counterexamples.' % errors)
+        logger.error('Found implications with counterexamples.' % errors)
     else:
-        logger.error('No errors found.')
+        logger.debug('No errors found.')
+    return errors
 
 
 def get_incomplete_snippets():

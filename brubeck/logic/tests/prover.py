@@ -1,10 +1,13 @@
+from django.core.exceptions import ValidationError
+from django.db.models import Model
 from django.test import TestCase
 from django.test.client import Client
 
 from brubeck.logic import Formula
-from brubeck.logic.utils import verify_match
+from brubeck.logic.utils import verify_match, get_full_proof
 from brubeck.logic.formula.utils import human_to_formula
 from brubeck.models import Space, Property, Trait, Implication, Value
+from brubeck.utils import get_orphans, check_consistency
 
 
 class ProverTests(TestCase):
@@ -78,3 +81,49 @@ class ProverTests(TestCase):
         Trait.objects.create(space=self.space, property=self.C, value=self.F)
         verify_match(Formula(self.A, self.F), self.space)
         assert self.space.trait_set.count() == 3
+
+    def test_full_proof_trace(self):
+        """ Tests that ~A, ~A => B, B => ~C generates ~C and examines the full
+            proof trace.
+        """
+        # Also tests out a few variations for human_to_formula
+        Implication.objects.create(
+            antecedent=human_to_formula('~A'),
+            consequent=human_to_formula('B=True')
+        )
+        Implication.objects.create(
+            antecedent=human_to_formula('B'),
+            consequent=human_to_formula('not C')
+        )
+        Trait.objects.create(space=self.space, property=self.A, value=self.F)
+        verify_match(Formula(self.A, self.F) & Formula(self.B, self.T) &
+            Formula(self.C, self.F), self.space)
+        assert self.space.trait_set.count() == 3
+
+        # Test the proof trace
+        # The format is still somewhat in flux, but at least make sure it
+        # returns a dict with with at least "id" and "name" in it
+        d = get_full_proof(self.space.trait_set.get(property=self.C))[0]
+        assert 'id' in d
+        assert 'name' in d
+
+        # Check that get_orphans finds both of the added traits
+        assert len(get_orphans(self.space.trait_set.get(
+            property=self.A))) == 2
+
+    def test_consistency_check(self):
+        """ Checks handling of implications that can be shown to be
+            inconsistent
+        """
+        assert len(check_consistency()) == 0
+        Trait.objects.create(space=self.space, property=self.A, value=self.T)
+        Trait.objects.create(space=self.space, property=self.B, value=self.T)
+        ant, cons = human_to_formula('A'), human_to_formula('~B')
+        self.assertRaises(ValidationError, Implication.objects.create,
+            antecedent=ant, consequent=cons)
+        # The following will force the save of the faulty implication,
+        # bypassing its save method
+        Implication.objects.bulk_create([
+            Implication(antecedent=ant, consequent=cons)
+        ])
+        assert len(check_consistency()) == 1

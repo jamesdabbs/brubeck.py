@@ -307,8 +307,12 @@ def get_full_proof(trait):
                      'url': trait.get_absolute_url()}
         })
     else:
+        snippets = trait.snippets.all()
+        # Every live object *should* have at least one snippet
+        text = snippets[0].current_text() if snippets.exists() else \
+            '(No text available)'
         data[0].update({
-            'data': {'text': trait.snippets.all()[0].current_text(),
+            'data': {'text': text,
                      'url': trait.get_absolute_url()}
         })
 

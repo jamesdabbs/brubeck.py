@@ -87,13 +87,11 @@ def human_to_formula(string):
                               'is not implemented (yet).')
 
     if '+' in string:
-        separator = '+'
-        operator = Formula.AND
+        separator, operator = '+', Formula.AND
     elif '|' in string:
-        separator = '|'
-        operator = Formula.OR
+        separator, operator = '|', Formula.OR
     else:
-        separator = None
+        separator, operator = None, None
 
     # Iterate over the atoms and look up their formulae
     atoms = string.split(separator) if separator else [string]

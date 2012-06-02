@@ -8,26 +8,27 @@ logic/__init__                  1      0   100%
 logic/formula/__init__          2      0   100%   
 logic/formula/core             71      3    96%   116, 131-132
 logic/formula/fields           33      4    88%   30, 45-46, 60
-logic/formula/utils            69     17    75%   18, 32, 34, 36, 49-58, 69-70, 82, 86
-logic/prover                   38      4    89%   19, 23, 42, 54
+logic/formula/utils            67      7    90%   18, 57-58, 69-70, 82, 86
+logic/prover                   38      2    95%   19, 23
 logic/tests/__init__            2      0   100%   
 logic/tests/formula            27      0   100%   
-logic/tests/prover             46      0   100%   
-logic/utils                   154     35    77%   44, 96, 101, 185, 231, 237-249, 272-315
+logic/tests/prover             67      0   100%   
+logic/utils                   156     17    89%   44, 96, 101, 185, 231, 237-249
 models/__init__                11      2    82%   8-10
-models/core                    71      9    87%   41, 51-55, 91, 96, 138
+models/core                    71      6    92%   51-55, 138
 models/profile                 12      0   100%   
-models/provable                97      6    94%   73, 105, 131, 152, 165, 167
-models/snippets                52      8    85%   61-65, 87-90
+models/provable                98      3    97%   156, 169, 171
+models/snippets                52      5    90%   65, 87-90
 models/wiki                    30      2    93%   29, 57
 search                         43     25    42%   15, 18-20, 24, 35-45, 53-61, 66-70
 templatetags/__init__           0      0   100%   
-templatetags/bootstrap         34     26    24%   15-49, 58
-templatetags/brubeck_tags      45     28    38%   9, 14-52, 58-65, 71-72
-tests/__init__                  2      0   100%   
-tests/simple                   26      0   100%   
+templatetags/bootstrap         34     12    65%   16, 32-40, 44-45, 47
+templatetags/brubeck_tags      45     19    58%   15, 35-36, 38-43, 49-51, 58-65, 71-72
+tests/__init__                  3      0   100%   
+tests/simple                   46      0   100%   
+tests/views                    29      0   100%   
 urls                            7      0   100%   
-utils                          35     15    57%   16, 26-38, 62-65
-views                         180     88    51%   21-22, 31-34, 81-101, 114-117, 145-156, 159-163, 168, 174-176, 179-186, 189-191, 196, 202-204, 207, 211, 216-222, 237-238, 243-245, 255-257, 260-276, 282-284
+utils                          35      1    97%   16
+views                         180     66    63%   21-22, 31-34, 114-117, 145-156, 159-163, 168, 174-176, 179-186, 189-191, 196, 202-204, 207, 216-222, 255-257, 260-276, 282-284
 ------------------------------------------------------------------------------------------------
-TOTAL                                                               1220    327    73%   
+TOTAL                        1292    229    82%   

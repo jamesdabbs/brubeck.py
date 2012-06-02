@@ -64,9 +64,13 @@ class Trait(_ProvesTraitMixin):
                                       'property': self.property.slug}
 
     get_edit_url = lambda x: Trait.get_absolute_url(x, 'edit_')
-    get_proof_url = lambda x: Trait.get_absolute_url(x, 'prove_')
     get_delete_url = lambda x: Trait.get_absolute_url(x, 'delete_')
     get_revision_url = lambda x: Trait.get_absolute_url(x, 'revise_')
+
+    @models.permalink
+    def get_proof_url(self):
+        return 'brubeck:prove_trait', (), {'s': self.space.slug,
+                                           'p': self.property.slug}
 
     @models.permalink
     def get_admin_url(self):
