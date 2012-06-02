@@ -26,3 +26,14 @@ strange, mathematical time signatures.
 The code for Brubeck is currently a one-man project, so documentation may be a
 little sparse in areas that I'm confident future me will understand. If you're
 interested in contributing to the project, though, feel free to contact me.
+
+Planned features
+================
+The following are a list of things I plan to add, in no particular order. If
+you'd like to start hacking away on any of them, please let me know:
+- Improved text editing / revision management interfaces
+- Integration with Mizar, Isabelle, ...
+- Support for caching
+- Support for asynchronous prover tasks (using celery)
+- Improved search, support for aliases (Hausdorff == T_2)
+- Styling beyond bootstrap defaults :)

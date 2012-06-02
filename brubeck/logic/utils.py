@@ -1,18 +1,10 @@
 # Provides several utilities for working with formulae
-import logging
-import sys
-
-from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
 from brubeck.logic import Formula
 from brubeck.models import Space, Value
-from brubeck.utils import add_snippet
 
-
-logger = logging.getLogger(__name__)
-
-proof_agent = 'brubeck.logic.prover.Prover'
+BRUBECK_AGENT = 'brubeck.logic.prover.Prover'
 
 
 def _intersection(ls):
@@ -146,123 +138,6 @@ def verify_match(formula, space):
             (space, formula))
 
 
-def force_match(formula, space, proof_steps):
-    """ Forces the given Space to match the formula by adding Traits as needed.
-
-        `proof_steps` are added to the start of the automatically generated
-        proof, and should consist of a list of Traits and Implications.
-    """
-    if formula.is_atom():
-        ts = space.trait_set.filter(property__id=formula.property)
-        if ts.exists():
-            if unicode(ts.get().value.id) == formula.value:
-#                logger.warn(u'%s already matches for %s' % (formula, space))
-                pass
-            else:
-                raise AssertionError(u'%s cannot match %s' % (formula, space))
-        else:
-            add_proof(space=space, property_id=formula.property,
-                value_id=formula.value, proof_steps=proof_steps)
-    elif formula.operator == Formula.AND:
-        for sf in formula.sub:
-            force_match(sf, space, proof_steps)
-    else:  # formula.operator == Formula.OR
-        # Verify that the negation of all but one subformula matches
-        unknown_sf = None
-        extra_steps = []
-        for sf in formula.sub:
-            try:
-                extra_steps += verify_match(sf.negate(), space)
-            except AssertionError:
-                # This subformula has an unknown value
-                if unknown_sf:  # We have multiple unknown subformulae
-                    raise AssertionError(u'Tried to force an OR statement '
-                        u'multiple unknowns (%s)' % formula)
-                unknown_sf = sf
-        if unknown_sf:  # The single (formerly) unknown must be true
-            force_match(unknown_sf, space, proof_steps + extra_steps)
-        else:
-            raise AssertionError(u'Tried to force OR statement with '
-                                 u'no unknowns (%s)' % formula)
-
-
-def prove(implication, space):
-    """ Applies the Implication to the Space, adding new Traits (with proofs)
-        if possible.
-    """
-    # First we verify that the space matches (each part of) the antecedent
-    proof_steps = verify_match(formula=implication.antecedent, space=space)
-    proof_steps.append(implication)
-    force_match(formula=implication.consequent, space=space,
-        proof_steps=proof_steps)
-
-
-def prove_contrapositive(implication, space):
-    """ Applies the contrapositive of the Implication to the Space, similar
-        to prove(implication, space)
-    """
-    proof_steps = verify_match(formula=implication.consequent.negate(),
-        space=space)
-    proof_steps.append(implication)
-    force_match(formula=implication.antecedent.negate(), space=space,
-        proof_steps=proof_steps)
-
-
-def add_proof(space, property_id, value_id, proof_steps):
-    """ A proof is simply a series of Traits or Implications formatted as:
-        t<id>,t<id>,i<id>,t<id>,t<id>,...
-    """
-    from brubeck.models import Trait
-
-    brubeck_user, _ = User.objects.get_or_create(username='brubeck')
-
-    proof_string = ''
-    for s in proof_steps:
-        if isinstance(s, Trait):
-            proof_string += 't%s,' % s.id
-        else:  # s is an Implication
-            proof_string += 'i%s,' % s.id
-    t = Trait(space=space)
-    t.property_id, t.value_id = property_id, value_id
-    t.save()
-    add_snippet(t, text=proof_string, user=brubeck_user, is_proof=True,
-        proof_agent=proof_agent)
-    if 'test' not in sys.argv:
-        logger.debug('Added trait "%s" with proof "%s"' % (t, proof_string))
-
-
-def _add_proofs():
-    """ Utility function to extrapolate existing Traits as far as possible.
-    """
-    from brubeck.models import Implication
-
-    for i in Implication.objects.all():
-        for s in find_proofs(i):
-            try:
-                prove(implication=i, space=s)
-            except Exception as e:
-                logger.debug('(%s|%s) %s' % (i.id, s.id, e))
-        for s in find_contra_proofs(i):
-            try:
-                prove_contrapositive(implication=i, space=s)
-            except Exception as e:
-                logger.debug('(%s|%s) %s' % (i.id, s.id, e))
-
-
-def apply(implication, space):
-    """ Applies the Implication to the Space, deducing new Traits if
-        possible.
-    """
-    try:
-        prove(implication, space)
-    except AssertionError as e:
-        pass
-    try:
-        prove_contrapositive(implication, space)
-    except AssertionError as e:
-        pass
-
-
 # This counts the number of proof visualization nodes that have been rendered,
 # so that each gets a unique id
 node_count = 0
@@ -317,3 +192,20 @@ def get_full_proof(trait):
         })
 
     return data
+
+
+def _add_proofs(Prover):
+    """ Utility function to extrapolate new Traits from existing data.
+
+        Because of the post-add signals, this function should only be useful
+        if the database is in an `incomplete` state (like if Traits have just
+        been deleted).
+    """
+    from brubeck.models import Implication
+
+    for i in Implication.objects.all():
+        for s in list(find_proofs(i)) + list(find_proofs(i.contrapositive())):
+            try:
+                Prover.apply(implication=i, space=s)
+            except AssertionError:
+                pass

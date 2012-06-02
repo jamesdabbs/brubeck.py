@@ -12,7 +12,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from brubeck import forms, utils
-from brubeck.logic.utils import get_full_proof
+from brubeck.logic import Prover
 from brubeck.models import Space, Property, Trait, Implication, Revision
 
 
@@ -241,7 +241,7 @@ def proof(request, s, p):
 def proof_ajax(request, s, p):
     # if not request.is_ajax(): raise Http404
     trait = get_object_or_404(Trait, space__slug=s, property__slug=p)
-    proof = get_full_proof(trait)
+    proof = Prover.get_full_proof(trait)
     return HttpResponse(json.dumps(proof),
         content_type='application/json')
 
@@ -266,9 +266,8 @@ class Delete(ModelViewMixin, GetObjectMixin, DetailView):
                 o.delete()
             object.delete()
 
-        from brubeck.logic.utils import _add_proofs
         old = Trait.objects.count()
-        _add_proofs()
+        Prover._add_proofs()
         new = Trait.objects.count()
         messages.warning(self.request,
             '%s proof(s) deleted. %s automatically recovered.' %

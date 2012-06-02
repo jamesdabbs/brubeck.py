@@ -7,20 +7,6 @@ from brubeck.models.core import Space
 logger = logging.getLogger(__name__)
 
 
-def add_snippet(obj, text, user, is_proof=False, proof_agent=None):
-    """ Creates a Proof (if `is_proof`) or a general Snippet attached to this
-        object, and creates a Revision by `user` with the given `text`
-    """
-    # The object must be saved before creating a snippet pointing to it
-    if not obj.id:
-        obj.save()
-    snippet = Snippet(object=obj)
-    if proof_agent:
-        snippet.proof_agent = proof_agent
-    snippet.save()
-    snippet.add_revision(text=text, user=user)
-
-
 def check_consistency():
     """ Checks the entire database for consistency. """
     from brubeck.models import Implication

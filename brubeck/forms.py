@@ -3,8 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 
 from brubeck import utils
+from brubeck.logic import Prover
 from brubeck.logic.formula.utils import human_to_formula
-from brubeck.logic.utils import spaces_matching_formula
 from brubeck.models import Space, Property, Trait, Implication, Value
 
 
@@ -134,7 +134,7 @@ class SearchForm(forms.Form):
             else:
                 res['f'] = f.__unicode__(lookup=True, link=True)
                 res['f_spaces'] = Space.objects.filter(
-                    id__in=spaces_matching_formula(f))
+                    id__in=Prover.spaces_matching_formula(f))
         except Exception as e:
             res['f_errors'] = e.messages
 

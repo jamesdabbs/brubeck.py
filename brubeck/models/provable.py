@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-from django.contrib.contenttypes import generic
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.query_utils import Q
@@ -7,13 +6,13 @@ from django.db.models.signals import post_save
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
-from brubeck.logic import prover, utils
+from brubeck.logic import Prover
 from brubeck.logic.formula import FormulaField, atomize
 from brubeck.models import Space, Property
 
 
 class _ProvesTraitMixin(models.Model):
-    traits = lambda o: prover.Prover.implied_traits(o)
+    traits = lambda o: Prover.implied_traits(o)
     traits_desc = 'Related Traits'
 
     class Meta:
@@ -87,7 +86,7 @@ def trait_post_save(sender, instance, created, **kwargs):
         candidate_imps = Implication.objects.filter(
             Q(antecedent__contains=pid) | Q(consequent__contains=pid))
         for i in candidate_imps:
-            utils.apply(i, instance.space)
+            Prover.apply(implication=i, space=instance.space)
 post_save.connect(trait_post_save, Trait)
 
 
@@ -149,26 +148,26 @@ class Implication(_ProvesTraitMixin):
     def find_proofs(self):
         """ Finds Spaces that this Implication can prove something new about.
         """
-        return utils.find_proofs(self)
+        return Prover.find_proofs(implication=self)
 
     def examples(self):
         """ Finds Spaces for which this Implication holds. """
-        return utils.examples(self)
+        return Prover.examples(implication=self)
 
     def counterexamples(self):
         """ Finds Spaces for which this Implication does not hold. This should
             always return [] for any saved Implication.
         """
-        return utils.counterexamples(self)
+        return Prover.counterexamples(implication=self)
 
 
 def implication_post_save(sender, instance, created, **kwargs):
     """ Checks all implications involving this property for new proofs. """
     if created:
         for s in instance.find_proofs():
-            utils.apply(instance, s)
+            Prover.apply(implication=instance, space=s)
         for s in instance.contrapositive().find_proofs():
-            utils.apply(instance, s)
+            Prover.apply(implication=instance, space=s)
 post_save.connect(implication_post_save, Implication)
 
 # TODO: allow post_save options to be asynchronous (w/ celery)
