@@ -85,7 +85,12 @@ class BaseProver(object):
             }
             See: http://thejit.org/docs/ for more options
         """
-        return utils.get_full_proof(obj)
+        proof = utils.get_full_proof(obj)
+        proof[0]['data'].update({
+            '$color': '#dd514c',
+            '$dim': 5
+        })
+        return proof
 
     # Finding methods
     def find_proofs(self, implication):
