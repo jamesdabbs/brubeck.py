@@ -150,8 +150,9 @@ class SearchForm(forms.Form):
         from brubeck.search import client
 
         r = client.search('name:%s OR text:%s' % (q, q))
-        res['t_hits'] = r['hits']['hits']
-        res['t_count'] = r['hits']['total']
+        hits = r.get('hits', {})
+        res['t_hits'] = hits.get('hits', '')
+        res['t_count'] = hits.get('total', '')
         return res
 
 
