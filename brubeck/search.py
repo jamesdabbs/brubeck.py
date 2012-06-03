@@ -6,6 +6,23 @@ from django.conf import settings
 from pyelasticsearch import ElasticSearch
 
 
+class SearchQueryset(object):
+    """ Stores results of a bonsai search in a format similar to a standard
+        queryset (specifically, allowing pagination)
+    """
+    def __init__(self, query, result):
+        self.query = query
+        hits = result.get('hits', {})
+        assert False
+        self.hits = result.get('hits', {})
+
+    def __len__(self):
+        return self.hits.get('total', 0)
+
+    def __getitem__(self, i):
+        assert False
+
+
 class BrubeckSearch(ElasticSearch):
     def __init__(self):
         super(BrubeckSearch, self).__init__(settings.BONSAI_URL)
@@ -20,7 +37,7 @@ class BrubeckSearch(ElasticSearch):
         return super(BrubeckSearch, self).index(doc, self._index, doc_type, id)
 
     def search(self, query, body=None, doc_types=[], **query_params):
-        """ Searches the index """
+        """ Returns a SearchQueryset matching the given query """
         if not doc_types:
             doc_types = ['space', 'property', 'implication', 'trait']
         return super(BrubeckSearch, self).search(query, body=None,

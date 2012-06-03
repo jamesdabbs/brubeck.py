@@ -13,22 +13,26 @@
 </section>
 
 <section>
-{% if results %}
-    {% if results.f %}
-        <h3>Spaces matching "{{ results.f|safe }}"</h3>
-        {% if results.f_spaces %}
-        <div class="row">
-            {% for spaces in results.f_spaces|columns:"2" %}
-            <div class="span6">
-                <ul>
-                    {% for s in spaces %}
-                    <li><a href="{{ s.get_absolute_url }}">{{ s.title }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endfor %}
+{% if formula_paginator or text_paginator %}
+    {% if formula_paginator and text_paginator %}{# Show two columns #}
+    <div class="row">
+        <div class="span6">
+            {% include "brubeck/search/formula_results.html" %}
         </div>
+        <div class="span6">
+            {% include "brubeck/search/text_results.html" %}
+        </div>
+    </div>
+    {% else %}{# Only one set of results to show #}
+        {% if formula_paginator %}
+        {% include "brubeck/search/formula_results.html" %}
+        {% else %}
+        {% include "brubeck/search/text_results.html" %}
         {% endif %}
+    {% endif %}
+
+    <!--{% if results.f %}
+        <h3>Spaces matching "{{ results.f|safe }}"</h3>
     {% else %}
         {% if results.f_errors %}
         <h3>{{ results.f_errors.0 }}</h3>
@@ -43,7 +47,8 @@
         {% lookup_document doc as obj%}
         {% include "brubeck/includes/list_line.html" %}
     {% endfor %}
-    {% endif %}
+    {% endif %}-->
+
 {% else %}
     <p>You can search for spaces matching a formula (e.g. compact + ~second countable)
        or do a full-text search of all objects (e.g. by Urysohn's lemma).</p>

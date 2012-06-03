@@ -1,4 +1,5 @@
 {% extends "brubeck/base.html" %}
+{% load bootstrap %}
 {% load brubeck_tags %}
 
 {% block title %}{{ object.name }}{% endblock %}
@@ -32,9 +33,7 @@
 
 <h3>{{ object.traits_desc }} {% block add_trait %}{% endblock %}</h3>
 {% if traits %}
-    {% with traits as page_obj %}
-    {% include "brubeck/includes/pagination.html" %}
-    {% endwith %}
+    {% if is_paginated %}{% pagination traits paginator request %}{% endif %}
     <div class="row">
         {% for trait_col in traits|columns:"3" %}
         <div class="span4">

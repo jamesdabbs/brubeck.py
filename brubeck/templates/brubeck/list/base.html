@@ -1,5 +1,6 @@
 {% extends "brubeck/base.html" %}
 {% load url from future %}
+{% load bootstrap %}
 
 {% block title %}{{ plural_name|capfirst }}{% endblock %}
 
@@ -7,7 +8,7 @@
 <h1>All {{ plural_name|capfirst }}
     <a href="{% url create_name %}" class="btn btn-mini btn-success">Add New</a></h1>
 
-{% include "brubeck/includes/pagination.html" %}
+{% if is_paginated %}{% pagination page_obj paginator request %}{% endif %}
 
 {% for obj in object_list %}
 <div>

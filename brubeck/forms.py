@@ -116,8 +116,19 @@ class ImplicationForm(SnippetForm):
         return cd
 
 
+def _get_start(page_number, per_page):
+    try:
+        start = (int(page_number) - 1) * per_page
+        return 0 if start < 0 else start
+    except TypeError:
+        return 0
+
+
 class SearchForm(forms.Form):
     """ A form for searching the database """
+    SPACES_PER_PAGE = 25
+    TEXTS_PER_PAGE = 10
+
     q = forms.CharField(required=False,
         widget=forms.TextInput(attrs={'class': 'formula-autocomplete'}))
 
@@ -149,10 +160,7 @@ class SearchForm(forms.Form):
         # Otherwise, we'll also search by text
         from brubeck.search import client
 
-        r = client.search('name:%s OR text:%s' % (q, q))
-        hits = r.get('hits', {})
-        res['t_hits'] = hits.get('hits', '')
-        res['t_count'] = hits.get('total', '')
+        res['t_spaces'] = client.search('name:%s OR text:%s' % (q, q))
         return res
 
 

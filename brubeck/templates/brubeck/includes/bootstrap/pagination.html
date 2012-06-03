@@ -1,0 +1,12 @@
+{% load bootstrap %}
+<ul class="pager">
+    {% if page_obj.has_previous %}
+    <li><a href="{% querystring param_name='1' %}">&laquo;</a></li>
+    <li><a href="{% querystring param_name=page_obj.previous_page_number %}">&lsaquo;</a></li>
+    {% endif %}
+    <li><a>Page {{ page_obj.number }} of {{ paginator.num_pages }}</a></li>
+    {% if page_obj.has_next %}
+    <li><a href="{% querystring param_name=page_obj.next_page_number %}">&rsaquo;</a></li>
+    <li><a href="{% querystring param_name=paginator.num_pages %}">&raquo;</a></li>
+    {% endif %}
+</ul>

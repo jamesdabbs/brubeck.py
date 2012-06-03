@@ -1,0 +1,12 @@
+{% load bootstrap %}
+<h3>Spaces matching "{{ formula|safe }}"</h3>
+{% if formula_page %}
+    {% pagination formula_page formula_paginator request 'formula_page' %}
+    <ul>
+        {% for s in formula_page %}
+        <li><a href="{{ s.get_absolute_url }}">{{ s.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No matching spaces found</p>
+{% endif %}

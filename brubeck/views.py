@@ -3,6 +3,7 @@ import json
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core import paginator
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
@@ -214,22 +215,38 @@ def edit(request, model, **kwargs):
 
 def search(request):
     """ Allows a user to search the database """
+    context = {}
     if 'q' in request.GET:
         form = forms.SearchForm(request.GET)
         if form.is_valid():
             results = form.search()
+            # Pre-process the results for the template
+            formula_paginator = Paginator(results.get('f_spaces', []), 25)
+            page = request.GET.get('formula_page', 1)
+            try:
+                formula_page = formula_paginator.page(page)
+            except PageNotAnInteger:
+                formula_page = formula_paginator.page(1)
+            except EmptyPage:
+                formula_page = formula_paginator.page(paginator.num_pages)
+            context.update({
+                'formula_page': formula_page,
+                'formula_paginator': formula_paginator,
+                'formula': results['f']
+            })
     else:
         form = forms.SearchForm()
-    return TemplateResponse(request, 'brubeck/search.html', locals())
+    context.update({'form': form})
+    return TemplateResponse(request, 'brubeck/search/search.html', context)
 
 
 needing_descriptions = ListView.as_view(
-    paginate_by=40,
+    paginate_by=42,
     queryset=utils.get_incomplete_snippets().order_by('content_type'),
     template_name='brubeck/contribute/descriptions.html')
 
 reversal_counterexamples = ListView.as_view(
-    paginate_by=40,
+    paginate_by=42,
     queryset=utils.get_open_converses(),
     template_name='brubeck/contribute/counterexamples.html')
 

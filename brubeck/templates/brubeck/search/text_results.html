@@ -1,0 +1,6 @@
+{% load brubeck_tags %}
+<h3>Full text search</h3>
+{% for doc in results.t_hits %}
+{% lookup_document doc as obj%}
+{% include "brubeck/includes/list_line.html" %}
+{% endfor %}
