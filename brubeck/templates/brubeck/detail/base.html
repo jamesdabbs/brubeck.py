@@ -33,7 +33,7 @@
 
 <h3>{{ object.traits_desc }} {% block add_trait %}{% endblock %}</h3>
 {% if traits %}
-    {% if is_paginated %}{% pagination traits paginator request %}{% endif %}
+    {% if is_paginated %}{% pagination traits request %}{% endif %}
     <div class="row">
         {% for trait_col in traits|columns:"3" %}
         <div class="span4">

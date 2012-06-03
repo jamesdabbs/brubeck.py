@@ -8,7 +8,7 @@
 <h1>All {{ plural_name|capfirst }}
     <a href="{% url create_name %}" class="btn btn-mini btn-success">Add New</a></h1>
 
-{% if is_paginated %}{% pagination page_obj paginator request %}{% endif %}
+{% if is_paginated %}{% pagination page_obj request %}{% endif %}
 
 {% for obj in object_list %}
 <div>

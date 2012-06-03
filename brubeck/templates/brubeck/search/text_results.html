@@ -2,7 +2,9 @@
 {% load brubeck_tags %}
 <h3>Full text search</h3>
 {% if text_page %}
-{% pagination text_page text_paginator request 'text_page' %}
+{% if text_page.has_other_pages %}
+    {% pagination text_page request 'text_page' %}
+{% endif %}
 <ul>
     {% for doc in text_page %}
     {% lookup_document doc as obj%}

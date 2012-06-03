@@ -1,4 +1,5 @@
 {% extends "brubeck/contribute/base.html" %}
+{% load bootstrap %}
 {% load brubeck_tags %}
 
 {% block title %}Open Converses{% endblock %}
@@ -7,13 +8,13 @@
 {% if object_list %}
     <p>The following implications have no counterexamples for their converse. Please add an example for any which aren't reversible.</p>
 
-    {% include "brubeck/includes/pagination.html" %}
+    {% pagination page_obj request %}
 
     <div class="row">
-        {% for column in object_list|columns:"2" %}
+        {% for column in page_obj|columns:"2" %}
         <div class="span6">
             <ul>
-                {% for i in object_list %}
+                {% for i in column %}
                 <li><a href="{{ i.get_absolute_url }}">{{ i.name }}</a></li>
                 {% endfor %}
             </ul>

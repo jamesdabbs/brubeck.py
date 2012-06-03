@@ -218,6 +218,9 @@ def search(request):
     """ Allows a user to search the database """
     # TODO: searching by text may be slow. Should it be AJAXy? Factored into
     #       a separate view?
+    # TODO: the template inheritance for the two different column types is
+    #       messy. It might be easier to actually use different templates for
+    #       the different result types (space only, text only, space & text)
     context = {}
     if 'q' in request.GET:
         form = forms.SearchForm(request.GET)
@@ -234,7 +237,6 @@ def search(request):
                     text_page = text_paginator.page(1)
                 except EmptyPage:
                     text_page = text_paginator.page(text_paginator.num_pages)
-                count = text_paginator.count
                 context.update({
                     'text_page': text_page,
                     'text_paginator': text_paginator
@@ -249,11 +251,14 @@ def search(request):
             except EmptyPage:
                 formula_page = formula_paginator.page(
                     formula_paginator.num_pages)
-            context.update({
-                'formula_page': formula_page,
-                'formula_paginator': formula_paginator,
-                'formula': results['f']
-            })
+            if 'f' in results:
+                context.update({
+                    'formula': results['f'],
+                    'formula_page': formula_page,
+                    'formula_paginator': formula_paginator,
+                })
+            else:
+                context['formula_error'] = results.get('f_errors', [''])[0]
     else:
         form = forms.SearchForm()
     context.update({'form': form})
@@ -276,7 +281,7 @@ def proof(request, s, p):
     return TemplateResponse(request, 'brubeck/detail/proof.html', locals())
 
 
-@cache_page(60*60*24)
+@cache_page(60 * 60 * 24)
 def proof_ajax(request, s, p):
     # if not request.is_ajax(): raise Http404
     trait = get_object_or_404(Trait, space__slug=s, property__slug=p)

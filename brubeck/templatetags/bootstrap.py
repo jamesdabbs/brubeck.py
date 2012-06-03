@@ -134,7 +134,7 @@ def querystring(parser, token):
 
 
 @register.simple_tag
-def pagination(page, paginator, request, param_name='page'):
+def pagination(page, request, param_name='page'):
     """ Renders a pagination widget using the given page and paginator.
         If given, param_name is the GET argument determining the page number.
 
@@ -145,7 +145,7 @@ def pagination(page, paginator, request, param_name='page'):
     #       to be explicitly given
     return render_to_string('brubeck/includes/bootstrap/pagination.html', {
         'page_obj': page,
-        'paginator': paginator,
+        'paginator': page.paginator,
         'request': request,
         'param_name': param_name
     })

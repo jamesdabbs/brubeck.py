@@ -1,4 +1,5 @@
 {% extends "brubeck/contribute/base.html" %}
+{% load bootstrap %}
 {% load brubeck_tags %}
 
 {% block title %}Add Descriptions{% endblock %}
@@ -7,10 +8,10 @@
 {% if object_list.exists %}
     <p>The following objects were manually entered into the database, but no description or proof was entered at that time. You can help by adding one.</p>
 
-    {% include "brubeck/includes/pagination.html" %}
+    {% pagination page_obj request %}
 
     <div class="row">
-        {% for column in object_list|columns:"2" %}
+        {% for column in page_obj|columns:"2" %}
         <div class="span6">
             <ul>
                 {% for s in column %}
