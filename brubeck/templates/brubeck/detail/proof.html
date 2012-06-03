@@ -15,8 +15,17 @@
 </style>
 {% endblock %}
 
+{% block breadcrumbs %}
+{% endblock %}
+
 {% block container %}
 <div class="container-fluid">
+    <ul class="breadcrumb">
+        <li><a href="{% url 'brubeck:home' %}">Home</a></li>
+        <li><span class="divider">/</span> <a href="{% url 'brubeck:traits' %}">Traits</a></li>
+        <li><span class="divider">/</span> <a href="{{ object.get_absolute_url }}">{{ object.name }}</a></li>
+        <li class="active"><span class="divider">/</span> Proof</li>
+    </ul>
     <div class="row-fluid" id="proof-overview">
         <div class="span8">
             <noscript>{% alert 'The proof explorer requires javascript to run. Please enable javascript and try again' %}</noscript>
@@ -80,7 +89,7 @@ $(function() {
         //Set Node and Edge styles.
         Node: {
             color: '#2c2c2c',
-            overridable: true,
+            overridable: true
         },
         Edge: {
             overridable: true,

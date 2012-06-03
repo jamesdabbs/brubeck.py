@@ -5,7 +5,7 @@
 <head>
     <title>{% block fulltitle %}{% block title %}Base{% endblock %} | Brubeck{% endblock %}</title>
 
-    <meta name="description" content="{% block meta_description %}{% endblock %}"
+    <meta name="description" content="{% block meta_description %}{% endblock %}"/>
 
     <link href="https://s3.amazonaws.com/jdabbs.com/static/brubeck/img/favicon.ico" rel="icon" type="image/x-icon" />
     <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet"/>
@@ -16,7 +16,7 @@
 <body>
     <nav class="navbar">
         <div class="navbar-inner">
-            <a class="brand" href="{% url 'brubeck:home' %}"#">Brubeck</a>
+            <a class="brand" href="{% url 'brubeck:home' %}">Brubeck</a>
             <ul class="nav">
                 <li><a href="{% url 'brubeck:spaces' %}">Spaces</a></li>
                 <li><a href="{% url 'brubeck:properties' %}">Properties</a></li>
@@ -45,6 +45,13 @@
 
     {% block container %}
     <div id="content" class="container">
+        {% block full_breadcrumbs %}
+        <ul class="breadcrumb">
+            <li><a href="{% url 'brubeck:home' %}">Home</a></li>
+            {% block breadcrumbs %}{% endblock %}
+        </ul>
+        {% endblock %}
+
         {% block messages %}
         {% if messages %}
         {% for message in messages %}

@@ -1,4 +1,10 @@
 {% extends "brubeck/detail/base.html" %}
+{% load url from future %}
+
+{% block breadcrumbs %}
+<li><span class="divider">/</span> <a href="{% url 'brubeck:implications' %}">Implications</a></li>
+<li class="active"><span class="divider">/</span> {{ object.name }}</li>
+{% endblock %}
 
 {% block extra %}
 <section id="reversal">

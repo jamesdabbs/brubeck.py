@@ -1,1 +1,7 @@
 {% extends "brubeck/create/base.html" %}
+{% load url from future %}
+
+{% block breadcrumbs %}
+<li><span class="divider">/</span> <a href="{% url 'brubeck:spaces' %}">Spaces</a></li>
+<li class="active"><span class="divider">/</span> Create</li>
+{% endblock %}

@@ -1,8 +1,14 @@
 {% extends "brubeck/create/base.html" %}
 {% load bootstrap %}
+{% load url from future %}
 
 {% block meta_description %}
 {{ block.super }} This will trigger automatic proof generation.
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><span class="divider">/</span> <a href="{% url 'brubeck:traits' %}">Traits</a></li>
+<li class="active"><span class="divider">/</span> Create</li>
 {% endblock %}
 
 {% block prover_warning %}

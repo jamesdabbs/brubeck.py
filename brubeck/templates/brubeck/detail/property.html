@@ -1,6 +1,11 @@
 {% extends "brubeck/detail/base.html" %}
 {% load url from future %}
 
+{% block breadcrumbs %}
+<li><span class="divider">/</span> <a href="{% url 'brubeck:properties' %}">Properties</a></li>
+<li class="active"><span class="divider">/</span> {{ object.name }}</li>
+{% endblock %}
+
 {% block add_trait %}<a href="{% url 'brubeck:create_trait' %}?property={{ object.id }}" class="btn btn-mini btn-success">Add</a>{% endblock %}
 
 {% block extra %}

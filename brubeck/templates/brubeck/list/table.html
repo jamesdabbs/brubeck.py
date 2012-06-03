@@ -14,6 +14,11 @@
 </style>
 {% endblock %}
 
+{% block breadcrumbs %}
+<li><span class="divider">/</span> <a href="{% url 'brubeck:traits' %}">Traits</a></li>
+<li class="active"><span class="divider">/</span> Table</li>
+{% endblock %}
+
 {% block content %}
 <form action="" method="GET" class="form-horizontal">
     <fieldset>

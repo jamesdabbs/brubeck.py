@@ -9,6 +9,11 @@ The following objects were manually added to the database, but no description
 or proof was given at that time. You can contribute by adding one.
 {% endblock %}
 
+{% block breadcrumbs %}
+{{ block.super }}
+<li class="active"><span class="divider">/</span> Converses</li>
+{% endblock %}
+
 {% block content %}
 {% if object_list.exists %}
     <p>The following objects were manually entered into the database, but no description or proof was entered at that time. You can help by adding one.</p>

@@ -1,5 +1,12 @@
 {% extends "brubeck/edit/base.html" %}
 {% load bootstrap %}
+{% load url from future %}
+
+{% block breadcrumbs %}
+    <li><span class="divider">/</span> <a href="{% url 'brubeck:implications' %}">Implications</a></li>
+    <li><span class="divider">/</span> <a href="{{ object.get_absolute_url }}">{{ object.name }}</a></li>
+    <li class="active"><span class="divider">/</span> Edit</li>
+{% endblock %}
 
 {% block prover_warning %}
 {% alert 'Because of automatic proof generation, changing the logic of this implication is not allowed. If you do find a mistake that needs to be changed, please <a href="mailto:james.dabbs@gmail.com">contact an administrator</a>.' %}

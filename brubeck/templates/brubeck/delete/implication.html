@@ -1,1 +1,8 @@
 {% extends "brubeck/delete/base.html" %}
+{% load url from future %}
+
+{% block breadcrumbs %}
+<li><span class="divider">/</span> <a href="{% url 'brubeck:implications' %}">Implications</a></li>
+<li><span class="divider">/</span> <a href="{{ object.get_absolute_url }}">{{ object.name }}</a></li>
+<li class="active"><span class="divider">/</span> Delete</li>
+{% endblock %}

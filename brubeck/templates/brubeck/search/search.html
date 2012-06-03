@@ -10,6 +10,10 @@ space should have - like "compact + connected" - or can search for any object
 by the text appearing in its name or description - like "the pressing down lemma".
 {% endblock %}
 
+{% block breadcrumbs %}
+<li class="active"><span class="divider">/</span> Search</li>
+{% endblock %}
+
 {% block content %}
 <section id="search">
     <form action="" method="GET" class="well form-search">

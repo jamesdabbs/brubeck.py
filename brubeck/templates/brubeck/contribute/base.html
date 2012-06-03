@@ -1,1 +1,6 @@
 {% extends "brubeck/base.html" %}
+{% load url from future %}
+
+{% block breadcrumbs %}
+<li><span class="divider">/</span> <a href="{% url 'brubeck:contribute' %}">Contribute</a></li>
+{% endblock %}
