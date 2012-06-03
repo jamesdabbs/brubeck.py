@@ -1,6 +1,10 @@
 {% extends "brubeck/create/base.html" %}
 {% load bootstrap %}
 
+{% block meta_description %}
+{{ block.super }} This will trigger automatic proof generation.
+{% endblock %}
+
 {% block prover_warning %}
 {% alert 'Adding a new trait will trigger automatic proof generation, which may lead to a large number of proofs being added. Please be sure of the data you enter and be patient with the results.' %}
 {% endblock %}

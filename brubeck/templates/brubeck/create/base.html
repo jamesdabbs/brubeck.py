@@ -3,6 +3,10 @@
 
 {% block title %}New {{ cls_name|capfirst }}{% endblock %}
 
+{% block meta_description %}
+Add a new {{ cls_name }} to the brubeck database.
+{% endblock %}
+
 {% block content %}
 {% block object_title %}<h2>New {{ cls_name|capfirst }}</h2>{% endblock %}
 {% block prover_warning %}{% endblock %}

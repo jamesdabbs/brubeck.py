@@ -2,6 +2,10 @@
 
 {% block title %}{{ object.name }} Revisions{% endblock %}
 
+{% block meta_description %}
+Allows a user to roll back changes to the text description of {{ object.name }}.
+{% endblock %}
+
 {% block extra_head %}
 <style type="text/css">
     .trunc {

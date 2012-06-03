@@ -1,6 +1,11 @@
 {% extends "brubeck/create/base.html" %}
 {% load bootstrap %}
 
+{% block meta_description %}
+Allows editing of the text for {{ object.name }}. All text is under revision
+control.
+{% endblock %}
+
 {% block title %}Edit {{ object.name }}{% endblock %}
 
 {% block object_title %}

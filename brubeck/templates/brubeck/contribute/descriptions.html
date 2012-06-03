@@ -4,6 +4,11 @@
 
 {% block title %}Add Descriptions{% endblock %}
 
+{% block meta_description %}
+The following objects were manually added to the database, but no description
+or proof was given at that time. You can contribute by adding one.
+{% endblock %}
+
 {% block content %}
 {% if object_list.exists %}
     <p>The following objects were manually entered into the database, but no description or proof was entered at that time. You can help by adding one.</p>

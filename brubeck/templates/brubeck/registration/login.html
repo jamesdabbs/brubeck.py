@@ -3,6 +3,11 @@
 
 {% block title %}Login{% endblock %}
 
+{% block meta_description %}
+You must be logged in to the Brubeck database in order to perform some
+operations. Please log in using this form.
+{% endblock %}
+
 {% block content %}
 <form action="" method="POST" class="form-horizontal">
     {% csrf_token %}

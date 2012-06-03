@@ -1,7 +1,13 @@
 {% extends "brubeck/base.html" %}
 {% load bootstrap %}
 
-{% block title %}Delete{% endblock %}
+{% block title %}Delete {{ object.title }}{% endblock %}
+
+{% block meta_description %}
+Delete an object from the Brubeck database. Note that this deletion may cascade
+and will trigger an audit of the database and for consistency and may cause new
+proofs to be created, if they still follow from existing facts in the database.
+{% endblock %}
 
 {% block content %}
 <h3>Delete {{ object.title }}</h3>

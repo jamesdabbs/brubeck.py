@@ -4,6 +4,10 @@
 
 {% block title %}{{ object.name }}{% endblock %}
 
+{% block meta_description %}
+{{ object.sippets.all.0.current_text }}
+{% endblock %}
+
 {% block content %}
 <h1>{{ object.title }}
     <a href="{{ object.get_edit_url }}" class="btn btn-mini btn-success">Edit</a>

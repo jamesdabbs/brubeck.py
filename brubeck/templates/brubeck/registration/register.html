@@ -3,6 +3,11 @@
 
 {% block title %}Register{% endblock %}
 
+{% block meta_description %}
+While much of the Brubeck database is publically accessible, you must register
+in order to add or edit data. Registration is painless and only takes a moment.
+{% endblock %}
+
 {% block content %}
 <form action="" method="POST" class="form-horizontal">
     {% csrf_token %}
