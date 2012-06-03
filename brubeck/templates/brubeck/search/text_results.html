@@ -1,6 +1,14 @@
+{% load bootstrap %}
 {% load brubeck_tags %}
 <h3>Full text search</h3>
-{% for doc in results.t_hits %}
-{% lookup_document doc as obj%}
-{% include "brubeck/includes/list_line.html" %}
-{% endfor %}
+{% if text_page %}
+{% pagination text_page text_paginator request 'text_page' %}
+<ul>
+    {% for doc in text_page %}
+    {% lookup_document doc as obj%}
+    {% include "brubeck/includes/list_line.html" %}
+    {% endfor %}
+</ul>
+{% else %}
+    <p>No matches found</p>
+{% endif %}

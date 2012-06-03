@@ -2,25 +2,36 @@ import logging
 import sys
 
 from django.conf import settings
+from django.core.paginator import Paginator, Page
 
 from pyelasticsearch import ElasticSearch
 
 
-class SearchQueryset(object):
-    """ Stores results of a bonsai search in a format similar to a standard
-        queryset (specifically, allowing pagination)
-    """
-    def __init__(self, query, result):
+class SearchPaginator(Paginator):
+    def __init__(self, query, per_page, **kwargs):
         self.query = query
-        hits = result.get('hits', {})
-        assert False
-        self.hits = result.get('hits', {})
+        super(SearchPaginator, self).__init__([], per_page, **kwargs)
 
-    def __len__(self):
-        return self.hits.get('total', 0)
+    def page(self, number):
+        number = self.validate_number(number)
+        bottom = (number - 1) * self.per_page
+        result = client.search(self.query,
+            **{'from': bottom, 'size': self.per_page})
+        try:
+            objects = result['hits']['hits']
+        except KeyError:
+            objects = []
+        return Page(objects, number, self)
 
-    def __getitem__(self, i):
-        assert False
+    def _get_count(self):
+        if self._count is None:
+            try:
+                self._count = client.search(
+                    self.query, **{'from': 0, 'size': 1})['hits']['total']
+            except KeyError:
+                self._count = 0
+        return self._count
+    count = property(_get_count)
 
 
 class BrubeckSearch(ElasticSearch):

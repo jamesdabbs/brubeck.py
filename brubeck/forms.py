@@ -157,10 +157,8 @@ class SearchForm(forms.Form):
         if 'f' in res and ('+' in q or '|' in q):
             return res
 
-        # Otherwise, we'll also search by text
-        from brubeck.search import client
-
-        res['t_spaces'] = client.search('name:%s OR text:%s' % (q, q))
+        # Otherwise, include the text to search by
+        res['text'] = q
         return res
 
 

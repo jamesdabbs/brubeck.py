@@ -1,4 +1,5 @@
 import json
+from brubeck.search import SearchPaginator
 
 from django.contrib import messages
 from django.contrib.auth import login
@@ -215,20 +216,39 @@ def edit(request, model, **kwargs):
 
 def search(request):
     """ Allows a user to search the database """
+    # TODO: searching by text may be slow. Should it be AJAXy? Factored into
+    #       a separate view?
     context = {}
     if 'q' in request.GET:
         form = forms.SearchForm(request.GET)
         if form.is_valid():
             results = form.search()
             # Pre-process the results for the template
+            if 'text' in results:
+            # Set count
+                text_paginator = SearchPaginator(results['text'], 10)
+                text_page = request.GET.get('text_page', 1)
+                try:
+                    text_page = text_paginator.page(text_page)
+                except PageNotAnInteger:
+                    text_page = text_paginator.page(1)
+                except EmptyPage:
+                    text_page = text_paginator.page(text_paginator.num_pages)
+                count = text_paginator.count
+                context.update({
+                    'text_page': text_page,
+                    'text_paginator': text_paginator
+                })
+
             formula_paginator = Paginator(results.get('f_spaces', []), 25)
-            page = request.GET.get('formula_page', 1)
+            formula_page = request.GET.get('formula_page', 1)
             try:
-                formula_page = formula_paginator.page(page)
+                formula_page = formula_paginator.page(formula_page)
             except PageNotAnInteger:
                 formula_page = formula_paginator.page(1)
             except EmptyPage:
-                formula_page = formula_paginator.page(paginator.num_pages)
+                formula_page = formula_paginator.page(
+                    formula_paginator.num_pages)
             context.update({
                 'formula_page': formula_page,
                 'formula_paginator': formula_paginator,
