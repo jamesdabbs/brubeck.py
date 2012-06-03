@@ -60,17 +60,23 @@ def index_revision(sender, instance, created, **kwargs):
 # It seems to happen fairly consistently after ~1406 API calls. This is
 # (hopefully) an issue with Bonsai limiting query rates that shouldn't be
 # a problem on the live site (at least, not any time soon)
-def _build_indices(start=None, end=None):
-    from brubeck.models import Revision
+def _update_indices():
+    from brubeck.models import Space, Property, Trait, Implication
+    from brubeck.search import BrubeckSearch
 
-    revisions = Revision.objects.all().order_by('id')
-    if start:
-        revisions = revisions.filter(id__gte=start)
-    if end:
-        revisions = revisions.filter(id__lte=end)
-    for r in revisions:
-        r.save()  # index_revision is a post_save method. This will also
-                  # update the proof_text if possible.
+    client = BrubeckSearch()
+
+    for cls in [Space, Property, Trait, Implication]:
+        for obj in cls.objects.all():
+            r = client.get(cls.__name__.lower(), obj.id)
+            text = obj.snippets.all()[0].current_text()
+            if not r['exists'] or r['_source']['text'] != text:
+                doc = {
+                    'name': obj.name() if callable(obj.name) else obj.name,
+                    'text': text
+                }
+                client.index(doc, cls.__name__.lower(), obj.id)
+                logger.debug('Indexed: %s' % doc)
 
 
 def _clear_indices():

@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, FormView, UpdateView
 
@@ -238,6 +239,7 @@ def proof(request, s, p):
     return TemplateResponse(request, 'brubeck/detail/proof.html', locals())
 
 
+@cache_page(60*60*24)
 def proof_ajax(request, s, p):
     # if not request.is_ajax(): raise Http404
     trait = get_object_or_404(Trait, space__slug=s, property__slug=p)
