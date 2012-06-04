@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 
-from brubeck import utils
 from brubeck.logic import Prover
 from brubeck.logic.formula.utils import human_to_formula
 from brubeck.models import Space, Property, Trait, Implication, Value
@@ -17,13 +16,6 @@ class SnippetForm(forms.ModelForm):
     """ A ModelForm that also adds a Snippet describing the object it saves
     """
     description = forms.CharField(widget=forms.Textarea())
-
-    def save(self, commit=True, add_snippet=True):
-        obj = super(SnippetForm, self).save(commit=commit)
-        if add_snippet:
-            utils.add_snippet(obj, self.cleaned_data['description'],
-                user=self.user)
-        return obj
 
 
 class EditForm(forms.Form):
@@ -146,7 +138,7 @@ class SearchForm(forms.Form):
                 res['f'] = f.__unicode__(lookup=True, link=True)
                 res['f_spaces'] = Space.objects.filter(
                     id__in=Prover.spaces_matching_formula(f))
-        except Exception as e:
+        except ValidationError as e:
             res['f_errors'] = e.messages
 
         # Trim trailing separators

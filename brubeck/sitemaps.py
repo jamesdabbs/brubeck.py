@@ -48,7 +48,7 @@ class EditImplicationSitemap(ImplicationSitemap, _EditMixin):
 
 
 class TraitProofSitemap(TraitSitemap):
-    def location(self, obj):
+    def location(self, object):
         return object.get_proof_url()
 
 
@@ -71,6 +71,7 @@ sitemap = {
     'edit_property': EditPropertySitemap,
     'trait': TraitSitemap,
     'edit_trait': EditTraitSitemap,
+    'prove_trait': TraitProofSitemap,
     'implication': ImplicationSitemap,
     'edit_implication': EditImplicationSitemap,
     'static': ViewSitemap

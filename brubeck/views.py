@@ -1,10 +1,8 @@
 import json
-from brubeck.search import SearchPaginator
 
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.core import paginator
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
@@ -16,7 +14,9 @@ from django.views.generic.edit import CreateView, FormView, UpdateView
 
 from brubeck import forms, utils
 from brubeck.logic import Prover
-from brubeck.models import Space, Property, Trait, Implication, Revision
+from brubeck.models import Space, Property, Trait, Implication, Revision, \
+    Snippet
+from brubeck.search import SearchPaginator
 
 
 def _force_login(request, user):
@@ -193,6 +193,13 @@ class Create(ModelViewMixin, CreateView):
         context['cls_name'] = _get_name(self.model)
         return context
 
+    def form_valid(self, form):
+        obj = form.save()
+        snippet = Snippet.objects.create(object=obj)
+        snippet.add_revision(user=self.request.user,
+            text=form.cleaned_data['description'])
+        return redirect(obj)
+
 
 # TODO: extra permissions handling
 def create(request, model):
@@ -319,11 +326,8 @@ class Delete(ModelViewMixin, GetObjectMixin, DetailView):
         return redirect('brubeck:home')
 
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def delete(request, model, **kwargs):
-    # This view is limited to superusers only
-    if not request.user.is_superuser:
-        raise Http404
     return Delete.as_view(model=model)(request, **kwargs)
 
 
