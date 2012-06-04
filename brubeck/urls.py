@@ -77,12 +77,16 @@ urlpatterns += patterns('brubeck.views',
     url(r'^(?P<space>[-\w]+)/(?P<property>[-\w]+)/rev/$', 'revision_detail',
             {'model': Trait}, name='revise_trait'),
 
+    # Views for redirections coming from old webspace
+    url(r'^migrate/([-\w]+)/$', 'migrate'),
+    url(r'^migrate/([-\w]+)/([-\w]+)/$', 'migrate'),
+
     # Detail Views (un-ambiguous locations)
     url(r'^spaces/(?P<slug>[-\w]+)/$', 'detail',
         {'model': Space}, name='space'),
     url(r'^properties/(?P<slug>[-\w]+)/$', 'detail',
         {'model': Property}, name='property'),
-    url(r'^(?P<slug>[-\w]+)/$', 'disambiguate'),
+    url(r'^(?P<slug>[-\w]+)/$', 'disambiguate', name='disambiguate'),
     url(r'^implications/(?P<id>\d+)/$', 'detail',
             {'model': Implication}, name='implication'),
     url(r'^(?P<space>[-\w]+)/(?P<property>[-\w]+)/$', 'detail',

@@ -345,3 +345,23 @@ def disambiguate(request, slug):
     if property.exists():
         return redirect(property[0])
     raise Http404
+
+
+def migrate(request, *args):
+    """ Utility view for pointing database traffic to its new location. This
+        should not be needed for other installations.
+    """
+    try:
+        top = args[0].lower()
+        if top == 'browse':
+            return redirect('brubeck:home', permanent=True)
+        if top == 'search':
+            return redirect('brubeck:search', permanent=True)
+        if len(args) == 1:
+            return redirect('brubeck:disambiguate', slug=top, permanent=True)
+        if top == 'theorem':
+            return redirect('brubeck:implication', id=args[1], permanent=True)
+        return redirect('brubeck:trait', space=top, property=args[1].lower(),
+            permanent=True)
+    except Exception:
+        raise Http404
