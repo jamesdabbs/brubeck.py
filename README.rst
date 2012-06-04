@@ -37,3 +37,4 @@ you'd like to start hacking away on any of them, please let me know:
 - Support for asynchronous prover tasks (using celery)
 - Improved search, support for aliases (Hausdorff == T_2)
 - Styling beyond bootstrap defaults :)
+- Mobile version of the site (Android / iPhone apps?)
