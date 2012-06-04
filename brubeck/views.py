@@ -325,3 +325,23 @@ def delete(request, model, **kwargs):
     if not request.user.is_superuser:
         raise Http404
     return Delete.as_view(model=model)(request, **kwargs)
+
+
+def disambiguate(request, slug):
+    """ Given a possibly (but probably not) ambiguous slug, redirects if
+        possible, or displays a disambiguation page if not.
+    """
+    space = Space.objects.filter(slug=slug)
+    property = Property.objects.filter(slug=slug)
+
+    if space.exists() and property.exists():
+        return TemplateResponse(request, 'brubeck/disambiguation.html', {
+            'space': space[0],
+            'property': property[0],
+            'slug': slug
+        })
+    if space.exists():
+        return redirect(space[0])
+    if property.exists():
+        return redirect(property[0])
+    raise Http404

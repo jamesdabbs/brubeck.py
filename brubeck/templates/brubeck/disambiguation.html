@@ -1,0 +1,23 @@
+{% extends "brubeck/base.html" %}
+
+{% block title %}Disambiguation: {{ slug }}{% endblock %}
+
+{% block meta_description %}
+The url {{ slug }} corresponds to multiple objects in the database. This page
+differentiates between the possible choices.
+{% endblock %}
+
+{% block breadcrumbs %}
+<li class="active"><span class="divider">/</span> Disambiguation ({{ slug }})</li>
+{% endblock %}
+
+{% block content %}
+<h2>Disambiguation</h2>
+<p>"{{ slug }}" corresponds to multiple objects in the database. Did you mean:</p>
+<h3><a href="{{ space.get_absolute_url }}">{{ space.name }}</a>
+    <small>(Space)</small></h3>
+<p>{{ space.snippets.all.0 }}</p>
+<h3><a href="{{ property.get_absolute_url }}">{{ property.name }}</a>
+    <small>(Property)</small></h3>
+<p>{{ property.snippets.all.0 }}</p>
+{% endblock %}
