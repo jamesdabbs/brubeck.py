@@ -91,8 +91,14 @@ def table(request):
     cx = [row.split(',') for row in f.split('\n')]
 
     # And a list of all current traits
-    start = int(request.GET.get('start', '1'))
-    end = int(request.GET.get('end', '144'))
+    try:
+        start = int(request.GET['start'])
+    except Exception:
+        start = 1
+    try:
+        end = int(request.GET['end'])
+    except Exception:
+        end = 143
     end = min(end, 143)
     traits = {}
     spaces = Space.defined_objects.filter(id__in=range(start, end + 1))
