@@ -28,6 +28,20 @@ def get_incomplete_snippets():
     return Snippet.objects.filter(revision__text='')
 
 
+def traits_needing_descriptions(obj):
+    """ Gets a list of traits related to this object (Space or Property) which
+        have a blank description.
+    """
+    from django.contrib.contenttypes.models import ContentType
+    from brubeck.models import Trait
+
+    return Snippet.objects.filter(
+        content_type=ContentType.objects.get_for_model(Trait),
+        object_id__in=[t.id for t in obj.trait_set.all()],
+        revision__text=''
+    )
+
+
 def get_open_converses():
     """ Finds implications with open converses. """
     from brubeck.models.provable import Implication

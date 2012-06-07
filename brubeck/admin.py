@@ -9,10 +9,13 @@ class TextAdmin(admin.ModelAdmin):
         """ Gets the text of the (first) snippet for `obj` """
         return obj.snippets.all()[0].current_text()
 
+    def last_revised_by(self, obj):
+        return obj.snippets.all()[0].revision.user
+
 
 # Core objects
 class SpaceAdmin(TextAdmin):
-    list_display = ('id', 'name', 'text')
+    list_display = ('id', 'name', 'text', 'last_revised_by')
 admin.site.register(models.Space, SpaceAdmin)
 
 
@@ -22,19 +25,20 @@ admin.site.register(models.Property, PropertyAdmin)
 
 
 class TraitAdmin(TextAdmin):
-    list_display = ('id', 'space', 'property', 'value', 'text')
+    list_display = ('id', 'space', 'property', 'value', 'text',
+                    'last_revised_by')
 admin.site.register(models.Trait, TraitAdmin)
 
 
 class ImplicationAdmin(TextAdmin):
-    list_display = ('id', 'name', 'text')
+    list_display = ('id', 'name', 'text', 'last_revised_by')
 admin.site.register(models.Implication, ImplicationAdmin)
 
 
 # Wiki documents
 class SnippetAdmin(admin.ModelAdmin):
-    list_display = ('object', 'current_text', 'is_proof')
+    list_display = ('object', 'current_text', 'last_revised_by')
 
-    def is_proof(self, obj):
-        return hasattr(obj, 'proof')
+    def last_revised_by(self, obj):
+        return obj.revision.user
 admin.site.register(models.Snippet, SnippetAdmin)

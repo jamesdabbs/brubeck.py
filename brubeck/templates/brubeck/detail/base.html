@@ -35,6 +35,19 @@
 
 {% block extra %}{% endblock %}
 
+{% block needing_descriptions %}
+{% if user.is_staff and traits_needing_descriptions %}
+<section>
+    <h4>The following traits are missing proofs:</h4>
+    <ul>
+        {% for s in traits_needing_descriptions %}
+        <li><a href="{{ s.object.get_absolute_url }}">{{ s.object }}</a></li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+{% endblock %}
+
 <h3>{{ object.traits_desc }} {% block add_trait %}{% endblock %}</h3>
 {% if traits %}
     {% if is_paginated %}{% pagination traits request %}{% endif %}

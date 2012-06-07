@@ -142,6 +142,11 @@ class Detail(ModelViewMixin, GetObjectMixin, DetailView):
                 context['unknown_extra'] = max(spaces.count() - 3, 0)
                 spaces = spaces[:3]
             context['unknown'] = spaces
+
+        # Add "traits needing descriptions" for Spaces or Properties
+        if self.model in [Space, Property]:
+            context['traits_needing_descriptions'] = \
+                utils.traits_needing_descriptions(self.object)
         return context
 
 
