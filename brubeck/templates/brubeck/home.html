@@ -20,6 +20,14 @@ them.
         Counterexamples in Topology</a>. It contains descriptions of several
         important topological spaces and properties and the interrelationships
         between each of them.</p>
+    <h3>Try a search, like</h3>
+    <section id="search">
+        <form action="{% url 'brubeck:search' %}" method="GET" class="form-search">
+            <input id="id_q" type="text" class="formula-autocomplete span8"
+                   value="Compact + Connected + ~Metrizable" name="q" />
+            <button class="btn btn-primary">Search</button>
+        </form>
+    </section>
 </div>
 
 <h2>Features</h2>
@@ -70,4 +78,12 @@ them.
    to Scott V. and the <a href="http://math.auburn.edu/">Auburn</a> mathgrads who helped with the initial data entry.</p>
 <p>"Math and science. Boom."</p>
 <p>- <a href="mailto:james.dabbs@gmail.com">James</a></p>
+{% endblock %}
+
+{% block extra_head %}
+{% include "brubeck/includes/formula_autocomplete/css.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+{% include "brubeck/includes/formula_autocomplete/js.html" %}
 {% endblock %}
