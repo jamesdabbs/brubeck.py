@@ -42,3 +42,12 @@ class SnippetAdmin(admin.ModelAdmin):
     def last_revised_by(self, obj):
         return obj.revision.user
 admin.site.register(models.Snippet, SnippetAdmin)
+
+
+# Profiles
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('username', 'revisions')
+
+    def revisions(self, profile):
+        return profile.user.revision_set.count()
+admin.site.register(models.Profile, ProfileAdmin)

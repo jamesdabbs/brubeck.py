@@ -10,6 +10,11 @@ class Profile(models.Model):
     class Meta:
         app_label = 'brubeck'
 
+    def __unicode__(self):
+        return self.user.username
+
+    username = property(lambda s: s.user.username)
+
 
 # Attach a Profile to every newly created User
 def add_profile(sender, instance, created, raw, **kwargs):
