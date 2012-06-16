@@ -1,6 +1,7 @@
 {% extends "brubeck/base.html" %}
 {% load bootstrap %}
 {% load brubeck_tags %}
+{% load markup %}
 
 {% block title %}{{ object.name }}{% endblock %}
 
@@ -17,10 +18,10 @@
 </h1>
 {% for s in object.snippets.all %}
     {% if s.automatically_added %}
-    <p>{{ s.render_html }}</p>
+    <p>{{ s.render_html|smarkdown }}</p>
     {% else %}
     {% if s.current_text %}
-    <p>{{ s.current_text }}</p>
+    <p>{{ s.current_text|smarkdown }}</p>
     {% else %}
     <p><em>It looks like this object was manually added, but no description was given. You can help by <a href="{{ object.get_edit_url }}">adding one</a>.</em></p>
     {% endif %}

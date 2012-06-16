@@ -1,5 +1,8 @@
 from django import template
 from django.db.models.loading import get_model
+from django.utils.safestring import mark_safe
+
+import markdown
 
 register = template.Library()
 
@@ -86,3 +89,23 @@ def columns(l, num):
             br += 1
         _columns.append(l[start:br])
     return _columns
+
+
+@register.filter
+def smarkdown(text):
+    """ Smart markdown of a body of text, preserving MathJAX formatting
+    """
+    # TODO: Better handling of escaping.
+    #       Is this always safe?
+    # Prepare the text so that Markdown doesn't remove MathJAX formatting
+    text = text.replace('\(', '|(')
+    text = text.replace('\)', '|)')
+
+    # Apply markdown, escaping any existing html
+    md = markdown.Markdown(safe_mode='escape')
+    text = md.convert(text)
+
+    # Re-insert the MathJAX formatting
+    text = text.replace('|(', '\(')
+    text = text.replace('|)', '\)')
+    return mark_safe(text)

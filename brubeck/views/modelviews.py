@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import get_object_or_404, redirect
@@ -94,7 +95,7 @@ def detail(request, model, **kwargs):
     return Detail.as_view(model=model)(request, **kwargs)
 
 
-class Revise(ModelViewMixin, GetObjectMixin, DetailView):
+class Revise(GetObjectMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(Revise, self).get_context_data(**kwargs)
         context['snippets'] = self.object.snippets.all()
@@ -157,7 +158,7 @@ def create(request, model):
     return login_required(Create.as_view(model=model))(request)
 
 
-class Edit(ModelViewMixin, GetObjectMixin, UpdateView):
+class Edit(GetObjectMixin, UpdateView):
     """ Generates a view for editing a core object """
     def get_form_class(self):
         form_class = forms.EditForm
@@ -171,7 +172,7 @@ class Edit(ModelViewMixin, GetObjectMixin, UpdateView):
 def edit(request, model, **kwargs):
     return login_required(Edit.as_view(model=model))(request, **kwargs)
 
-class Delete(ModelViewMixin, GetObjectMixin, DetailView):
+class Delete(GetObjectMixin, DetailView):
     # TODO: deal with potential race condition with deleting and re-adding
     model = None
     form_class = forms.DeleteForm
@@ -184,6 +185,7 @@ class Delete(ModelViewMixin, GetObjectMixin, DetailView):
     def post(self, *args, **kwargs):
         object = self.get_object()
 
+        o_count = 0
         if 'confirm' in self.request.POST and self.request.user.is_superuser:
             orphans = utils.get_orphans(object)
             o_count = len(orphans)
