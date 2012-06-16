@@ -1,8 +1,9 @@
+{% load brubeck_tags %}
 <h4><a href="{{ obj.get_absolute_url }}">{{ obj.name }}</a></h4>
 <p>
     {% block obj_desc %}
     {% with obj.snippets.all.0 as snippet %}
-    {{ snippet.current_text }}
+    {{ snippet.current_text|smarkdown }}
     {% endwith %}
     {% endblock %}
 </p>

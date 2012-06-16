@@ -91,21 +91,41 @@ def columns(l, num):
     return _columns
 
 
+def _escape(string, chars):
+    for c in chars:
+        string = string.replace(c, '\\' + c)
+    return string
+
+
 @register.filter
 def smarkdown(text):
     """ Smart markdown of a body of text, preserving MathJAX formatting
     """
-    # TODO: Better handling of escaping.
-    #       Is this always safe?
-    # Prepare the text so that Markdown doesn't remove MathJAX formatting
+    # TODO: this can probably be simplified with some regexes / better escape
+    #       handling.
     text = text.replace('\(', '|(').replace('\)', '|)').replace(
                         '\[', '|[').replace('\]', '|]')
 
-    # Apply markdown, escaping any existing html
-    md = markdown.Markdown(safe_mode='escape')
-    text = md.convert(text)
+    res, store, delimiter, out = [], '', None, True
+    for i in range(len(text)):
+        # Check if we're moving into a parenthetical grouping
+        if text[i:].startswith('|('):
+            res.append(store)
+            store, delimiter, out = '', '|)', False
+        elif text[i:].startswith('|['):
+            res.append(store)
+            store, delimiter, out = '', '|]', False
+        # Check if we're moving out of a parenthetical grouping
+        elif not out and delimiter and text[i:].startswith(delimiter):
+            # Don't escape the delimeter (which has length 2), but do escape
+            # other Markdown formatting characters
+            res.append(store[:2] + _escape(store[2:], '\\`*_{}[]()#+-.!'))
+            store, delimiter = '', None
+        store += text[i]
+    # Append the last store / delimiter
+    res.append(store)
 
-    # Re-insert the MathJAX formatting
-    text = text.replace('|(', '\(').replace('|)', '\)').replace(
-                        '|[', '\[').replace('|]', '\]')
-    return mark_safe(text)
+    md = markdown.Markdown(safe_mode='escape')
+    text = md.convert(''.join(res))
+    return mark_safe(text.replace('|(', '\(').replace('|)', '\)').replace(
+                                  '|[', '\[').replace('|]', '\]'))
