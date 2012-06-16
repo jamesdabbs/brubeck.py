@@ -380,3 +380,16 @@ def migrate(request, *args):
             permanent=True)
     except Exception:
         raise Http404
+
+
+def browse(request):
+    """ Renders an introductory browse template, with recent items of the
+        various types
+    """
+    LIMIT = 5
+    return TemplateResponse(request, 'brubeck/browse.html', {
+        'spaces': Space.objects.order_by('-id')[:LIMIT],
+        'properties': Property.objects.order_by('-id')[:LIMIT],
+        'traits': Trait.objects.order_by('-id')[:LIMIT],
+        'implications': Implication.objects.order_by('-id')[:LIMIT]
+    })

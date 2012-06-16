@@ -19,6 +19,7 @@ urlpatterns += patterns('django.contrib.auth.views',
 
 urlpatterns += patterns('brubeck.views',
     # Misc views
+    url(r'^browse/$', 'browse', name='browse'),
     url(r'^search/$', 'search', name='search'),
     url(r'^contribute/$', TemplateView.as_view(
         template_name='brubeck/contribute/home.html'), name='contribute'),

@@ -18,11 +18,17 @@
         <div class="navbar-inner">
             <a class="brand" href="{% url 'brubeck:home' %}">Brubeck</a>
             <ul class="nav">
-                <li><a href="{% url 'brubeck:spaces' %}">Spaces</a></li>
-                <li><a href="{% url 'brubeck:properties' %}">Properties</a></li>
-                <li><a href="{% url 'brubeck:traits' %}">Traits</a></li>
-                <li><a href="{% url 'brubeck:implications' %}">Implications</a></li>
-                <li><a href="{% url 'brubeck:search' %}">Search</a></li>
+                <li class="dropdown">
+                    <a href="{% url 'brubeck:browse' %}" class="dropdown-toggle"
+                        data-toggle="dropdown">Browse
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'brubeck:spaces' %}">Spaces</a></li>
+                        <li><a href="{% url 'brubeck:properties' %}">Properties</a></li>
+                        <li><a href="{% url 'brubeck:traits' %}">Traits</a></li>
+                        <li><a href="{% url 'brubeck:implications' %}">Implications</a></li>
+                    </ul>
+                </li>
                 <li><a href="{% url 'brubeck:contribute' %}">Contribute</a></li>
                 {% if request.user.is_superuser %}
                 <li><a href="{% url 'brubeck:table' %}?start=1&end=5">Table</a></li>
@@ -31,6 +37,10 @@
                 <li><a href="{% url 'admin:index' %}">Admin</a></li>
                 {% endif %}
             </ul>
+            <form class="navbar-search pull-left" action="{% url 'brubeck:search' %}">
+                <input type="text" class="search-query span4" name="q"
+                    placeholder="Search">
+            </form>
             <ul class="nav pull-right">
                 {% if request.user.is_authenticated %}
                 <li><a>{{ request.user.username }}</a></li>
@@ -65,6 +75,13 @@
     {% endblock %}
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
+    <script type="text/javascript">
+    $(function(){
+       $('.dropdown-toggle').attr('href','#').append($('<b class="caret"></b>'))
+         .dropdown();
+    });
+    </script>
     {% block extra_scripts %}{% endblock %}
     <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

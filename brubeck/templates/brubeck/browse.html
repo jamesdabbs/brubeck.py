@@ -1,0 +1,51 @@
+{% extends "brubeck/base.html" %}
+{% load url from future %}
+
+{% block title %}Browse{% endblock %}
+
+{% block meta_description %}
+Browse spaces, properties, traits and implications that have recently been
+added to the Brubeck topology database.
+{% endblock %}
+
+{% block breadcrumbs %}
+<li class="active"><span class="divider">/</span> Browse</li>
+{% endblock %}
+
+{% block content %}
+<section>
+    <h3>Spaces
+        <small><a href="{% url 'brubeck:spaces' %}">[View all]</a></small>
+    </h3>
+    {% for obj in spaces %}
+    {% include "brubeck/includes/list_line.html" %}
+    {% endfor %}
+</section>
+
+<section>
+    <h3>Properties
+        <small><a href="{% url 'brubeck:properties' %}">[View all]</a></small>
+    </h3>
+    {% for obj in properties %}
+    {% include "brubeck/includes/list_line.html" %}
+    {% endfor %}
+</section>
+
+<section>
+    <h3>Traits
+        <small><a href="{% url 'brubeck:traits' %}">[View all]</a></small>
+    </h3>
+    {% for obj in traits %}
+    {% include "brubeck/includes/list_line.html" %}
+    {% endfor %}
+</section>
+
+<section>
+    <h3>Implications
+        <small><a href="{% url 'brubeck:implications' %}">[View all]</a></small>
+    </h3>
+    {% for obj in implications %}
+    {% include "brubeck/includes/list_line.html" %}
+    {% endfor %}
+</section>
+{% endblock %}
