@@ -17,7 +17,7 @@
 </h1>
 {% for s in object.snippets.all %}
     {% if s.automatically_added %}
-    <p>{{ s.render_html|smarkdown }}</p>
+    <p>{{ s.render_html }}</p>
     {% else %}
     {% if s.current_text %}
     <p>{{ s.current_text|smarkdown }}</p>
