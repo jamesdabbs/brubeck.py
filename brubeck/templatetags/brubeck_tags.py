@@ -98,14 +98,14 @@ def smarkdown(text):
     # TODO: Better handling of escaping.
     #       Is this always safe?
     # Prepare the text so that Markdown doesn't remove MathJAX formatting
-    text = text.replace('\(', '|(')
-    text = text.replace('\)', '|)')
+    text = text.replace('\(', '|(').replace('\)', '|)').replace(
+                        '\[', '|[').replace('\]', '|]')
 
     # Apply markdown, escaping any existing html
     md = markdown.Markdown(safe_mode='escape')
     text = md.convert(text)
 
     # Re-insert the MathJAX formatting
-    text = text.replace('|(', '\(')
-    text = text.replace('|)', '\)')
+    text = text.replace('|(', '\(').replace('|)', '\)').replace(
+                        '|[', '\[').replace('|]', '\]')
     return mark_safe(text)
