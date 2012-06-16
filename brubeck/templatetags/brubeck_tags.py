@@ -103,6 +103,7 @@ def smarkdown(text):
     """
     # TODO: this can probably be simplified with some regexes / better escape
     #       handling.
+    # TODO: add tests for proper handling and XSS tests
     text = text.replace('\(', '|(').replace('\)', '|)').replace(
                         '\[', '|[').replace('\]', '|]')
 

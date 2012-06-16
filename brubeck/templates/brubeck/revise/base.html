@@ -1,4 +1,5 @@
 {% extends "brubeck/base.html" %}
+{% load brubeck_tags %}
 
 {% block title %}{{ object.name }} Revisions{% endblock %}
 
@@ -19,7 +20,7 @@ Allows a user to roll back changes to the text description of {{ object.name }}.
 <div class="well">
     <form action="" method="POST">
         {% csrf_token %}
-        <p>{{ revision }}</p>
+        <p>{{ revision.text|smarkdown }}</p>
         <input type="hidden" name="rev_id" value="{{ revision.id }}"/>
         <button class="btn btn-primary">Update to this revision</button>
     </form>
@@ -28,7 +29,7 @@ Allows a user to roll back changes to the text description of {{ object.name }}.
 
 {% for s in snippets %}
 <div>
-    <p>{{ s }}</p>
+    <p>{{ s.revision.text|smarkdown }}</p>
     <table class="table table-striped">
         <thead>
             <tr>
