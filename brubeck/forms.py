@@ -15,8 +15,8 @@ class RegistrationForm(UserCreationForm):
 class SnippetForm(forms.ModelForm):
     """ A ModelForm that also adds a Snippet describing the object it saves
     """
-    description = forms.CharField(widget=forms.Textarea(attrs={'rows':8}),
-        help_text='<em><a href="http://en.wikipedia.org/wiki/Markdown">'\
+    description = forms.CharField(widget=forms.Textarea(attrs={'rows': 8}),
+        help_text='<em><a href="http://en.wikipedia.org/wiki/Markdown">'
                   'Markdown</a> syntax is supported</em>')
 
 
@@ -26,8 +26,8 @@ class EditForm(forms.Form):
     """
     # While it seems natual to subclass SnippetForm, the view logic is cleaner
     # if this ISN'T a ModelFrom.
-    description = forms.CharField(widget=forms.Textarea(attrs={'rows':8}),
-        help_text='<em><a href="http://en.wikipedia.org/wiki/Markdown">'\
+    description = forms.CharField(widget=forms.Textarea(attrs={'rows': 8}),
+        help_text='<em><a href="http://en.wikipedia.org/wiki/Markdown">'
                   'Markdown</a> syntax is supported</em>')
 
     def _get_snippet(self, obj):
@@ -138,7 +138,7 @@ class SearchForm(forms.Form):
         #   Moving forward, we need to completely audit unicode
         #   handling throughout the application.
         import unicodedata
-        q = ''.join((c for c in unicodedata.normalize('NFD',q)
+        q = ''.join((c for c in unicodedata.normalize('NFD', q)
             if unicodedata.category(c) != 'Mn'))
 
         if not q:

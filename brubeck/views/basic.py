@@ -157,16 +157,11 @@ def browse(request):
     })
 
 
-class ProfileView(ListView):
-    def get_queryset(self):
-        kwargs = self.kwargs
-        assert False
-profile = ProfileView.as_view()
-
 def profile(request, username):
     """ Displays a user's profile
     """
     profile = get_object_or_404(Profile, user__username=username)
+
     class _Inner(ListView):
         paginate_by = 5
         queryset = profile.user.revision_set.order_by('-id')

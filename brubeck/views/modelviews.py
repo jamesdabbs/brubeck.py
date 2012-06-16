@@ -172,6 +172,7 @@ class Edit(GetObjectMixin, UpdateView):
 def edit(request, model, **kwargs):
     return login_required(Edit.as_view(model=model))(request, **kwargs)
 
+
 class Delete(GetObjectMixin, DetailView):
     # TODO: deal with potential race condition with deleting and re-adding
     model = None
