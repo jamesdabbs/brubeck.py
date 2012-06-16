@@ -132,6 +132,15 @@ class SearchForm(forms.Form):
 
     def search(self):
         q, res = self.cleaned_data.get('q', '').strip(), {}
+
+        # TODO: unicode support is problematic because of a bug in
+        #   urllib. For now, we'll remove accents and hope for the best
+        #   Moving forward, we need to completely audit unicode
+        #   handling throughout the application.
+        import unicodedata
+        q = ''.join((c for c in unicodedata.normalize('NFD',q)
+            if unicodedata.category(c) != 'Mn'))
+
         if not q:
             return res
 

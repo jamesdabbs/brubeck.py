@@ -83,7 +83,6 @@ def search(request):
             results = form.search()
             # Pre-process the results for the template
             if 'text' in results:
-            # Set count
                 text_paginator = SearchPaginator(results['text'], 10)
                 text_page = request.GET.get('text_page', 1)
                 try:
