@@ -36,10 +36,10 @@
                 {% if request.user.is_staff %}
                 <li><a href="{% url 'admin:index' %}">Admin</a></li>
                 {% endif %}
+                <li><a href="{% url 'brubeck:search' %}">Search:</a></li>
             </ul>
             <form class="navbar-search pull-left" action="{% url 'brubeck:search' %}">
-                <input type="text" class="search-query span4" name="q"
-                    placeholder="Search">
+                <input type="text" class="search-query span4" name="q">
             </form>
             <ul class="nav pull-right">
                 {% if request.user.is_authenticated %}
