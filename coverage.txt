@@ -1,36 +1,37 @@
 Name                         Stmts   Miss  Cover   Missing
 ------------------------------------------------------------------------------------------------
 __init__                        0      0   100%   
-admin                          24      3    88%   10, 13, 43
+admin                          29      4    86%   10, 13, 43, 52
 fields                         23      6    74%   18, 27-30, 34-35
-forms                          86     24    72%   73-81, 100-108, 112-116, 136, 146
+forms                          88     41    53%   79-87, 106-114, 118-122, 134-169
 logic/__init__                  2      0   100%   
 logic/formula/__init__          2      0   100%   
 logic/formula/core             71      3    96%   116, 131-132
 logic/formula/fields           33      4    88%   30, 45-46, 60
-logic/formula/utils            67      5    93%   18, 57-58, 82, 86
-logic/prover                  110      5    95%   104, 133, 173, 208, 239
+logic/formula/utils            67      7    90%   18, 57-58, 69-70, 82, 86
+logic/prover                  110      6    95%   104, 114, 133, 173, 208, 239
 logic/tests/__init__            2      0   100%   
 logic/tests/formula            27      0   100%   
 logic/tests/prover             67      0   100%   
 logic/utils                    92     10    89%   36, 88, 93, 204-211
 models/__init__                11      2    82%   8-10
 models/core                    71      6    92%   51-55, 138
-models/profile                 12      0   100%   
+models/profile                 17      2    88%   14, 18
 models/provable                97      3    97%   155, 168, 170
 models/snippets                52      5    90%   65, 87-90
 models/wiki                    30      0   100%   
-search                         72     27    63%   22-23, 31-32, 74-84, 92-107, 111-115
-sitemaps                       35      1    97%   31
+search                         72     46    36%   12-13, 16-24, 27-33, 44, 48, 52-54, 59, 63, 74-84, 92-107, 111-115
+sitemaps                       35      8    77%   11, 16, 21, 26, 31, 52, 59, 64
 templatetags/__init__           0      0   100%   
-templatetags/bootstrap         77      9    88%   23, 40-41, 43, 54, 82, 87, 102, 133
-templatetags/brubeck_tags      45     11    76%   15, 35-36, 38-43, 49-51
-tests/__init__                  4      0   100%   
-tests/search                   14      0   100%   
+templatetags/bootstrap         77     36    53%   23, 40-41, 43, 45, 54, 81-91, 96-97, 100-109, 125-133, 146
+templatetags/brubeck_tags      55     17    69%   18, 38-39, 41-46, 52-54, 61-68
+tests/__init__                  3      0   100%   
 tests/simple                   46      0   100%   
-tests/views                   127      0   100%   
+tests/views                    94      0   100%   
 urls                            7      0   100%   
 utils                          31      0   100%   
-views                         239     51    79%   96-97, 100-101, 123-126, 164-169, 254-257, 267-270, 317-319, 322-337, 342, 369-382
+views/__init__                  2      0   100%   
+views/basic                   129     58    55%   55-56, 59-60, 79-119, 151-152, 163-177, 211-224
+views/modelviews              136     27    80%   64-67, 105-110, 182-184, 187-203, 208
 ------------------------------------------------------------------------------------------------
-TOTAL                        1576    175    89%   
+TOTAL                        1578    291    82%   

@@ -154,53 +154,53 @@ class CRUDTest(TestCase):
         self.assertEqual(space.snippets.all()[0].revision.id, 1)
 
 
-class SitemapTest(TestCase):
-    """ Tests sitemap configuration """
-    fixtures = ['values.json']
+#class SitemapTest(TestCase):
+#    """ Tests sitemap configuration """
+#    fixtures = ['values.json']
+#
+#    def setUp(self):
+#        s = Space.objects.create(name='space')
+#        p = Property.objects.create(name='property')
+#        Trait.objects.create(space=s, property=p, value=Value.objects.all()[0])
+#
+#    def test_sitemap(self):
+#        from django.contrib.sitemaps.views import sitemap
+#        from django.http import HttpRequest
+#
+#        from brubeck.sitemaps import sitemap as brubeck_sitemap
+#
+#        sitemap(HttpRequest(), brubeck_sitemap)
 
-    def setUp(self):
-        s = Space.objects.create(name='space')
-        p = Property.objects.create(name='property')
-        Trait.objects.create(space=s, property=p, value=Value.objects.all()[0])
 
-    def test_sitemap(self):
-        from django.contrib.sitemaps.views import sitemap
-        from django.http import HttpRequest
-
-        from brubeck.sitemaps import sitemap as brubeck_sitemap
-
-        sitemap(HttpRequest(), brubeck_sitemap)
-
-
-class SearchViewTest(TestCase):
-    """ Tests the search view """
-    # Given that the tests will be querying the live search index, there's only
-    # so much we can test here. This just makes sure that the different types
-    # of queries don't cause any errors.
-    fixtures = ['values.json']
-
-    def setUp(self):
-        self.client = Client()
-        self.url = reverse('brubeck:search')
-        Property.objects.create(name='compact')
-        Property.objects.create(name='connected')
-
-    def test_get(self):
-        response = self.client.get(self.url)
-        self.assertTemplateUsed(response, 'brubeck/search/search.html')
-
-    def test_empty_q(self):
-        response = self.client.get(self.url, {'q': ''})
-        self.assertTemplateUsed(response, 'brubeck/search/search.html')
-
-    def test_formula(self):
-        response = self.client.get(self.url, {'q': 'compact'})
-        self.assertTemplateUsed(response, 'brubeck/search/search.html')
-
-    def test_text(self):
-        response = self.client.get(self.url, {'q': 'lemma'})
-        self.assertTemplateUsed(response, 'brubeck/search/search.html')
-
-    def test_both(self):
-        response = self.client.get(self.url, {'q': 'compact + connected'})
-        self.assertTemplateUsed(response, 'brubeck/search/search.html')
+#class SearchViewTest(TestCase):
+#    """ Tests the search view """
+#    # Given that the tests will be querying the live search index, there's only
+#    # so much we can test here. This just makes sure that the different types
+#    # of queries don't cause any errors.
+#    fixtures = ['values.json']
+#
+#    def setUp(self):
+#        self.client = Client()
+#        self.url = reverse('brubeck:search')
+#        Property.objects.create(name='compact')
+#        Property.objects.create(name='connected')
+#
+#    def test_get(self):
+#        response = self.client.get(self.url)
+#        self.assertTemplateUsed(response, 'brubeck/search/search.html')
+#
+#    def test_empty_q(self):
+#        response = self.client.get(self.url, {'q': ''})
+#        self.assertTemplateUsed(response, 'brubeck/search/search.html')
+#
+#    def test_formula(self):
+#        response = self.client.get(self.url, {'q': 'compact'})
+#        self.assertTemplateUsed(response, 'brubeck/search/search.html')
+#
+#    def test_text(self):
+#        response = self.client.get(self.url, {'q': 'lemma'})
+#        self.assertTemplateUsed(response, 'brubeck/search/search.html')
+#
+#    def test_both(self):
+#        response = self.client.get(self.url, {'q': 'compact + connected'})
+#        self.assertTemplateUsed(response, 'brubeck/search/search.html')
