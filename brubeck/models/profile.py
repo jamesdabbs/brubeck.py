@@ -13,6 +13,10 @@ class Profile(models.Model):
     def __unicode__(self):
         return self.user.username
 
+    @models.permalink
+    def get_absolute_url(self):
+        return 'brubeck:profile', (self.user.username,), {}
+
     username = property(lambda s: s.user.username)
 
 

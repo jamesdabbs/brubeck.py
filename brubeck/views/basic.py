@@ -14,7 +14,7 @@ from django.views.generic.edit import FormView
 
 from brubeck import forms, utils
 from brubeck.logic import Prover
-from brubeck.models import Space, Property, Trait, Implication
+from brubeck.models import Space, Property, Trait, Implication, Profile
 from brubeck.search import SearchPaginator
 
 
@@ -158,12 +158,36 @@ def browse(request):
     })
 
 
+class ProfileView(ListView):
+    def get_queryset(self):
+        kwargs = self.kwargs
+        assert False
+profile = ProfileView.as_view()
+
 def profile(request, username):
     """ Displays a user's profile
     """
-    user = get_object_or_404(User, username=username)
-    is_owner = request.user == user
-    return TemplateResponse(request, 'registration/profile.html', locals())
+    profile = get_object_or_404(Profile, user__username=username)
+    class _Inner(ListView):
+        paginate_by = 5
+        queryset = profile.user.revision_set.order_by('-id')
+        template_name = 'brubeck/registration/profile.html'
+
+        def get_context_data(self, **kwargs):
+            context = super(_Inner, self).get_context_data(**kwargs)
+            context.update({
+                'profile': profile,
+                'is_owner': request.user == profile.user
+            })
+            return context
+    return _Inner.as_view()(request)
+
+
+profiles = ListView.as_view(
+    paginate_by=20,
+    queryset=Profile.objects.all(),
+    template_name='brubeck/registration/profiles.html'
+)
 
 
 def disambiguate(request, slug):

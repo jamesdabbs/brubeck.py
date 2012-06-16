@@ -1,0 +1,35 @@
+{% extends "brubeck/base.html" %}
+
+{% block title %}Profiles{% endblock %}
+
+{% block meta_description %}
+A list of user profiles for the Brubeck Topology Database.
+{% endblock %}
+
+{% block breadcrumbs %}
+<li class="active"><span class="divider">/</span> Profiles</li>
+{% endblock %}
+
+{% block content %}
+{% if page_obj.has_other_pages %}
+    {% include "brubeck/includes/bootstrap/pagination.html" %}
+{% endif %}
+<table class="table">
+    <thead>
+        <tr>
+            <td>Username</td>
+            <td>Joined</td>
+            <td>Revisions added</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for profile in page_obj %}
+        <tr>
+            <td><a href="{{ profile.get_absolute_url }}">{{ profile }}</a></td>
+            <td>{{ profile.user.date_joined.date }}</td>
+            <td>{{ profile.user.revision_set.count }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

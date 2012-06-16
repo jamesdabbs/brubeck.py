@@ -28,6 +28,8 @@ urlpatterns += patterns('brubeck.views',
     url(r'^contribute/counterexamples/$', 'reversal_counterexamples',
         name='needing_counterexamples'),
     url(r'^register/$', 'register', name='register'),
+    url(r'^profiles/$', 'profiles', name='profiles'),
+    url(r'^profiles/([-\w]+)/$', 'profile', name='profile'),
     url(r'^to/github/$', RedirectView.as_view(
         url='https://github.com/jamesdabbs/brubeck'), name='github'),
 

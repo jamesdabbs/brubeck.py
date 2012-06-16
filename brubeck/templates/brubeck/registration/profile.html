@@ -1,0 +1,32 @@
+{% extends "brubeck/base.html" %}
+{% load brubeck_tags %}
+{% load url from future %}
+
+{% block title %}{{ profile.username }}{% endblock %}
+
+{% block meta_description %}
+Personal page of {{ profile.username }} on the Brubeck database, including a
+a record of their editing activity.
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><span class="divider">/</span> <a href="{% url 'brubeck:profiles' %}">Profiles</a></li>
+<li class="active"><span class="divider">/</span> {{ profile.username }}</li>
+{% endblock %}
+
+{% block content %}
+<h1>{{ profile.username }}</h1>
+<p><b>Joined:</b> {{ profile.user.date_joined.date }}</p>
+
+<h3>Revisions</h3>
+{% if page_obj.has_other_pages %}
+{% include "brubeck/includes/bootstrap/pagination.html" %}
+{% endif %}
+{% for revision in page_obj %}
+    <h3><a href="{{ revision.page.snippet.object.get_absolute_url }}">
+        {{ revision.page.snippet.object }}</a>
+        <small>{{ revision.timestamp }}</small>
+    </h3>
+    <p>{{ revision.text|smarkdown }}</p>
+{% endfor %}
+{% endblock %}

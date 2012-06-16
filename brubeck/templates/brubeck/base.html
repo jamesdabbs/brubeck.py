@@ -43,7 +43,7 @@
             </form>
             <ul class="nav pull-right">
                 {% if request.user.is_authenticated %}
-                <li><a>{{ request.user.username }}</a></li>
+                <li><a href="{% url 'brubeck:profile' request.user.username %}">{{ request.user.username }}</a></li>
                 <li><a href="{% url 'brubeck:logout' %}?next={{ request.path }}">Logout</a></li>
                 {% else %}
                 <li><a href="{% url 'brubeck:login' %}?next={{ request.path }}">Login</a></li>
