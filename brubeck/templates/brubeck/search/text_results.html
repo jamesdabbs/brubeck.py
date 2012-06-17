@@ -6,11 +6,11 @@
     {% pagination text_page request 'text_page' %}
 {% endif %}
 <ul>
-    {% for revision in text_page %}
-    {% with revision.page.snippet.object as obj %}
+    {% for snippet in text_page %}
+    {% with snippet.object as obj %}
     <h4><a href="{{ obj.get_absolute_url }}">{{ obj.name }}</a></h4>
     {% endwith %}
-    {{ revision.text|smarkdown }}
+    {{ snippet.revision.text|smarkdown }}
     {% endfor %}
 </ul>
 {% else %}
