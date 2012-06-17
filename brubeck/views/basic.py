@@ -15,7 +15,7 @@ from django.views.generic.edit import FormView
 from brubeck import forms, utils
 from brubeck.logic import Prover
 from brubeck.models import Space, Property, Trait, Implication, Profile, \
-    Revision
+    Snippet
 
 
 def _force_login(request, user):
@@ -84,9 +84,9 @@ def search(request):
             results = form.search()
             # Pre-process the results for the template
             if 'text' in results:
-                text_paginator = Paginator(Revision.objects.filter(
-                    Q(text__icontains=results['text']) |
-                    Q(page__snippet__title=results['text'])
+                text_paginator = Paginator(Snippet.objects.filter(
+                    Q(revision__text__icontains=results['text']) |
+                    Q(title=results['text'])
                 ), 10)
                 text_page = request.GET.get('text_page', 1)
                 try:
