@@ -104,6 +104,7 @@ def smarkdown(text):
     # TODO: this can probably be simplified with some regexes / better escape
     #       handling.
     # TODO: add tests for proper handling and XSS tests
+    # TODO: \( \{(x,y) | |(x,y)| < 1\} \) errors b/c of replacements
     text = text.replace('\(', '|(').replace('\)', '|)').replace(
                         '\[', '|[').replace('\]', '|]')
 

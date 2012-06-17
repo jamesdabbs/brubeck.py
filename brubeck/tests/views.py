@@ -161,7 +161,8 @@ class CRUDTest(TestCase):
 #    def setUp(self):
 #        s = Space.objects.create(name='space')
 #        p = Property.objects.create(name='property')
-#        Trait.objects.create(space=s, property=p, value=Value.objects.all()[0])
+#        Trait.objects.create(space=s, property=p,
+#           value=Value.objects.all()[0])
 #
 #    def test_sitemap(self):
 #        from django.contrib.sitemaps.views import sitemap
@@ -174,9 +175,9 @@ class CRUDTest(TestCase):
 
 #class SearchViewTest(TestCase):
 #    """ Tests the search view """
-#    # Given that the tests will be querying the live search index, there's only
-#    # so much we can test here. This just makes sure that the different types
-#    # of queries don't cause any errors.
+#    # Given that the tests will be querying the live search index, there's
+#    # only so much we can test here. This just makes sure that the different
+#    # types of queries don't cause any errors.
 #    fixtures = ['values.json']
 #
 #    def setUp(self):

@@ -2,9 +2,9 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth import login
-from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.urlresolvers import reverse
+from django.db.models.query_utils import Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -14,8 +14,8 @@ from django.views.generic.edit import FormView
 
 from brubeck import forms, utils
 from brubeck.logic import Prover
-from brubeck.models import Space, Property, Trait, Implication, Profile
-from brubeck.search import SearchPaginator
+from brubeck.models import Space, Property, Trait, Implication, Profile, \
+    Revision
 
 
 def _force_login(request, user):
@@ -76,6 +76,7 @@ def search(request):
     # TODO: the template inheritance for the two different column types is
     #       messy. It might be easier to actually use different templates for
     #       the different result types (space only, text only, space & text)
+    # TODO: Improve and test search.
     context = {}
     if 'q' in request.GET:
         form = forms.SearchForm(request.GET)
@@ -83,7 +84,10 @@ def search(request):
             results = form.search()
             # Pre-process the results for the template
             if 'text' in results:
-                text_paginator = SearchPaginator(results['text'], 10)
+                text_paginator = Paginator(Revision.objects.filter(
+                    Q(text__icontains=results['text']) |
+                    Q(page__snippet__title=results['text'])
+                ), 10)
                 text_page = request.GET.get('text_page', 1)
                 try:
                     text_page = text_paginator.page(text_page)

@@ -6,9 +6,11 @@
     {% pagination text_page request 'text_page' %}
 {% endif %}
 <ul>
-    {% for doc in text_page %}
-    {% lookup_document doc as obj%}
-    {% include "brubeck/includes/list_line.html" %}
+    {% for revision in text_page %}
+    {% with revision.page.snippet.object as obj %}
+    <h4><a href="{{ obj.get_absolute_url }}">{{ obj.name }}</a></h4>
+    {% endwith %}
+    {{ revision.text|smarkdown }}
     {% endfor %}
 </ul>
 {% else %}
