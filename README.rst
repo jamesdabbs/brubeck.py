@@ -8,9 +8,7 @@ information. It features:
 - Automated proof generation. `Proof visualizations 
   <http://www.jdabbs.com/brubeck/michaels-closed-subspace/pseudocompact/proof/>`_ 
   are rendered using the `JavaScript InfoVis ToolKit <http://thejit.org/>`_.
-- Searching for a space by its traits, or a full-text search provided by
-  `elasticsearch <http://www.elasticsearch.org/>`_ / 
-  `Bonsai <http://bonsai.io/home>`_.
+- Searching for a space by its traits, or a full-text search.
 - Full revision control of all entered text. Tools for reverting erroneous
   Traits and Implications.
 - LaTeX rendering, courtesy of `MathJAX <http://www.mathjax.org/>`_.
@@ -32,10 +30,12 @@ Planned features
 The following are a list of things I plan to add, in no particular order. If
 you'd like to start hacking away on any of them, please let me know:
 
+- Support for aliases (\(T_2\), T_2 & Hausdorff)
 - Improved text editing / revision management interfaces
 - Integration with Mizar, Isabelle, ...
 - Support for caching
 - Support for asynchronous prover tasks (using celery)
-- Improved search, support for aliases (Hausdorff == T_2)
+- Improved search
 - Styling beyond bootstrap defaults :)
 - Mobile version of the site (Android / iPhone apps?)
+- Support for cardinal-, group-, ring- ... valued properties
