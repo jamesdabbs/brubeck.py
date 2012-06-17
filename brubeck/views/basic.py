@@ -87,7 +87,7 @@ def search(request):
                 text_paginator = Paginator(Snippet.objects.filter(
                     Q(revision__text__icontains=results['text']) |
                     Q(title=results['text'])
-                ), 10)
+                ).order_by('-revision__id'), 10)
                 text_page = request.GET.get('text_page', 1)
                 try:
                     text_page = text_paginator.page(text_page)
