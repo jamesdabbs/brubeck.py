@@ -4,7 +4,7 @@ import logging
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 
-from brubeck.logic import utils, Formula
+from brubeck.logic import Formula, utils
 from brubeck.models.snippets import Snippet
 
 

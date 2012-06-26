@@ -39,3 +39,5 @@ you'd like to start hacking away on any of them, please let me know:
 - Styling beyond bootstrap defaults :)
 - Mobile version of the site (Android / iPhone apps?)
 - Support for cardinal-, group-, ring- ... valued properties
+- Tools for finding and exploring conjectures, detecting impossible searches
+  (like T_2 + ~T_1)

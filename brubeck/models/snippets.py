@@ -6,7 +6,7 @@ from django.db import models
 
 from brubeck.fields import SetField
 from brubeck.models.wiki import Document, Revision
-from brubeck.search import index_revision
+#from brubeck.search import index_revision
 
 
 logger = logging.getLogger(__name__)
@@ -90,5 +90,5 @@ def update_proof(sender, instance, created, raw, **kwargs):
             logger.debug('Error updating proof for %s: %s' % (instance, e))
 
 
-models.signals.post_save.connect(index_revision, Revision)
+#models.signals.post_save.connect(index_revision, Revision)
 models.signals.post_save.connect(update_proof, Revision)
