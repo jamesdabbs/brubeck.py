@@ -41,3 +41,4 @@ you'd like to start hacking away on any of them, please let me know:
 - Support for cardinal-, group-, ring- ... valued properties
 - Tools for finding and exploring conjectures, detecting impossible searches
   (like T_2 + ~T_1)
+- Social tools - discussion pages, places to ask questions, etc.
