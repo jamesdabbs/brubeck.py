@@ -106,6 +106,10 @@ class _BasicMixin(models.Model):
         return Snippet.objects.filter(content_type__pk=type.id,
             object_id=self.id)
 
+    @property
+    def description(self):
+        return self.snippets.get().revision.text
+
 
 class DefinedManager(models.Manager):
     """ Limits results to Spaces that are fully defined """

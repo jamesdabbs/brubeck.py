@@ -17,6 +17,13 @@ urlpatterns += patterns('django.contrib.auth.views',
         {'next_page': reverse_lazy('brubeck:home')}, name='logout'),
 )
 
+urlpatterns += patterns('brubeck.views.api',
+    url(r'^api/spaces/$', 'spaces'),
+    url(r'^api/properties/$', 'properties'),
+    url(r'^api/traits/$', 'traits'),
+    url(r'^api/theorems/$', 'theorems'),
+)
+
 urlpatterns += patterns('brubeck.views',
     # Misc views
     url(r'^browse/$', 'browse', name='browse'),
