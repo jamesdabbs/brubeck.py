@@ -1,3 +1,13 @@
+Notice
+======
+I am in the process of re-writing Brubeck into a Rails application, and won't be developing this codebase any further. 
+Feel free to contribute data to the site; I plan on migrating all the data once the new site is ready. Some features to
+look forward to:
+
+* Git-backed storage of descriptions (powered by GitHub's Gollum). This will allow easy revision control as well as the 
+  ability to contribute to the repository directly without using the website.
+* All proofs will be formally checked (provisionally by Coq, but with planned support for Mizar, Isabelle, ...).
+
 =======
 Brubeck
 =======
